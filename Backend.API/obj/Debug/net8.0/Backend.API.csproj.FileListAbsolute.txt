@@ -31,3 +31,4 @@ C:\Users\USER\PharmacyEmergencySystem\Backend.API\obj\Debug\net8.0\refint\Backen
 C:\Users\USER\PharmacyEmergencySystem\Backend.API\obj\Debug\net8.0\Backend.API.pdb
 C:\Users\USER\PharmacyEmergencySystem\Backend.API\obj\Debug\net8.0\Backend.API.genruntimeconfig.cache
 C:\Users\USER\PharmacyEmergencySystem\Backend.API\obj\Debug\net8.0\ref\Backend.API.dll
+C:\Users\USER\PharmacyEmergencySystem\Backend.API\obj\Debug\net8.0\Backend.API.sourcelink.json
