@@ -1,16 +1,23 @@
 using PharmacyEmergencySystem.Models;
 using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration; // IMPORTANT
 using System.Collections.Generic;
 
 namespace PharmacyEmergencySystem.Services
 {
     public class UserService
     {
-        private string connectionString = "server=localhost;user=root;password=dontspeak7;database=pharmacydb;";
+        private readonly string _connectionString;
+
+        // Constructor to get connection string from appsettings.json
+        public UserService(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection");
+        }
 
         public void AddUser(User user)
         {
-            using var conn = new MySqlConnection(connectionString);
+            using var conn = new MySqlConnection(_connectionString);
             conn.Open();
             var cmd = conn.CreateCommand();
             cmd.CommandText = @"INSERT INTO users (Name, Location, Number, Gender, Age, Email, OTP, IsVerified, Role)
@@ -29,7 +36,7 @@ namespace PharmacyEmergencySystem.Services
 
         public User GetUserByEmailOrNumber(string emailOrNumber)
         {
-            using var conn = new MySqlConnection(connectionString);
+            using var conn = new MySqlConnection(_connectionString);
             conn.Open();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM users WHERE Email=@EmailOrNumber OR Number=@EmailOrNumber";
@@ -56,7 +63,7 @@ namespace PharmacyEmergencySystem.Services
 
         public void VerifyUser(string emailOrNumber)
         {
-            using var conn = new MySqlConnection(connectionString);
+            using var conn = new MySqlConnection(_connectionString);
             conn.Open();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "UPDATE users SET IsVerified=1, OTP='' WHERE Email=@EmailOrNumber OR Number=@EmailOrNumber";
@@ -66,7 +73,7 @@ namespace PharmacyEmergencySystem.Services
 
         public void UpdateOTP(string emailOrNumber, string otp)
         {
-            using var conn = new MySqlConnection(connectionString);
+            using var conn = new MySqlConnection(_connectionString);
             conn.Open();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "UPDATE users SET OTP=@OTP WHERE Email=@EmailOrNumber OR Number=@EmailOrNumber";
@@ -76,3 +83,4 @@ namespace PharmacyEmergencySystem.Services
         }
     }
 }
+

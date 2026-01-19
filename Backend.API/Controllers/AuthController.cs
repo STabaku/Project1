@@ -3,14 +3,21 @@ using PharmacyEmergencySystem.DTOs;
 using PharmacyEmergencySystem.Models;
 using PharmacyEmergencySystem.Services;
 
-namespace PharmacyEmergencySystem.Controllers
+namespace PharmacyEmergencySystem.Services
 {
     [ApiController]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _userService = new UserService();
-        private readonly OtpService _otpService = new OtpService();
+        private readonly UserService _userService;
+        private readonly OtpService _otpService;
+
+        // ✅ Constructor injection
+        public AuthController(UserService userService, OtpService otpService)
+        {
+            _userService = userService;
+            _otpService = otpService;
+        }
 
         [HttpPost("signup")]
         public IActionResult Signup([FromBody] RegisterRequest request)
@@ -27,7 +34,9 @@ namespace PharmacyEmergencySystem.Controllers
                 Gender = request.Gender,
                 Age = request.Age,
                 Email = request.Email,
-                OTP = otp
+                OTP = otp,
+                IsVerified = false,
+                Role = request.Role
             };
 
             _userService.AddUser(user);
@@ -66,3 +75,4 @@ namespace PharmacyEmergencySystem.Controllers
         }
     }
 }
+

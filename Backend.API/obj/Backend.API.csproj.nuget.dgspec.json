@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\PharmacyEmergencySystem\\Backend.API\\Backend.API.csproj": {}
+    "C:\\Users\\User\\Desktop\\Nadja\\Project1\\backend.API\\Backend.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\PharmacyEmergencySystem\\Backend.API\\Backend.API.csproj": {
+    "C:\\Users\\User\\Desktop\\Nadja\\Project1\\backend.API\\Backend.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\PharmacyEmergencySystem\\Backend.API\\Backend.API.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\Nadja\\Project1\\backend.API\\Backend.API.csproj",
         "projectName": "Backend.API",
-        "projectPath": "C:\\Users\\USER\\PharmacyEmergencySystem\\Backend.API\\Backend.API.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\PharmacyEmergencySystem\\Backend.API\\obj\\",
+        "projectPath": "C:\\Users\\User\\Desktop\\Nadja\\Project1\\backend.API\\Backend.API.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\Nadja\\Project1\\backend.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,7 +37,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -46,6 +47,10 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.23, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.5.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -71,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

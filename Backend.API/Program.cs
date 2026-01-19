@@ -1,33 +1,37 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using PharmacyEmergencySystem.Services; // ✅ Add this
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<UserService>();
 
-
-// Register your services
+// Register other services
 builder.Services.AddSingleton<MatchingService>();
 builder.Services.AddSingleton<DeliverySimulationService>();
 builder.Services.AddSingleton<ExternalApiService>();
 
 var app = builder.Build();
 
-// Configure middleware
+// ✅ This is where you put the Swagger code
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Middleware
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
+// Map controllers
 app.MapControllers();
 
-// Remove the WeatherForecast endpoint and replace with your controllers
-// app.MapGet("/weatherforecast", ... )  // not needed anymore
-
+// Run the app
 app.Run();
 
-// Optional: keep record classes if needed
