@@ -1,0 +1,138 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    background: #f5f9f7;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Top Right Auth Buttons */
+.top-right {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.top-right button {
+    padding: 8px 16px;
+    border: none;
+    background: #1f8f6a;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.top-right button:hover {
+    background: #166d51;
+}
+
+/* Main Container */
+.container {
+    max-width: 1100px;
+    margin: 100px auto;
+    padding: 30px;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    min-height: 400px;
+}
+
+.container h2 {
+    text-align: center;
+    color: #1f8f6a;
+    margin-bottom: 20px;
+}
+
+/* Pharmacy Placeholder */
+.container p {
+    text-align: center;
+    color: #777;
+}
+
+/* Popup Overlay */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+}
+
+/* Popup Titles */
+.popup h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #1f8f6a;
+}
+
+/* Inputs */
+.popup input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.popup input:focus {
+    outline: none;
+    border-color: #1f8f6a;
+}
+
+/* Buttons inside popups */
+.popup button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 6px;
+    background: #1f8f6a;
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.popup button:hover {
+    background: #166d51;
+}
+
+/* Close Button */
+.popup button:last-child {
+    background: #ddd;
+    color: #333;
+}
+
+.popup button:last-child:hover {
+    background: #bbb;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        margin: 80px 15px;
+        padding: 20px;
+    }
+
+    .popup {
+        width: 90%;
+    }
+}

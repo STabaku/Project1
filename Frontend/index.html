@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pharmacy Emergency</title>
+    <style>
+        body { font-family: Arial; }
+        .top-right { position: absolute; top: 10px; right: 10px; }
+        .container { margin: 50px; border: 1px solid #ccc; padding: 20px; height: 400px; }
+        .popup { display: none; position: fixed; top: 30%; left: 40%; background: #f0f0f0; padding: 20px; border: 1px solid #333; }
+    </style>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="top-right">
+        <button onclick="showLogin()">Login</button>
+        <button onclick="showSignup()">Signup</button>
+    </div>
+
+    <div class="container">
+        <!-- Pharmacies will go here -->
+        <h2>Pharmacies (Empty for now)</h2>
+    </div>
+
+    <div id="loginPopup" class="popup">
+        <h3>Login</h3>
+        <input id="loginEmail" placeholder="Email or Number"><br><br>
+        <button onclick="login()">Send OTP</button>
+        <input id="loginOTP" placeholder="Enter OTP"><br><br>
+        <button onclick="verifyLogin()">Verify OTP</button>
+        <button onclick="closePopup('loginPopup')">Close</button>
+    </div>
+
+    <div id="signupPopup" class="popup">
+        <h3>Signup</h3>
+        <input id="signupName" placeholder="Name"><br>
+        <input id="signupLocation" placeholder="Location"><br>
+        <input id="signupNumber" placeholder="Number"><br>
+        <input id="signupGender" placeholder="Gender"><br>
+        <input id="signupAge" placeholder="Age"><br>
+        <input id="signupEmail" placeholder="Email"><br><br>
+        <button onclick="signup()">Register & Send OTP</button>
+        <input id="signupOTP" placeholder="Enter OTP"><br><br>
+        <button onclick="verifySignup()">Verify OTP</button>
+        <button onclick="closePopup('signupPopup')">Close</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
