@@ -1,50 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Pharmacy Emergency</title>
-    <style>
-        body { font-family: Arial; }
-        .top-right { position: absolute; top: 10px; right: 10px; }
-        .container { margin: 50px; border: 1px solid #ccc; padding: 20px; height: 400px; }
-        .popup { display: none; position: fixed; top: 30%; left: 40%; background: #f0f0f0; padding: 20px; border: 1px solid #333; }
-    </style>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>24/7 Emergency Pharmacy</title>
 
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- CSS External -->
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="top-right">
-        <button onclick="showLogin()">Login</button>
-        <button onclick="showSignup()">Signup</button>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <!-- LOGO -->
+    <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+    </a>
+
+    <!-- MENU -->
+    <div class="d-flex align-items-center">
+      <a class="nav-link text-white" href="#">Home</a>
+      <a class="nav-link text-white" href="request.html">Request Medicine</a>
+      <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
+      <a class="nav-link text-white" href="login.html">Login</a>
     </div>
 
-    <div class="container">
-        <!-- Pharmacies will go here -->
-        <h2>Pharmacies (Empty for now)</h2>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="container">
+    <div class="row align-items-center">
+
+      <!-- TEXT -->
+      <div class="col-md-6">
+        <h1>Emergency? Find the nearest pharmacy in minutes.</h1>
+        <p>Emergency system for urgent medicine requests – available 24/7</p>
+<button class="btn btn-success" onclick="window.location.href='request.html'">
+  Request Medicine Now
+</button>
+      </div>
+
+      <!-- ICON -->
+      <div class="col-md-6 text-center">
+        <i class="fa-solid fa-prescription-bottle-medical hero-icon"></i>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container mt-5">
+
+  <div class="row">
+
+    <!-- FORM -->
+    <div class="col-md-5">
+      <div class="card p-4">
+        <h4><i class="fa-solid fa-notes-medical me-2"></i>Send Emergency Request</h4>
+
+        <label>Medicine Name</label>
+        <input class="form-control" placeholder="e.g. Paracetamol">
+
+        <label class="mt-2">Quantity</label>
+        <input class="form-control" type="number" placeholder="e.g. 2">
+
+        <label class="mt-2">Address</label>
+        <input class="form-control" placeholder="Street, City">
+
+        <button class="btn btn-success w-100 mt-3">
+          <i class="fa-solid fa-paper-plane me-2"></i>Send Request
+        </button>
+      </div>
     </div>
 
-    <div id="loginPopup" class="popup">
-        <h3>Login</h3>
-        <input id="loginEmail" placeholder="Email or Number"><br><br>
-        <button onclick="login()">Send OTP</button>
-        <input id="loginOTP" placeholder="Enter OTP"><br><br>
-        <button onclick="verifyLogin()">Verify OTP</button>
-        <button onclick="closePopup('loginPopup')">Close</button>
+    <!-- PHARMACIES + MAP -->
+    <div class="col-md-7">
+      <div class="card p-4">
+        <h4><i class="fa-solid fa-location-dot me-2"></i>Suggested Pharmacies</h4>
+
+        <div class="pharmacy-item">
+          <strong>Pharmacy Vita</strong><br>
+          Distance: 1.2 km | Time: 10 min | ⭐⭐⭐⭐☆
+        </div>
+
+        <div class="pharmacy-item">
+          <strong>City Pharmacy</strong><br>
+          Distance: 2.0 km | Time: 15 min | ⭐⭐⭐⭐⭐
+        </div>
+
+        <!-- GOOGLE MAP REAL -->
+        <div class="map-box mt-3">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.085114604253!2d21.1516!3d42.6629!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x13549f6b3cfc0d77%3A0xfacb21a89b07b8f6!2sPharmacy!5e0!3m2!1sen!2s!4v1700000000000"
+            width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy">
+          </iframe>
+        </div>
+
+      </div>
     </div>
 
-    <div id="signupPopup" class="popup">
-        <h3>Signup</h3>
-        <input id="signupName" placeholder="Name"><br>
-        <input id="signupLocation" placeholder="Location"><br>
-        <input id="signupNumber" placeholder="Number"><br>
-        <input id="signupGender" placeholder="Gender"><br>
-        <input id="signupAge" placeholder="Age"><br>
-        <input id="signupEmail" placeholder="Email"><br><br>
-        <button onclick="signup()">Register & Send OTP</button>
-        <input id="signupOTP" placeholder="Enter OTP"><br><br>
-        <button onclick="verifySignup()">Verify OTP</button>
-        <button onclick="closePopup('signupPopup')">Close</button>
+  </div>
+
+  <!-- STATUS -->
+  <div class="mt-5">
+    <h4><i class="fa-solid fa-truck-medical me-2"></i>Order Status</h4>
+
+    <div class="status-box mt-3">
+      <span class="status-step active">✔ Request Sent</span>
+      <span class="status-step">⏳ Stock Verification</span>
+      <span class="status-step">📦 Preparing</span>
+      <span class="status-step">🚚 On Delivery</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer mt-5">
+  <div class="container">
+    <div class="row">
+
+      <!-- INFO -->
+      <div class="col-md-4">
+        <h5>24/7 Emergency Pharmacy</h5>
+        <p>Emergency platform for pharmacy coordination and urgent medicine delivery.</p>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="col-md-4">
+        <h5>Contact</h5>
+        <p><i class="fa-solid fa-location-dot me-2"></i>Tirana, Albania</p>
+        <p><i class="fa-solid fa-phone me-2"></i>+383 44 123 456</p>
+        <p><i class="fa-solid fa-envelope me-2"></i>support@emergencypharmacy.com</p>
+      </div>
+
+      <!-- SOCIAL -->
+      <div class="col-md-4">
+        <h5>Follow Us</h5>
+        <a href="#"><i class="fa-brands fa-facebook fa-2x me-3"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram fa-2x me-3"></i></a>
+        <a href="#"><i class="fa-brands fa-linkedin fa-2x"></i></a>
+      </div>
+
     </div>
 
-    <script src="script.js"></script>
+    <hr>
+    <p class="text-center mb-0">© 2026 24/7 Emergency Pharmacy – All Rights Reserved</p>
+  </div>
+</footer>
+
 </body>
 </html>

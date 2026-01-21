@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile - Emergency Pharmacy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --blue1:#0a58ca;
+  --blue2:#1e90ff;
+  --blue3:#4facfe;
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --text:#0b1b2b;
+  --muted:#6c7a89;
+  --success:#28a745;
+  --warning:#f5b301;
+  --danger:#dc3545;
+  --shadow: 0 10px 30px rgba(0,0,0,0.12);
+  --radius: 16px;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: "Segoe UI", system-ui, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* NAVBAR */
+.navbar{
+  background: linear-gradient(90deg, var(--blue1), var(--blue2));
+  padding: 18px 0;
+}
+
+.navbar .wrap{
+  width:min(1200px, 92%);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  font-weight:800;
+  font-size:20px;
+}
+
+.nav-links a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:28px;
+  font-size:16px;
+}
+
+/* MAIN */
+.main{
+  width:min(1200px, 92%);
+  margin:40px auto 60px;
+  display:grid;
+  grid-template-columns: 300px 1fr;
+  gap:30px;
+}
+
+/* SIDEBAR */
+.profile-sidebar{
+  background:white;
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:24px;
+}
+
+.profile-avatar{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.profile-avatar img{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  border:4px solid #1e90ff;
+}
+
+.profile-avatar h3{
+  margin:12px 0 4px;
+  font-size:20px;
+}
+
+.profile-avatar small{
+  color:var(--muted);
+}
+
+.menu a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 14px;
+  border-radius:12px;
+  text-decoration:none;
+  color:var(--text);
+  margin-bottom:8px;
+  transition:0.25s;
+  font-weight:600;
+}
+
+.menu a i{
+  color: var(--blue2);
+}
+
+.menu a.active,
+.menu a:hover{
+  background: linear-gradient(135deg, #1e90ff, #4facfe);
+  color:white;
+}
+
+.menu a.active i,
+.menu a:hover i{
+  color:white;
+}
+
+/* CONTENT */
+.content{
+  background:white;
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:30px;
+}
+
+.section{
+  margin-bottom:40px;
+}
+
+.section h2{
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:20px;
+}
+
+/* INFO GRID */
+.info-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap:20px;
+}
+
+.info-box{
+  background:#f8f9fa;
+  padding:16px;
+  border-radius:12px;
+}
+
+.info-box label{
+  font-size:13px;
+  color:var(--muted);
+  display:block;
+  margin-bottom:6px;
+}
+
+.info-box span{
+  font-size:16px;
+  font-weight:600;
+}
+
+/* ORDERS */
+.orders{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.orders th,
+.orders td{
+  padding:14px 12px;
+  text-align:left;
+  border-bottom:1px solid #e9ecef;
+}
+
+.orders th{
+  background:#f8f9fa;
+  font-weight:700;
+}
+
+.status{
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.pending{ background: rgba(255,193,7,0.15); color:#856404; }
+.delivered{ background: rgba(40,167,69,0.15); color:#1f7a35; }
+.cancelled{ background: rgba(220,53,69,0.15); color:#a11d2d; }
+
+/* ADDRESS */
+.address{
+  background:#f8f9fa;
+  padding:16px;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+/* BUTTONS */
+.btn{
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:#28a745;
+  color:white;
+}
+
+.btn-danger{
+  background:#dc3545;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="wrap">
+    <div class="logo">
+      <i class="fa-solid fa-plus"></i> Emergency Pharmacy
+    </div>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="pharmacies.html">Pharmacies</a>
+      <a href="orders.html">Orders</a>
+      <a href="profile.html">My Profile</a>
+    </nav>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR PROFILE -->
+  <aside class="profile-sidebar">
+
+    <div class="profile-avatar">
+      <img src="assets/avatar.jpg" alt="User">
+      <h3>John Doe</h3>
+      <small>john.doe@email.com</small>
+    </div>
+
+    <div class="menu">
+      <a class="active" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
+      <a href="#"><i class="fa-solid fa-bag-shopping"></i> My Orders</a>
+      <a href="#"><i class="fa-solid fa-location-dot"></i> Addresses</a>
+      <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+      <a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    </div>
+
+  </aside>
+
+  <!-- CONTENT -->
+  <section class="content">
+
+    <!-- PERSONAL INFO -->
+    <div class="section">
+      <h2>Personal Information</h2>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <label>Full Name</label>
+          <span>John Doe</span>
+        </div>
+
+        <div class="info-box">
+          <label>Email</label>
+          <span>john.doe@email.com</span>
+        </div>
+
+        <div class="info-box">
+          <label>Phone</label>
+          <span>+355 69 123 4567</span>
+        </div>
+
+        <div class="info-box">
+          <label>Member Since</label>
+          <span>January 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div class="section">
+      <h2>My Orders</h2>
+
+      <table class="orders">
+        <thead>
+          <tr>
+            <th>#Order</th>
+            <th>Pharmacy</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>#1023</td>
+            <td>City Pharmacy</td>
+            <td>12 Jan 2026</td>
+            <td>$24.50</td>
+            <td><span class="status delivered">Delivered</span></td>
+          </tr>
+
+          <tr>
+            <td>#1018</td>
+            <td>Green Cross Pharmacy</td>
+            <td>09 Jan 2026</td>
+            <td>$12.99</td>
+            <td><span class="status pending">Pending</span></td>
+          </tr>
+
+          <tr>
+            <td>#1012</td>
+            <td>Pharmacy Vita</td>
+            <td>05 Jan 2026</td>
+            <td>$31.20</td>
+            <td><span class="status cancelled">Cancelled</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="section">
+      <h2>Delivery Addresses</h2>
+
+      <div class="address">
+        <strong>Home</strong><br>
+        Rruga e Kavajës, Tirana<br>
+        Phone: +355 69 123 4567
+      </div>
+
+      <div class="address">
+        <strong>Office</strong><br>
+        Bulevardi Zogu I, Tirana<br>
+        Phone: +355 69 987 6543
+      </div>
+
+      <button class="btn btn-primary">Add New Address</button>
+    </div>
+
+  </section>
+
+</div>
+
+</body>
+</html>

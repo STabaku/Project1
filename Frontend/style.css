@@ -1,138 +1,212 @@
-/* Reset & Base */
-* {
+body {
+    background: #eef3f8;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* NAVBAR */
+.navbar {
+    background: linear-gradient(90deg, #0a58ca, #1e90ff);
+    padding: 18px 0;
+}
+
+/* CONTAINER INSIDE NAVBAR */
+.navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* LOGO */
+.navbar-brand {
+    display: flex;
+    align-items: center;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: "Segoe UI", Arial, sans-serif;
 }
 
-body {
-    background: #f5f9f7;
-    color: #333;
-    min-height: 100vh;
+.navbar-brand img {
+    width: 220px;        
+    height: auto;
+    display: block;
+    transform: translateY(2px);   
 }
-
-/* Top Right Auth Buttons */
-.top-right {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+/* Navbar */
+.navbar-menu {
     display: flex;
-    gap: 10px;
-    z-index: 10;
+    align-items: center;
+    gap: 28px;           
 }
 
-.top-right button {
-    padding: 8px 16px;
-    border: none;
-    background: #1f8f6a;
-    color: #fff;
+/* NAV LINKS */
+.nav-link {
+    font-weight: 600;
+    color: white;
+    padding: 8px 14px;
     border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.3s ease;
+    font-size: 18px;
+    transition:
+        color 0.3s ease,
+        transform 0.3s ease,
+        background-color 0.3s ease;
 }
 
-.top-right button:hover {
-    background: #166d51;
+/* HOVER */
+.nav-link:hover {
+    color: #cfe8ff !important;
+    background-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px) scale(1.05);
 }
 
-/* Main Container */
-.container {
-    max-width: 1100px;
-    margin: 100px auto;
-    padding: 30px;
-    border-radius: 10px;
-    background: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    min-height: 400px;
+/* HERO */
+.hero {
+    background: linear-gradient(135deg, #1e90ff, #4facfe);
+    color: white;
+    padding: 90px 40px;
 }
 
-.container h2 {
-    text-align: center;
-    color: #1f8f6a;
-    margin-bottom: 20px;
+.hero h1 {
+    font-weight: bold;
+    font-size: 42px;
 }
 
-/* Pharmacy Placeholder */
-.container p {
-    text-align: center;
-    color: #777;
+.hero p {
+    font-size: 18px;
+    margin-top: 15px;
 }
 
-/* Popup Overlay */
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 320px;
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-    z-index: 100;
+.hero-icon {
+    font-size: 200px;
+    opacity: 0.25;
 }
 
-/* Popup Titles */
-.popup h3 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #1f8f6a;
+/* CARDS */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
-/* Inputs */
-.popup input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 14px;
+/* PHARMACY */
+.pharmacy-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
 }
 
-.popup input:focus {
-    outline: none;
-    border-color: #1f8f6a;
+/* MAP */
+.map-box iframe {
+    border-radius: 15px;
 }
 
-/* Buttons inside popups */
-.popup button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: none;
-    border-radius: 6px;
-    background: #1f8f6a;
-    color: #fff;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.3s ease;
+/* STATUS */
+.status-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
 }
 
-.popup button:hover {
-    background: #166d51;
+.status-step {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 30px;
+    background: #e9ecef;
 }
 
-/* Close Button */
-.popup button:last-child {
-    background: #ddd;
-    color: #333;
+.status-step.active {
+    background: #28a745;
+    color: white;
 }
 
-.popup button:last-child:hover {
-    background: #bbb;
+/* FOOTER MODERN */
+.footer {
+  background: linear-gradient(135deg, #0a58ca, #084298);
+  color: #ffffff;
+  padding: 60px 0 30px;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .container {
-        margin: 80px 15px;
-        padding: 20px;
-    }
+/* efekt dekorativ sipër */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+}
 
-    .popup {
-        width: 90%;
-    }
+/* TITULL SEKSIONI */
+.footer h5 {
+  margin-bottom: 18px;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  position: relative;
+}
+
+/* vijë poshtë titullit */
+.footer h5::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 3px;
+  background: #20c997;
+  margin-top: 8px;
+  border-radius: 3px;
+}
+
+/* LINKET */
+.footer a {
+  color: #e3ecff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.footer a:hover {
+  color: #20c997;
+  transform: translateX(5px);
+}
+
+/* TEKST NORMAL */
+.footer p {
+  color: #dbe7ff;
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+/* SOCIAL ICONS */
+.footer .social a {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  margin-right: 10px;
+  transition: 0.3s;
+  font-size: 16px;
+}
+
+.footer .social a:hover {
+  background: #20c997;
+  color: white;
+  transform: translateY(-5px);
+}
+
+/* HR */
+.footer hr {
+  border-color: rgba(255,255,255,0.2);
+  margin: 30px 0 20px;
+}
+
+/* COPYRIGHT */
+.footer .copyright {
+  text-align: center;
+  font-size: 14px;
+  color: #cfe0ff;
 }

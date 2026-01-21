@@ -1,0 +1,227 @@
+:root{
+  --blue1:#0a58ca;
+  --blue2:#1e90ff;
+  --blue3:#4facfe;
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --text:#0b1b2b;
+  --muted:#6c7a89;
+  --success:#28a745;
+  --danger:#dc3545;
+  --shadow: 0 10px 25px rgba(0,0,0,0.12);
+  --radius: 16px;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* NAVBAR */
+.navbar-auth{
+  background: linear-gradient(90deg, var(--blue1), var(--blue2));
+  padding: 18px 0;
+}
+.navbar-auth .wrap{
+  width:min(1100px, 92%);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo-img{
+  height:70px;
+  width:auto;
+  display:block;
+}
+
+.nav-links a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:28px;
+  font-size:16px;
+  opacity:0.95;
+}
+.nav-links a:hover{ opacity:1; text-decoration:underline; }
+
+/* HERO – TITULL LART, FORMA POSHTË */
+.auth-hero{
+  background: linear-gradient(135deg, var(--blue2), var(--blue3));
+  border-radius: 0 0 40px 40px;
+  padding: 70px 0 90px;
+  color:#fff;
+  min-height: calc(100vh - 110px);
+}
+
+.auth-hero .wrap{
+  width:min(1100px, 92%);
+  margin:0 auto;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* TITULLI */
+.auth-hero h1{
+  font-size:42px;
+  margin:0 0 10px;
+  font-weight:800;
+}
+
+.auth-hero p{
+  margin:0;
+  font-size:18px;
+  opacity:0.95;
+  max-width:520px;
+  margin-bottom:40px;
+}
+
+/* KARTA E FORMËS */
+.card-auth{
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 32px 34px 38px;
+  color: var(--text);
+  width:100%;
+  max-width: 480px;
+  text-align:left;
+}
+
+.card-auth h2{
+  margin:0 0 18px;
+  font-size:22px;
+  font-weight:800;
+  text-align:center;
+}
+
+/* FIELDS */
+.field{
+  margin-top:14px;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  color: var(--muted);
+  margin-bottom:6px;
+}
+
+input{
+  width:100%;
+  border:1px solid #d9e2ef;
+  border-radius: 12px;
+  padding: 13px 14px;
+  outline:none;
+  background:#fff;
+  font-size:16px;
+}
+
+input:focus{
+  border-color: rgba(30,144,255,.6);
+  box-shadow: 0 0 0 4px rgba(30,144,255,.15);
+}
+
+/* ROW */
+.row{
+  display:flex;
+  gap: 10px;
+}
+.row > * { flex:1; }
+
+/* BUTONAT */
+.btn{
+  width:100%;
+  border:none;
+  border-radius: 12px;
+  padding: 14px;
+  font-weight:700;
+  cursor:pointer;
+  margin-top: 16px;
+  font-size:16px;
+}
+
+.btn-primary{
+  background: var(--success);
+  color:#fff;
+}
+.btn-primary:hover{ filter:brightness(0.95); }
+
+.btn-secondary{
+  background:#e9ecef;
+  color:#0b1b2b;
+}
+.btn-secondary:hover{ filter:brightness(0.98); }
+
+/* HELP */
+.help{
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+  text-align:center;
+}
+.help a{
+  color: var(--blue1);
+  text-decoration:none;
+  font-weight:700;
+}
+.help a:hover{ text-decoration:underline; }
+
+/* NOTICES */
+.notice{
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  display:none;
+}
+
+.notice.ok{
+  display:block;
+  background: rgba(40,167,69,0.12);
+  color: #1f7a35;
+  border: 1px solid rgba(40,167,69,0.25);
+}
+
+.notice.err{
+  display:block;
+  background: rgba(220,53,69,0.12);
+  color: #a11d2d;
+  border: 1px solid rgba(220,53,69,0.25);
+}
+
+/* OTP GRID */
+.otp-grid{
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.otp-grid input{
+  text-align:center;
+  font-size:22px;
+  font-weight:800;
+  padding: 14px 0;
+  border-radius: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px){
+  .auth-hero{
+    padding: 60px 0 70px;
+  }
+
+  .auth-hero h1{
+    font-size:32px;
+  }
+
+  .card-auth{
+    padding: 28px 26px 32px;
+  }
+}

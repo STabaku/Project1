@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - 24/7 Emergency Pharmacy</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+<header class="navbar-auth">
+  <div class="wrap">
+    <a href="index.html" aria-label="Home">
+      <img src="logo.png" class="logo-img" alt="24/7 Emergency Pharmacy Logo">
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="register.html">Register</a>
+      <a href="#">Help</a>
+    </nav>
+  </div>
+</header>
+
+<section class="auth-hero">
+  <div class="wrap">
+    <div>
+      <h1>Login with OTP</h1>
+      <p>Enter your email or phone number, receive a code and verify to log in.</p>
+    </div>
+
+    <div class="card-auth">
+      <h2>Login</h2>
+
+      <!-- STEP 1: IDENTIFIER -->
+      <div id="step1">
+        <div class="field">
+          <label>Email or Phone</label>
+          <input id="identifier" placeholder="e.g. email@domain.com or +38344123456" autocomplete="username">
+        </div>
+
+        <button class="btn btn-primary" id="btnSendOtp">Send OTP</button>
+
+        <div class="notice ok" id="ok1"></div>
+        <div class="notice err" id="err1"></div>
+
+        <div class="help">
+          Don’t have an account? <a href="register.html">Register</a>
+        </div>
+      </div>
+
+      <!-- STEP 2: OTP -->
+      <div id="step2" style="display:none;">
+        <div class="help">
+          OTP sent to: <strong id="maskTarget"></strong>
+        </div>
+
+        <div class="field">
+          <label>OTP Code (6 digits)</label>
+          <div class="otp-grid" id="otpGrid">
+            <input inputmode="numeric" maxlength="1">
+            <input inputmode="numeric" maxlength="1">
+            <input inputmode="numeric" maxlength="1">
+            <input inputmode="numeric" maxlength="1">
+            <input inputmode="numeric" maxlength="1">
+            <input inputmode="numeric" maxlength="1">
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="btnVerifyOtp">Verify & Login</button>
+        <button class="btn btn-secondary" id="btnResendOtp">Resend OTP</button>
+
+        <div class="notice ok" id="ok2"></div>
+        <div class="notice err" id="err2"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+/*
+  REAL BACKEND ENDPOINTS (future):
+  - POST /api/send-otp     { identifier, purpose: "login" }
+  - POST /api/verify-otp  { identifier, otp, purpose: "login" }
+*/
+
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const identifierEl = document.getElementById("identifier");
+const maskTarget = document.getElementById("maskTarget");
+
+const ok1 = document.getElementById("ok1");
+const err1 = document.getElementById("err1");
+const ok2 = document.getElementById("ok2");
+const err2 = document.getElementById("err2");
+
+function show(el, msg){
+  el.textContent = msg;
+  el.style.display = "block";
+}
+function hide(el){
+  el.textContent = "";
+  el.style.display = "none";
+}
+
+function maskIdentifier(v){
+  v = v.trim();
+  if (v.includes("@")){
+    const [u, d] = v.split("@");
+    const uMasked = u.length <= 2 ? u[0] + "*" : u.slice(0,2) + "***";
+    return `${uMasked}@${d}`;
+  }
+  const last = v.slice(-3);
+  return v.slice(0, Math.max(0, v.length-3)).replace(/\d/g,"*") + last;
+}
+
+async function sendOtp(){
+  hide(ok1); hide(err1); hide(ok2); hide(err2);
+
+  const identifier = identifierEl.value.trim();
+  if (!identifier){
+    show(err1, "Please enter your email or phone number.");
+    return;
+  }
+
+  // DEMO MODE (replace with real backend later)
+  show(ok1, "OTP sent successfully. Check your email/SMS (demo).");
+  maskTarget.textContent = maskIdentifier(identifier);
+
+  step1.style.display = "none";
+  step2.style.display = "block";
+
+  const inputs = [...document.querySelectorAll("#otpGrid input")];
+  inputs[0].focus();
+}
+
+function getOtpValue(){
+  const inputs = [...document.querySelectorAll("#otpGrid input")];
+  return inputs.map(i => i.value.replace(/\D/g,"")).join("");
+}
+
+async function verifyOtp(){
+  hide(ok2); hide(err2);
+
+  const otp = getOtpValue();
+  if (otp.length !== 6){
+    show(err2, "Please enter the 6-digit OTP code.");
+    return;
+  }
+
+  // DEMO MODE: valid OTP = 123456
+  if (otp !== "123456"){
+    show(err2, "Invalid OTP (demo). Try: 123456");
+    return;
+  }
+
+  show(ok2, "Login successful. Redirecting...");
+  setTimeout(() => {
+    window.location.href = "index.html";
+  }, 900);
+}
+
+// OTP input UX
+document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
+  inp.addEventListener("input", () => {
+    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
+    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
+  });
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" && !inp.value && idx > 0) arr[idx-1].focus();
+  });
+});
+
+document.getElementById("btnSendOtp").addEventListener("click", sendOtp);
+document.getElementById("btnResendOtp").addEventListener("click", sendOtp);
+document.getElementById("btnVerifyOtp").addEventListener("click", verifyOtp);
+</script>
+
+</body>
+</html>

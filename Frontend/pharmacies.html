@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nearby Pharmacies - Emergency Pharmacy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+
+
+<style>
+:root{
+  --blue1:#0a58ca;
+  --blue2:#1e90ff;
+  --blue3:#4facfe;
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --text:#0b1b2b;
+  --muted:#6c7a89;
+  --success:#28a745;
+  --warning:#f5b301;
+  --shadow: 0 10px 30px rgba(0,0,0,0.12);
+  --radius: 16px;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: "Segoe UI", system-ui, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* NAVBAR */
+.navbar{
+  background: linear-gradient(90deg, var(--blue1), var(--blue2));
+  padding: 18px 0;
+}
+
+.navbar .wrap{
+  width:min(1200px, 92%);
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  font-weight:800;
+  font-size:20px;
+}
+
+.nav-links a{
+  color:#fff;
+  text-decoration:none;
+  margin-left:28px;
+  font-size:16px;
+}
+
+.btn-request{
+  background:#28a745;
+  color:white;
+  border:none;
+  padding:10px 18px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* HERO */
+.hero{
+  background: linear-gradient(135deg, var(--blue2), var(--blue3));
+  padding: 70px 0 90px;
+  color:white;
+  text-align:center;
+  border-radius: 0 0 50px 50px;
+}
+
+.hero h1{
+  font-size:46px;
+  margin:0 0 10px;
+  font-weight:800;
+}
+
+.hero p{
+  font-size:18px;
+  opacity:0.95;
+  margin-bottom:30px;
+}
+
+.search-box{
+  background:white;
+  max-width:820px;
+  margin:0 auto;
+  padding:18px;
+  border-radius:18px;
+  display:flex;
+  gap:12px;
+  box-shadow: var(--shadow);
+}
+
+.search-box input{
+  flex:1;
+  border:none;
+  font-size:16px;
+  padding:12px;
+  outline:none;
+}
+
+.search-box button{
+  background:#28a745;
+  color:white;
+  border:none;
+  padding:12px 22px;
+  border-radius:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* MAIN */
+.main{
+  width:min(1200px, 92%);
+  margin:-40px auto 60px;
+}
+
+.main h2{
+  font-size:30px;
+  font-weight:800;
+  margin-bottom:25px;
+}
+
+/* GRID PHARMACIES */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:26px;
+}
+
+/* PHARMACY CARD */
+.pharmacy-card{
+  background:white;
+  border-radius:16px;
+  box-shadow: var(--shadow);
+  padding:22px;
+  transition:0.25s;
+  position:relative;
+}
+
+.pharmacy-card:hover{
+  transform: translateY(-6px);
+}
+
+/* STATUS BADGE */
+.status{
+  position:absolute;
+  top:16px;
+  right:16px;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.open{
+  background: rgba(40,167,69,0.15);
+  color:#1f7a35;
+}
+
+.closed{
+  background: rgba(220,53,69,0.15);
+  color:#a11d2d;
+}
+
+/* ICON */
+.pharmacy-icon{
+  width:70px;
+  height:70px;
+  background: linear-gradient(135deg, #1e90ff, #4facfe);
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:32px;
+  margin-bottom:14px;
+}
+
+/* INFO */
+.pharmacy-card h3{
+  margin:8px 0 4px;
+  font-size:20px;
+}
+
+.pharmacy-card small{
+  color:var(--muted);
+  display:block;
+  margin-bottom:8px;
+}
+
+/* STARS */
+.stars{
+  color: var(--warning);
+  font-size:14px;
+  margin-bottom:8px;
+}
+
+/* DETAILS */
+.details{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+
+.details i{
+  color: var(--blue2);
+  margin-right:6px;
+}
+
+/* BUTTON */
+.pharmacy-card button{
+  background:#28a745;
+  color:white;
+  border:none;
+  padding:12px;
+  width:100%;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <!-- LOGO -->
+    <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+    </a>
+
+    <!-- MENU -->
+    <div class="d-flex align-items-center">
+      <a class="nav-link text-white" href="#">Home</a>
+      <a class="nav-link text-white" href="request.html">Request Medicine</a>
+      <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
+      <a class="nav-link text-white" href="login.html">Login</a>
+    </div>
+
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Find Nearby Pharmacies</h1>
+  <p>Browse trusted pharmacies near you and order medications easily.</p>
+
+  <div class="search-box">
+    <input placeholder="Search pharmacy by name or location...">
+    <button>Search</button>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main">
+  <h2>Available Pharmacies Near You</h2>
+
+  <div class="grid">
+
+    <!-- PHARMACY 1 -->
+    <div class="pharmacy-card">
+      <div class="status open">Open</div>
+      <div class="pharmacy-icon"><i class="fa-solid fa-clinic-medical"></i></div>
+
+      <h3>City Pharmacy</h3>
+      <small>Main Street, Tirana</small>
+
+      <div class="stars">★★★★★ (320)</div>
+
+      <div class="details">
+        <p><i class="fa-solid fa-location-dot"></i> 1.2 km away</p>
+        <p><i class="fa-solid fa-clock"></i> Delivery: 10 min</p>
+      </div>
+
+      <button onclick="window.location.href='browse.html'">View Pharmacy</button>
+    </div>
+
+    <!-- PHARMACY 2 -->
+    <div class="pharmacy-card">
+      <div class="status open">Open</div>
+      <div class="pharmacy-icon"><i class="fa-solid fa-hospital"></i></div>
+
+      <h3>Health Plus Pharmacy</h3>
+      <small>Bulevardi Zogu I</small>
+
+      <div class="stars">★★★★★ (285)</div>
+
+      <div class="details">
+        <p><i class="fa-solid fa-location-dot"></i> 2.0 km away</p>
+        <p><i class="fa-solid fa-clock"></i> Delivery: 15 min</p>
+      </div>
+
+      <button onclick="window.location.href='browse.html'">View Pharmacy</button>
+    </div>
+
+    <!-- PHARMACY 3 -->
+    <div class="pharmacy-card">
+      <div class="status closed">Closed</div>
+      <div class="pharmacy-icon"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
+
+      <h3>Pharmacy Vita</h3>
+      <small>Rruga e Durrësit</small>
+
+      <div class="stars">★★★★★ (198)</div>
+
+      <div class="details">
+        <p><i class="fa-solid fa-location-dot"></i> 2.7 km away</p>
+        <p><i class="fa-solid fa-clock"></i> Opens at 08:00</p>
+      </div>
+
+      <button onclick="window.location.href='browse.html'">View Pharmacy</button>
+    </div>
+
+    <!-- PHARMACY 4 -->
+    <div class="pharmacy-card">
+      <div class="status open">Open</div>
+      <div class="pharmacy-icon"><i class="fa-solid fa-plus-square"></i></div>
+
+      <h3>Green Cross Pharmacy</h3>
+      <small>Komuna e Parisit</small>
+
+      <div class="stars">★★★★★ (410)</div>
+
+      <div class="details">
+        <p><i class="fa-solid fa-location-dot"></i> 0.9 km away</p>
+        <p><i class="fa-solid fa-clock"></i> Delivery: 8 min</p>
+      </div>
+
+      <button onclick="window.location.href='browse.html'">View Pharmacy</button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
