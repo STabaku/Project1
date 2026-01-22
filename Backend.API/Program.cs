@@ -1,50 +1,57 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-<<<<<<< HEAD
-using PharmacyEmergencySystem.Services; 
-=======
-using PharmacyEmergencySystem.Services; // ✅ Add this
->>>>>>> 1b6a11dd1693c42b7ca7e57865e30d9a3d94c429
+using PharmacyEmergencySystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// ===============================
+// SERVICES
+// ===============================
+
+// Controllers + Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<UserService>();
 
-// Register other services
+// CORS (shumë e rëndësishme për frontend)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        p => p.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
+// Regjistro service-t e aplikacionit
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<OtpService>();
+
 builder.Services.AddSingleton<MatchingService>();
 builder.Services.AddSingleton<DeliverySimulationService>();
 builder.Services.AddSingleton<ExternalApiService>();
-<<<<<<< HEAD
-builder.Services.AddScoped<OtpService>();
-
 
 var app = builder.Build();
 
-// This is where you put the Swagger code
-=======
+// ===============================
+// MIDDLEWARE
+// ===============================
 
-var app = builder.Build();
-
-// ✅ This is where you put the Swagger code
->>>>>>> 1b6a11dd1693c42b7ca7e57865e30d9a3d94c429
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Middleware
 app.UseHttpsRedirection();
+
+// Aktivizo CORS
+app.UseCors("AllowAll");
+
 app.UseAuthorization();
 
 // Map controllers
 app.MapControllers();
 
-// Run the app
+// Run app
 app.Run();
-

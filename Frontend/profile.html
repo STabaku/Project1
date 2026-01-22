@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - Emergency Pharmacy</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- CSS External -->
+<link rel="stylesheet" href="style.css">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -233,20 +240,24 @@ body{
 <body>
 
 <!-- NAVBAR -->
-<header class="navbar">
-  <div class="wrap">
-    <div class="logo">
-      <i class="fa-solid fa-plus"></i> Emergency Pharmacy
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container d-flex justify-content-between align-items-center">
+
+    <!-- LOGO -->
+    <a class="navbar-brand" href="#">
+        <img src="assets/logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+    </a>
+
+    <!-- MENU -->
+    <div class="d-flex align-items-center">
+      <a class="nav-link text-white" href="home">Home</a>
+      <a class="nav-link text-white" href="request.html">Request Medicine</a>
+      <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
+      <a class="nav-link text-white" href="login.html">Login</a>
     </div>
 
-    <nav class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="pharmacies.html">Pharmacies</a>
-      <a href="orders.html">Orders</a>
-      <a href="profile.html">My Profile</a>
-    </nav>
   </div>
-</header>
+</nav>
 
 <!-- MAIN -->
 <div class="main">
@@ -365,6 +376,6 @@ body{
   </section>
 
 </div>
-
+<script src="script.js"></script>
 </body>
 </html>

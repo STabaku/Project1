@@ -11,7 +11,7 @@
 <header class="navbar-auth">
   <div class="wrap">
     <a href="index.html" aria-label="Home">
-      <img src="logo.png" class="logo-img" alt="24/7 Emergency Pharmacy Logo">
+      <img src="assets/logo.png" class="logo-img" alt="24/7 Emergency Pharmacy Logo">
     </a>
     <nav class="nav-links">
       <a href="index.html">Home</a>
@@ -97,12 +97,6 @@
 </section>
 
 <script>
-/*
-  FUTURE BACKEND ENDPOINTS:
-  - POST /api/send-otp     { identifier, purpose: "register" }
-  - POST /api/verify-otp  { identifier, otp, purpose: "register", firstName, lastName, password }
-*/
-
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 
@@ -138,7 +132,7 @@ function maskIdentifier(v){
 }
 
 async function sendOtp(){
-  hide(ok1); hide(err1); hide(ok2); hide(err2);
+  hide(ok1); hide(err1);
 
   const firstName = firstNameEl.value.trim();
   const lastName = lastNameEl.value.trim();
@@ -158,21 +152,62 @@ async function sendOtp(){
     return;
   }
 
-  // DEMO MODE (replace with real backend later)
-  show(ok1, "OTP sent successfully. Check your email/SMS (demo).");
-  maskTarget.textContent = maskIdentifier(identifier);
+  const isEmail = identifier.includes("@");
 
-  step1.style.display = "none";
-  step2.style.display = "block";
+  const payload = {
+    name: firstName + " " + lastName,
+    location: "Unknown",
+    number: isEmail ? null : identifier,
+    email: isEmail ? identifier : null,
+    gender: "Unknown",
+    age: 0,
+    role: "User"
+  };
 
-  const inputs = [...document.querySelectorAll("#otpGrid input")];
-  inputs[0].focus();
+  try {
+    const res = await fetch("https://localhost:5183/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      show(err1, text);
+      return;
+    }
+
+    show(ok1, "OTP sent successfully.");
+    maskTarget.textContent = maskIdentifier(identifier);
+
+    step1.style.display = "none";
+    step2.style.display = "block";
+
+    const inputs = [...document.querySelectorAll("#otpGrid input")];
+    inputs[0].focus();
+
+  } catch (e) {
+    show(err1, "Cannot connect to server. Check backend URL.");
+  }
 }
-
 function getOtpValue(){
   const inputs = [...document.querySelectorAll("#otpGrid input")];
   return inputs.map(i => i.value.replace(/\D/g,"")).join("");
 }
+
+document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
+  inp.addEventListener("input", () => {
+    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
+    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
+  });
+
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" && !inp.value && idx > 0) {
+      arr[idx-1].focus();
+    }
+  });
+});
 
 async function verifyOtp(){
   hide(ok2); hide(err2);
@@ -183,33 +218,42 @@ async function verifyOtp(){
     return;
   }
 
-  // DEMO MODE: valid OTP = 123456
-  if (otp !== "123456"){
-    show(err2, "Invalid OTP (demo). Try: 123456");
-    return;
+  const identifier = identifierEl.value.trim();
+
+  const payload = {
+    emailOrNumber: identifier,
+    otp: otp
+  };
+
+  try {
+    const res = await fetch("https://localhost:5183/api/auth/verify-signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      show(err2, text);
+      return;
+    }
+
+    show(ok2, "Account verified successfully. Redirecting to login...");
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
+
+  } catch (e) {
+    show(err2, "Server error. Try again later.");
   }
-
-  show(ok2, "Account created successfully. Redirecting to login...");
-  setTimeout(() => {
-    window.location.href = "login.html";
-  }, 900);
 }
-
-// OTP input UX
-document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
-    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
-  });
-  inp.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && !inp.value && idx > 0) arr[idx-1].focus();
-  });
-});
-
 document.getElementById("btnSendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnResendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnVerifyOtp").addEventListener("click", verifyOtp);
 </script>
+
 
 </body>
 </html>

@@ -1,61 +1,23 @@
-const apiUrl = "http://localhost:5183/api/auth";
 
-function showLogin() { document.getElementById("loginPopup").style.display = "block"; }
-function showSignup() { document.getElementById("signupPopup").style.display = "block"; }
-function closePopup(id) { document.getElementById(id).style.display = "none"; }
+document.addEventListener("DOMContentLoaded", () => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
 
-async function signup() {
-const data = {
-    Name: document.getElementById("signupName").value,
-    Location: document.getElementById("signupLocation").value,
-    Number: document.getElementById("signupNumber").value,
-    Gender: document.getElementById("signupGender").value,
-    Age: parseInt(document.getElementById("signupAge").value),
-    Email: document.getElementById("signupEmail").value
-};
+  const loginLink = document.querySelector('a[href="login.html"]');
+  const registerLink = document.querySelector('a[href="register.html"]');
 
-    const res = await fetch(apiUrl + "/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-    alert(await res.text());
-}
+  if (isLoggedIn === "true") {
 
-async function verifySignup() {
-    const data = {
-        EmailOrNumber: document.getElementById("signupEmail").value,
-        OTP: document.getElementById("signupOTP").value
-    };
-    const res = await fetch(apiUrl + "/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    alert(result.message + " Role: " + result.role);
-}
+   
+    if (loginLink) loginLink.style.display = "none";
+    if (registerLink) registerLink.style.display = "none";
 
-async function login() {
-    const data = { EmailOrNumber: document.getElementById("loginEmail").value };
-    const res = await fetch(apiUrl + "/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-    alert(await res.text());
-}
+    // Add Profile
+    const nav = document.querySelector(".nav-links");
+    const profileLink = document.createElement("a");
+    profileLink.href = "profile.html";
+    profileLink.textContent = "Profile";
 
-async function verifyLogin() {
-    const data = {
-        EmailOrNumber: document.getElementById("loginEmail").value,
-        OTP: document.getElementById("loginOTP").value
-    };
-    const res = await fetch(apiUrl + "/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    });
-    const result = await res.json();
-    alert(result.message + " Role: " + result.role);
-}
+    nav.appendChild(profileLink);
+  }
+});
+

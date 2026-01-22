@@ -11,7 +11,7 @@
 <header class="navbar-auth">
   <div class="wrap">
     <a href="index.html" aria-label="Home">
-      <img src="logo.png" class="logo-img" alt="24/7 Emergency Pharmacy Logo">
+      <img src="assets/logo.png" class="logo-img" alt="24/7 Emergency Pharmacy Logo">
     </a>
     <nav class="nav-links">
       <a href="index.html">Home</a>
@@ -78,12 +78,9 @@
 </section>
 
 <script>
-/*
-  REAL BACKEND ENDPOINTS (future):
-  - POST /api/send-otp     { identifier, purpose: "login" }
-  - POST /api/verify-otp  { identifier, otp, purpose: "login" }
-*/
-
+/* ===============================
+   ELEMENT REFERENCES
+================================ */
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 const identifierEl = document.getElementById("identifier");
@@ -94,6 +91,9 @@ const err1 = document.getElementById("err1");
 const ok2 = document.getElementById("ok2");
 const err2 = document.getElementById("err2");
 
+/* ===============================
+   HELPERS
+================================ */
 function show(el, msg){
   el.textContent = msg;
   el.style.display = "block";
@@ -114,6 +114,9 @@ function maskIdentifier(v){
   return v.slice(0, Math.max(0, v.length-3)).replace(/\d/g,"*") + last;
 }
 
+/* ===============================
+   SEND OTP (LOGIN)
+================================ */
 async function sendOtp(){
   hide(ok1); hide(err1); hide(ok2); hide(err2);
 
@@ -123,22 +126,72 @@ async function sendOtp(){
     return;
   }
 
-  // DEMO MODE (replace with real backend later)
-  show(ok1, "OTP sent successfully. Check your email/SMS (demo).");
-  maskTarget.textContent = maskIdentifier(identifier);
+  const payload = {
+    emailOrNumber: identifier
+  };
 
-  step1.style.display = "none";
-  step2.style.display = "block";
+  try {
+    const res = await fetch("http://localhost:5183/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-  const inputs = [...document.querySelectorAll("#otpGrid input")];
-  inputs[0].focus();
+    const data = await res.json();
+
+    if (!res.ok) {
+      show(err1, data);
+      return;
+    }
+
+    show(ok1, "OTP sent successfully.");
+    maskTarget.textContent = maskIdentifier(identifier);
+
+    step1.style.display = "none";
+    step2.style.display = "block";
+
+    const inputs = [...document.querySelectorAll("#otpGrid input")];
+    inputs[0].focus();
+
+    /* ===============================
+       AUTO FILL OTP (DEMO MODE)
+    ================================ */
+    if (data.otp) {
+      const otpDigits = data.otp.split("");
+      inputs.forEach((inp, i) => {
+        inp.value = otpDigits[i] || "";
+      });
+    }
+
+  } catch (e) {
+    show(err1, "Cannot connect to server. Check backend URL.");
+  }
 }
 
+/* ===============================
+   OTP GRID UX
+================================ */
 function getOtpValue(){
   const inputs = [...document.querySelectorAll("#otpGrid input")];
   return inputs.map(i => i.value.replace(/\D/g,"")).join("");
 }
 
+document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
+  inp.addEventListener("input", () => {
+    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
+    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
+  });
+
+  inp.addEventListener("keydown", (e) => {
+    if (e.key === "Backspace" && !inp.value && idx > 0) {
+      arr[idx-1].focus();
+    }
+  });
+});
+
+/* ===============================
+   VERIFY OTP (LOGIN FINAL)
+================================ */
 async function verifyOtp(){
   hide(ok2); hide(err2);
 
@@ -148,33 +201,57 @@ async function verifyOtp(){
     return;
   }
 
-  // DEMO MODE: valid OTP = 123456
-  if (otp !== "123456"){
-    show(err2, "Invalid OTP (demo). Try: 123456");
-    return;
-  }
+  const identifier = identifierEl.value.trim();
 
-  show(ok2, "Login successful. Redirecting...");
-  setTimeout(() => {
-    window.location.href = "index.html";
-  }, 900);
+  const payload = {
+    emailOrNumber: identifier,
+    otp: otp
+  };
+
+  try {
+    const res = await fetch("http://localhost:5183/api/auth/verify-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      show(err2, data);
+      return;
+    }
+
+    /* ===============================
+       SAVE LOGIN SESSION
+    ================================ */
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("userRole", data.role);
+    localStorage.setItem("userIdentifier", identifier);
+
+    show(ok2, "Login successful. Redirecting...");
+
+    setTimeout(() => {
+      if (data.role === "Admin") {
+        window.location.href = "admin-dashboard.html";
+      } else {
+        window.location.href = "index.html";
+      }
+    }, 900);
+
+  } catch (e) {
+    show(err2, "Server error. Try again later.");
+  }
 }
 
-// OTP input UX
-document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
-    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
-  });
-  inp.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && !inp.value && idx > 0) arr[idx-1].focus();
-  });
-});
-
+/* ===============================
+   BUTTON EVENTS
+================================ */
 document.getElementById("btnSendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnResendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnVerifyOtp").addEventListener("click", verifyOtp);
 </script>
+
 
 </body>
 </html>

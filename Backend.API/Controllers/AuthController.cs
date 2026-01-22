@@ -70,22 +70,28 @@ namespace PharmacyEmergencySystem.Controllers
         }
 
         //  LOGIN (REQUEST OTP)
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
-        {
-            var user = _userService.GetUserByEmailOrNumber(request.EmailOrNumber);
-            if (user == null)
-                return BadRequest("User not found.");
+       [HttpPost("login")]
+public IActionResult Login([FromBody] LoginRequest request)
+{
+    var user = _userService.GetUserByEmailOrNumber(request.EmailOrNumber);
+    if (user == null)
+        return BadRequest("User not found.");
 
-            if (!user.IsVerified)
-                return BadRequest("Account not verified.");
+    if (!user.IsVerified)
+        return BadRequest("Account not verified.");
 
-            var otp = _otpService.GenerateOTP();
-            _userService.UpdateOTP(request.EmailOrNumber, otp);
+    var otp = _otpService.GenerateOTP();
+    _userService.UpdateOTP(request.EmailOrNumber, otp);
 
-            Console.WriteLine($"LOGIN OTP for {request.EmailOrNumber}: {otp}");
-            return Ok("OTP sent for login.");
-        }
+    Console.WriteLine($"LOGIN OTP for {request.EmailOrNumber}: {otp}");
+
+    return Ok(new
+    {
+        message = "OTP sent for login",
+        otp = otp
+    });
+}
+
 
         //  VERIFY LOGIN OTP
         [HttpPost("verify-login")]

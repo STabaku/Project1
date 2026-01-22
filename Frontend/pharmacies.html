@@ -7,6 +7,12 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="style.css">
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Font Awesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- CSS External -->
+<link rel="stylesheet" href="style.css">
 
 
 <style>
@@ -25,53 +31,6 @@
 }
 
 *{ box-sizing:border-box; }
-
-body{
-  margin:0;
-  font-family: "Segoe UI", system-ui, Arial;
-  background: var(--bg);
-  color: var(--text);
-}
-
-/* NAVBAR */
-.navbar{
-  background: linear-gradient(90deg, var(--blue1), var(--blue2));
-  padding: 18px 0;
-}
-
-.navbar .wrap{
-  width:min(1200px, 92%);
-  margin:0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:#fff;
-  font-weight:800;
-  font-size:20px;
-}
-
-.nav-links a{
-  color:#fff;
-  text-decoration:none;
-  margin-left:28px;
-  font-size:16px;
-}
-
-.btn-request{
-  background:#28a745;
-  color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
-}
 
 /* HERO */
 .hero{
@@ -237,19 +196,18 @@ body{
 </head>
 
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container d-flex justify-content-between align-items-center">
 
     <!-- LOGO -->
     <a class="navbar-brand" href="#">
-        <img src="logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+        <img src="assets/logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
     </a>
 
     <!-- MENU -->
     <div class="d-flex align-items-center">
-      <a class="nav-link text-white" href="#">Home</a>
+      <a class="nav-link text-white" href="home">Home</a>
       <a class="nav-link text-white" href="request.html">Request Medicine</a>
       <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
       <a class="nav-link text-white" href="login.html">Login</a>
@@ -349,6 +307,6 @@ body{
 
   </div>
 </div>
-
+<script src="script.js"></script>
 </body>
 </html>
