@@ -136,7 +136,7 @@
   color:#a11d2d;
 }
 
-/* ICON */
+/* ICON / IMAGE CONTAINER */
 .pharmacy-icon{
   width:70px;
   height:70px;
@@ -148,6 +148,14 @@
   color:white;
   font-size:32px;
   margin-bottom:14px;
+  overflow:hidden;
+}
+
+/* IMAGE INSIDE ICON */
+.pharmacy-icon img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 /* INFO */
@@ -236,7 +244,9 @@
     <!-- PHARMACY 1 -->
     <div class="pharmacy-card">
       <div class="status open">Open</div>
-      <div class="pharmacy-icon"><i class="fa-solid fa-clinic-medical"></i></div>
+      <div class="pharmacy-icon">
+        <img src="assets/citypharmacy.jpg" alt="City Pharmacy">
+      </div>
 
       <h3>City Pharmacy</h3>
       <small>Main Street, Tirana</small>
@@ -254,7 +264,9 @@
     <!-- PHARMACY 2 -->
     <div class="pharmacy-card">
       <div class="status open">Open</div>
-      <div class="pharmacy-icon"><i class="fa-solid fa-hospital"></i></div>
+      <div class="pharmacy-icon">
+        <img src="assets/healthpluspharmacy.jpg" alt="Health Plus Pharmacy">
+      </div>
 
       <h3>Health Plus Pharmacy</h3>
       <small>Bulevardi Zogu I</small>
@@ -272,7 +284,9 @@
     <!-- PHARMACY 3 -->
     <div class="pharmacy-card">
       <div class="status closed">Closed</div>
-      <div class="pharmacy-icon"><i class="fa-solid fa-prescription-bottle-medical"></i></div>
+      <div class="pharmacy-icon">
+        <img src="assets/vitapharmacy.jpg" alt="Pharmacy Vita">
+      </div>
 
       <h3>Pharmacy Vita</h3>
       <small>Rruga e Durrësit</small>
@@ -290,7 +304,9 @@
     <!-- PHARMACY 4 -->
     <div class="pharmacy-card">
       <div class="status open">Open</div>
-      <div class="pharmacy-icon"><i class="fa-solid fa-plus-square"></i></div>
+      <div class="pharmacy-icon">
+        <img src="assets/greencrosspharmacy.jpg" alt="Green Cross Pharmacy">
+      </div>
 
       <h3>Green Cross Pharmacy</h3>
       <small>Komuna e Parisit</small>
