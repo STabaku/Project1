@@ -30,6 +30,8 @@ builder.Services.AddScoped<OtpService>();
 builder.Services.AddSingleton<MatchingService>();
 builder.Services.AddSingleton<DeliverySimulationService>();
 builder.Services.AddSingleton<ExternalApiService>();
+builder.Services.AddSingleton<RequestService>();
+
 
 var app = builder.Build();
 

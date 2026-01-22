@@ -1,30 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
+using PharmacyEmergencySystem.Models;
+using PharmacyEmergencySystem.Services;
 
-[ApiController]
-[Route("api/requests")]
-public class RequestController : ControllerBase
+namespace PharmacyEmergencySystem.Controllers
 {
-    private readonly MatchingService _matchingService;
-    private readonly DeliverySimulationService _deliveryService;
-
-    public RequestController(
-        MatchingService matchingService,
-        DeliverySimulationService deliveryService)
+    [ApiController]
+    [Route("api/requests")]
+    public class RequestsController : ControllerBase
     {
-        _matchingService = matchingService;
-        _deliveryService = deliveryService;
-    }
+        private readonly RequestService _requestService;
 
-    [HttpPost]
-    public async Task<IActionResult> SubmitRequest(EmergencyRequest request)
-    {
-        // Asynchronous processing
-        await Task.Delay(300);
+        public RequestsController(RequestService requestService)
+        {
+            _requestService = requestService;
+        }
 
-        var pharmacy = _matchingService.MatchPharmacy(request);
+        // CLIENT SENDS REQUEST
+        [HttpPost("send")]
+        public IActionResult Send([FromBody] EmergencyRequest request)
+        {
+            var saved = _requestService.Add(request);
+            return Ok(saved);
+        }
 
-        _ = _deliveryService.SimulateDeliveryAsync(pharmacy);
-
-        return Accepted("Request accepted and processing asynchronously");
+        // PHARMACY GETS ALL REQUESTS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(_requestService.GetAll());
+        }
     }
 }

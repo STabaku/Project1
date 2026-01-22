@@ -1,7 +1,12 @@
-public class EmergencyRequest
+namespace PharmacyEmergencySystem.Models
 {
-    public string Medication { get; set; }
-    public string Urgency { get; set; }
-    public string Status { get; set; } = "Pending";
+    public class EmergencyRequest
+    {
+        public int Id { get; set; }
+        public string MedicineName { get; set; }
+        public int Quantity { get; set; }
+        public string Address { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string Status { get; set; }   
+    }
 }
-
