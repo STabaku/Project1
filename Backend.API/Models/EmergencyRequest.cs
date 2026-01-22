@@ -10,3 +10,4 @@ namespace PharmacyEmergencySystem.Models
         public string Status { get; set; }   
     }
 }
+
