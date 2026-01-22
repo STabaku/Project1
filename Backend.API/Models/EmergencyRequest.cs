@@ -1,6 +1,6 @@
 namespace PharmacyEmergencySystem.Models
 {
-    public class EmergencyRequest
+     public class EmergencyRequest
     {
         public int Id { get; set; }
         public string MedicineName { get; set; }

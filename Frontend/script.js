@@ -1,4 +1,4 @@
-
+//index.html javascript
 document.addEventListener("DOMContentLoaded", () => {
   const isLoggedIn = localStorage.getItem("isLoggedIn");
 
@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+<<<<<<< Updated upstream
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -144,3 +145,52 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+=======
+//request.html javascript
+
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const step3 = document.getElementById("step3");
+
+const ok1 = document.getElementById("ok1");
+const err1 = document.getElementById("err1");
+
+const pharmacies = [
+  { name: "Pharmacy Vita", distance: "1.2 km", time: "10 minutes" },
+  { name: "City Pharmacy", distance: "2.0 km", time: "15 minutes" },
+  { name: "Health Plus Pharmacy", distance: "2.5 km", time: "18 minutes" }
+];
+
+document.getElementById("btnSendRequest").addEventListener("click", () => {
+  const medicine = document.getElementById("medicine").value.trim();
+  const quantity = document.getElementById("quantity").value;
+  const address = document.getElementById("address").value.trim();
+
+  if (!medicine || !quantity || !address) {
+    err1.style.display = "block";
+    err1.textContent = "Please fill in all required fields.";
+    return;
+  }
+
+  err1.style.display = "none";
+  ok1.style.display = "block";
+  ok1.textContent = "Request sent successfully. Searching for pharmacy...";
+
+  setTimeout(() => {
+    step1.style.display = "none";
+    step2.style.display = "block";
+  }, 800);
+
+  setTimeout(() => {
+    const selected = pharmacies[Math.floor(Math.random() * pharmacies.length)];
+
+    document.getElementById("pharmacyName").textContent = selected.name;
+    document.getElementById("pharmacyDistance").textContent = selected.distance;
+    document.getElementById("pharmacyTime").textContent = selected.time;
+
+    step2.style.display = "none";
+    step3.style.display = "block";
+  }, 2500);
+});
+
+>>>>>>> Stashed changes

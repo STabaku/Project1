@@ -5,110 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Request Medicine - 24/7 Emergency Pharmacy</title>
 
-<link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<!-- CSS External -->
 <link rel="stylesheet" href="style.css">
-<style>
-
-/* HERO LAYOUT */
-.auth-hero .wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding-top: 50px;
-}
-
-.auth-hero h1 {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.auth-hero p {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 40px;
-}
-
-/* FORMA E MADHE DHE E DUKSHME */
-.card-auth {
-  width: 100%;
-  max-width: 520px;
-  margin-top: 10px;
-  padding: 35px 35px 40px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-  border-radius: 18px;
-  background: #fff;
-}
-
-/* INPUT & SELECT */
-.field input,
-.field select {
-  font-size: 16px;
-  padding: 13px 14px;
-  border-radius: 12px;
-  border: 1px solid #d9e2ef;
-  width: 100%;
-}
-
-/* SELECT */
-select {
-  background: #fff;
-}
-
-/* BUTONI */
-.btn-primary {
-  margin-top: 15px;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 12px;
-}
-
-/* LOADER */
-.loader {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #e9ecef;
-  border-top: 6px solid #28a745;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 30px auto;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* RESULT CARD */
-.pharmacy-result {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 15px;
-}
-
-</style>
 </head>
 
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container d-flex justify-content-between align-items-center">
 
-    <!-- LOGO -->
     <a class="navbar-brand" href="#">
         <img src="assets/logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
     </a>
 
-    <!-- MENU -->
     <div class="d-flex align-items-center">
       <a class="nav-link text-white" href="index.html">Home</a>
       <a class="nav-link text-white" href="request.html">Request Medicine</a>
@@ -119,20 +30,16 @@ select {
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="auth-hero">
   <div class="wrap">
 
-    <!-- TITULLI LART -->
     <div>
       <h1>Emergency Medicine Request</h1>
       <p>Send an urgent request and we will find the nearest available pharmacy.</p>
     </div>
 
-    <!-- FORMA POSHTË -->
     <div class="card-auth">
 
-      <!-- STEP 1 -->
       <div id="step1">
         <h2><i class="fa-solid fa-notes-medical me-2"></i> Request Details</h2>
 
@@ -144,7 +51,7 @@ select {
         <div class="row">
           <div class="field">
             <label>Quantity</label>
-            <input id="quantity" type="number" placeholder="e.g. 2">
+            <input id="quantity" type="number" min="1" value="1" placeholder="e.g. 2">
           </div>
 
           <div class="field">
@@ -170,14 +77,12 @@ select {
         <div class="notice err" id="err1"></div>
       </div>
 
-      <!-- STEP 2 -->
       <div id="step2" style="display:none;">
         <h2><i class="fa-solid fa-gear me-2"></i> Matching Pharmacy...</h2>
         <p>We are searching for the best available pharmacy near you.</p>
         <div class="loader"></div>
       </div>
 
-      <!-- STEP 3 -->
       <div id="step3" style="display:none;">
         <h2><i class="fa-solid fa-check-circle me-2"></i> Pharmacy Found</h2>
 
@@ -197,52 +102,6 @@ select {
   </div>
 </section>
 
-<script>
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
-
-const ok1 = document.getElementById("ok1");
-const err1 = document.getElementById("err1");
-
-const pharmacies = [
-  { name: "Pharmacy Vita", distance: "1.2 km", time: "10 minutes" },
-  { name: "City Pharmacy", distance: "2.0 km", time: "15 minutes" },
-  { name: "Health Plus Pharmacy", distance: "2.5 km", time: "18 minutes" }
-];
-
-document.getElementById("btnSendRequest").addEventListener("click", () => {
-  const medicine = document.getElementById("medicine").value.trim();
-  const quantity = document.getElementById("quantity").value;
-  const address = document.getElementById("address").value.trim();
-
-  if (!medicine || !quantity || !address) {
-    err1.style.display = "block";
-    err1.textContent = "Please fill in all required fields.";
-    return;
-  }
-
-  err1.style.display = "none";
-  ok1.style.display = "block";
-  ok1.textContent = "Request sent successfully. Searching for pharmacy...";
-
-  setTimeout(() => {
-    step1.style.display = "none";
-    step2.style.display = "block";
-  }, 800);
-
-  setTimeout(() => {
-    const selected = pharmacies[Math.floor(Math.random() * pharmacies.length)];
-
-    document.getElementById("pharmacyName").textContent = selected.name;
-    document.getElementById("pharmacyDistance").textContent = selected.distance;
-    document.getElementById("pharmacyTime").textContent = selected.time;
-
-    step2.style.display = "none";
-    step3.style.display = "block";
-  }, 2500);
-});
-</script>
 <script src="script.js"></script>
 </body>
 </html>
