@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pharmacy Login</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<div class="login-container">
+  <div class="login-card">
+    <h2>💊 Pharmacy Login</h2>
+    <p class="subtitle">Access your dashboard</p>
+
+    <form onsubmit="login(event)">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <p class="error" id="error"></p>
+  </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

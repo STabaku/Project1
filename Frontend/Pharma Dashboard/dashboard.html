@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pharmacy Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Pharmacy Panel</h2>
+
+  <a href="#" class="active" onclick="showSection('overview')">Dashboard</a>
+  <a href="#" onclick="showSection('new')">New Requests</a>
+  <a href="#" onclick="showSection('active')">Active Orders</a>
+  <a href="#" onclick="showSection('history')">History</a>
+  <a href="#" onclick="showSection('profile')">Profile</a>
+  <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="section">
+    <h3 class="section-title">Overview</h3>
+
+    <div class="card-box">
+      <div class="card">
+        <h3>Total Requests</h3>
+        <span id="totalReq">0</span>
+      </div>
+
+      <div class="card">
+        <h3>Pending</h3>
+        <span id="pendingReq">0</span>
+      </div>
+
+      <div class="card">
+        <h3>Active</h3>
+        <span id="activeReq">0</span>
+      </div>
+
+      <div class="card">
+        <h3>Delivered</h3>
+        <span id="doneReq">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEW REQUESTS -->
+  <div id="new" class="section hidden">
+    <h3 class="section-title">🚑 New Emergency Requests</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Address</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="newRequests"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ACTIVE ORDERS -->
+  <div id="active" class="section hidden">
+   <h3 class="section-title">📦 Active Orders</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Finish</th>
+          </tr>
+        </thead>
+        <tbody id="activeOrders"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" class="section hidden">
+<h3 class="section-title">📜 Order History</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="historyOrders"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="profile" class="section hidden">
+    <h3 class="section-title">🏥 Pharmacy Profile</h3>
+
+    <div class="profile-box">
+      <img src="https://via.placeholder.com/110" alt="">
+
+      <div>
+        <p><strong>Name:</strong>Pharmacy Web</p>
+        <p><strong>Email:</strong> web@pharmacy.com</p>
+        <p><strong>Location:</strong> Albania</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
+
