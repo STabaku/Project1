@@ -21,40 +21,45 @@ body{
   color: var(--text);
 }
 
-/* NAVBAR */
+/* ================= NAVBAR (SAME AS MAIN) ================= */
+
 .navbar-auth{
-  background: linear-gradient(90deg, var(--blue1), var(--blue2));
+  background: linear-gradient(90deg, #0c4a84, #0c4a84);
   padding: 18px 0;
 }
+
 .navbar-auth .wrap{
-  width:min(1100px, 92%);
+  width:min(1200px, 92%);
   margin:0 auto;
   display:flex;
   align-items:center;
   justify-content:space-between;
 }
+
 .logo-img{
-  height:70px;
+  height:60px;
   width:auto;
-  display:block;
 }
 
 .nav-links a{
   color:#fff;
   text-decoration:none;
-  margin-left:28px;
-  font-size:16px;
+  margin-left:30px;
+  font-size:15px;
+  font-weight:600;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
   opacity:0.95;
 }
-.nav-links a:hover{ opacity:1; text-decoration:underline; }
+.nav-links a:hover{ opacity:1; }
 
-/* HERO – TITULL LART, FORMA POSHTË */
+/* ================= HERO LOGIN ================= */
+
 .auth-hero{
-  background: linear-gradient(135deg, var(--blue2), var(--blue3));
-  border-radius: 0 0 40px 40px;
-  padding: 70px 0 90px;
-  color:#fff;
-  min-height: calc(100vh - 110px);
+  background: linear-gradient(135deg, #efefef, #ffffff);
+  padding: 90px 0 110px;
+  min-height: calc(100vh - 90px);
 }
 
 .auth-hero .wrap{
@@ -66,44 +71,43 @@ body{
   text-align: center;
 }
 
-/* TITULLI */
+/* TITULL */
 .auth-hero h1{
-  font-size:42px;
+  font-size:38px;
   margin:0 0 10px;
   font-weight:800;
+  color:#0c4a84;
 }
 
 .auth-hero p{
-  margin:0;
-  font-size:18px;
+  margin:0 0 45px;
+  font-size:17px;
   opacity:0.95;
   max-width:520px;
-  margin-bottom:40px;
+  color:#0c4a84;
 }
 
-/* KARTA E FORMËS */
+/* ================= LOGIN CARD ================= */
+
 .card-auth{
   background: var(--card);
-  border-radius: var(--radius);
+  border-radius: 20px;
   box-shadow: var(--shadow);
-  padding: 32px 34px 38px;
-  color: var(--text);
+  padding: 34px 36px 40px;
   width:100%;
-  max-width: 480px;
+  max-width: 460px;
   text-align:left;
 }
 
 .card-auth h2{
-  margin:0 0 18px;
+  margin:0 0 22px;
   font-size:22px;
   font-weight:800;
   text-align:center;
 }
 
 /* FIELDS */
-.field{
-  margin-top:14px;
-}
+.field{ margin-top:14px; }
 
 label{
   display:block;
@@ -119,7 +123,7 @@ input{
   padding: 13px 14px;
   outline:none;
   background:#fff;
-  font-size:16px;
+  font-size:15px;
 }
 
 input:focus{
@@ -127,14 +131,7 @@ input:focus{
   box-shadow: 0 0 0 4px rgba(30,144,255,.15);
 }
 
-/* ROW */
-.row{
-  display:flex;
-  gap: 10px;
-}
-.row > * { flex:1; }
-
-/* BUTONAT */
+/* BUTTONS */
 .btn{
   width:100%;
   border:none;
@@ -142,31 +139,31 @@ input:focus{
   padding: 14px;
   font-weight:700;
   cursor:pointer;
-  margin-top: 16px;
-  font-size:16px;
+  margin-top: 18px;
+  font-size:15px;
 }
 
 .btn-primary{
-  background: var(--success);
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
   color:#fff;
 }
 .btn-primary:hover{ filter:brightness(0.95); }
 
 .btn-secondary{
-  background:#e9ecef;
+  background:#eef2f7;
   color:#0b1b2b;
 }
-.btn-secondary:hover{ filter:brightness(0.98); }
+.btn-secondary:hover{ filter:brightness(0.97); }
 
 /* HELP */
 .help{
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 13px;
   color: var(--muted);
   text-align:center;
 }
 .help a{
-  color: var(--blue1);
+  color: #0072ff;
   text-decoration:none;
   font-weight:700;
 }
@@ -174,7 +171,7 @@ input:focus{
 
 /* NOTICES */
 .notice{
-  margin-top: 12px;
+  margin-top: 14px;
   padding: 10px 12px;
   border-radius: 12px;
   font-size: 13px;
@@ -200,7 +197,7 @@ input:focus{
   display:grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .otp-grid input{
@@ -214,11 +211,11 @@ input:focus{
 /* RESPONSIVE */
 @media (max-width: 900px){
   .auth-hero{
-    padding: 60px 0 70px;
+    padding: 70px 0 90px;
   }
 
   .auth-hero h1{
-    font-size:32px;
+    font-size:30px;
   }
 
   .card-auth{

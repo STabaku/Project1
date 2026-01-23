@@ -15,25 +15,10 @@
 <link rel="stylesheet" href="style.css">
 <style>
 
-/* HERO LAYOUT */
-.auth-hero .wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding-top: 50px;
-}
-
-.auth-hero h1 {
-  font-size: 42px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.auth-hero p {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 40px;
+.navbar{
+  background: linear-gradient(90deg, #f9f9f9, #ffffff);
+  color: #0a58ca;
+  padding: 18px 0;
 }
 
 /* FORMA E MADHE DHE E DUKSHME */
@@ -99,29 +84,33 @@ select {
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container d-flex justify-content-between align-items-center">
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+  <div class="nav-container">
 
     <!-- LOGO -->
     <a class="navbar-brand" href="#">
-        <img src="assets/logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+      <img src="assets/logo.png" alt="24/7 Emergency Pharmacy">
     </a>
 
     <!-- MENU -->
-    <div class="d-flex align-items-center">
-      <a class="nav-link text-white" href="index.html">Home</a>
-      <a class="nav-link text-white" href="request.html">Request Medicine</a>
-      <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
-      <a class="nav-link text-white" href="login.html">Login</a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">
+        <i class="fa fa-house"></i> Home
+      </a>
+      <a class="nav-link" href="request.html">
+        <i class="fa fa-notes-medical"></i> Request Medicine
+      </a>
+      <a class="nav-link" href="pharmacies.html">
+        <i class="fa fa-location-dot"></i> Nearby Pharmacies
+      </a>
+      <a class="nav-link" href="login.html">
+        <i class="fa fa-user"></i> Login
+      </a>
     </div>
 
   </div>
 </nav>
-
-<!-- HERO -->
-<section class="auth-hero">
-  <div class="wrap">
 
     <!-- TITULLI LART -->
     <div>

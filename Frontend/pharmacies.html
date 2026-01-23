@@ -31,27 +31,12 @@
 }
 
 *{ box-sizing:border-box; }
-
-/* HERO */
-.hero{
-  background: linear-gradient(135deg, var(--blue2), var(--blue3));
-  padding: 70px 0 90px;
-  color:white;
-  text-align:center;
-  border-radius: 0 0 50px 50px;
+.navbar{
+  background: linear-gradient(90deg, #f9f9f9, #ffffff);
+  color: #0a58ca;
+  padding: 18px 0;
 }
 
-.hero h1{
-  font-size:46px;
-  margin:0 0 10px;
-  font-weight:800;
-}
-
-.hero p{
-  font-size:18px;
-  opacity:0.95;
-  margin-bottom:30px;
-}
 
 .search-box{
   background:white;
@@ -86,12 +71,14 @@
 .main{
   width:min(1200px, 92%);
   margin:-40px auto 60px;
+  margin-top: 250px;
 }
 
 .main h2{
   font-size:30px;
   font-weight:800;
   margin-bottom:25px;
+  color: #0a58ca;
 }
 
 /* GRID PHARMACIES */
@@ -128,7 +115,7 @@
 
 .open{
   background: rgba(40,167,69,0.15);
-  color:#1f7a35;
+  color:#0a58ca;
 }
 
 .closed{
@@ -191,7 +178,7 @@
 
 /* BUTTON */
 .pharmacy-card button{
-  background:#28a745;
+  background:#0a58ca;
   color:white;
   border:none;
   padding:12px;
@@ -204,36 +191,33 @@
 </head>
 
 <body>
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container d-flex justify-content-between align-items-center">
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+  <div class="nav-container">
 
     <!-- LOGO -->
     <a class="navbar-brand" href="#">
-        <img src="assets/logo.png" alt="24/7 Emergency Pharmacy" class="logo-img">
+      <img src="assets/logo.png" alt="24/7 Emergency Pharmacy">
     </a>
 
     <!-- MENU -->
-    <div class="d-flex align-items-center">
-      <a class="nav-link text-white" href="index.html">Home</a>
-      <a class="nav-link text-white" href="request.html">Request Medicine</a>
-      <a class="nav-link text-white" href="pharmacies.html">Nearby Pharmacies</a>
-      <a class="nav-link text-white" href="login.html">Login</a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">
+        <i class="fa fa-house"></i> Home
+      </a>
+      <a class="nav-link" href="request.html">
+        <i class="fa fa-notes-medical"></i> Request Medicine
+      </a>
+      <a class="nav-link" href="pharmacies.html">
+        <i class="fa fa-location-dot"></i> Nearby Pharmacies
+      </a>
+      <a class="nav-link" href="login.html">
+        <i class="fa fa-user"></i> Login
+      </a>
     </div>
 
   </div>
 </nav>
-
-<!-- HERO -->
-<section class="hero">
-  <h1>Find Nearby Pharmacies</h1>
-  <p>Browse trusted pharmacies near you and order medications easily.</p>
-
-  <div class="search-box">
-    <input placeholder="Search pharmacy by name or location...">
-    <button>Search</button>
-  </div>
-</section>
 
 <!-- MAIN -->
 <div class="main">
