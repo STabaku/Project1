@@ -1,121 +1,63 @@
-using PharmacyEmergencySystem.Models;
-using MySql.Data.MySqlClient;
-using Microsoft.Extensions.Configuration;
+using Backend.API.Models;
+using Backend.API.Data; // your AppDbContext
+using Microsoft.EntityFrameworkCore;
+using Backend.API.Services;
 using System;
+using System.Threading.Tasks;
 
-namespace PharmacyEmergencySystem.Services
+namespace Backend.API.Services
 {
     public class UserService
     {
-        private readonly string _connectionString;
+        private readonly AppDbContext _context;
 
-        // Constructor – merr connection string nga appsettings.json
-        public UserService(IConfiguration configuration)
+        public UserService(AppDbContext context)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            _context = context;
         }
 
-        // CREATE USER (SIGNUP)
-        public void AddUser(User user)
+        // Add new user
+        public async Task AddUserAsync(User user)
         {
-            using var conn = new MySqlConnection(_connectionString);
-            conn.Open();
-
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                INSERT INTO users 
-                (Name, Location, Number, Gender, Age, Email, OTP, OtpExpiry, IsVerified, Role)
-                VALUES
-                (@Name, @Location, @Number, @Gender, @Age, @Email, @OTP, @OtpExpiry, @IsVerified, @Role)
-            ";
-
-            cmd.Parameters.AddWithValue("@Name", user.Name);
-            cmd.Parameters.AddWithValue("@Location", user.Location);
-            cmd.Parameters.AddWithValue("@Number", user.Number);
-            cmd.Parameters.AddWithValue("@Gender", user.Gender);
-            cmd.Parameters.AddWithValue("@Age", user.Age);
-            cmd.Parameters.AddWithValue("@Email", user.Email);
-            cmd.Parameters.AddWithValue("@OTP", user.OTP);
-            cmd.Parameters.AddWithValue("@OtpExpiry", user.OtpExpiry);
-            cmd.Parameters.AddWithValue("@IsVerified", user.IsVerified);
-            cmd.Parameters.AddWithValue("@Role", user.Role);
-
-            cmd.ExecuteNonQuery();
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
         }
 
-        // GET USER BY EMAIL OR NUMBER
-        public User GetUserByEmailOrNumber(string emailOrNumber)
+        // Get user by email or number
+        public async Task<User> GetUserByEmailOrNumberAsync(string emailOrNumber)
         {
-            using var conn = new MySqlConnection(_connectionString);
-            conn.Open();
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == emailOrNumber || u.Number == emailOrNumber);
+        }
 
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                SELECT * FROM users 
-                WHERE Email = @Value OR Number = @Value
-            ";
-            cmd.Parameters.AddWithValue("@Value", emailOrNumber);
-
-            using var reader = cmd.ExecuteReader();
-
-            if (!reader.Read())
-                return null;
-
-            return new User
+        // Verify user
+        public async Task VerifyUserAsync(string emailOrNumber)
+        {
+            var user = await GetUserByEmailOrNumberAsync(emailOrNumber);
+            if (user != null)
             {
-                Id = reader.GetInt32("Id"),
-                Name = reader.GetString("Name"),
-                Location = reader.GetString("Location"),
-                Number = reader.GetString("Number"),
-                Gender = reader.GetString("Gender"),
-                Age = reader.GetInt32("Age"),
-                Email = reader.GetString("Email"),
-                OTP = reader.IsDBNull(reader.GetOrdinal("OTP")) 
-                        ? null 
-                        : reader.GetString("OTP"),
-                OtpExpiry = reader.IsDBNull(reader.GetOrdinal("OtpExpiry"))
-                        ? null
-                        : reader.GetDateTime("OtpExpiry"),
-                IsVerified = reader.GetBoolean("IsVerified"),
-                Role = reader.GetString("Role")
-            };
+                user.IsVerified = true;
+                user.OTP = string.Empty;
+                await _context.SaveChangesAsync();
+            }
         }
 
-        //  UPDATE OTP (LOGIN OTP)
-        public void UpdateOTP(string emailOrNumber, string otp)
+        // Update OTP
+        public async Task UpdateOTPAsync(string emailOrNumber, string otp)
         {
-            using var conn = new MySqlConnection(_connectionString);
-            conn.Open();
-
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                UPDATE users 
-                SET OTP = @OTP, OtpExpiry = @OtpExpiry
-                WHERE Email = @Value OR Number = @Value
-            ";
-
-            cmd.Parameters.AddWithValue("@OTP", otp);
-            cmd.Parameters.AddWithValue("@OtpExpiry", DateTime.UtcNow.AddMinutes(5));
-            cmd.Parameters.AddWithValue("@Value", emailOrNumber);
-
-            cmd.ExecuteNonQuery();
+            var user = await GetUserByEmailOrNumberAsync(emailOrNumber);
+            if (user != null)
+            {
+                user.OTP = otp;
+                await _context.SaveChangesAsync();
+            }
         }
+        // Update any user (OTP, expiry, role, etc.)
+public async Task UpdateUserAsync(User user)
+{
+    _context.Users.Update(user);
+    await _context.SaveChangesAsync();
+}
 
-        // VERIFY USER (AFTER SIGNUP)
-        public void VerifyUser(string emailOrNumber)
-        {
-            using var conn = new MySqlConnection(_connectionString);
-            conn.Open();
-
-            var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                UPDATE users 
-                SET IsVerified = 1, OTP = NULL, OtpExpiry = NULL
-                WHERE Email = @Value OR Number = @Value
-            ";
-
-            cmd.Parameters.AddWithValue("@Value", emailOrNumber);
-            cmd.ExecuteNonQuery();
-        }
     }
 }

@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PharmacyEmergencySystem.Services;
+using Backend.API.Services;
+using Microsoft.EntityFrameworkCore;
+using Backend.API.Data;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +37,26 @@ builder.Services.AddSingleton<ExternalApiService>();
 builder.Services.AddSingleton<RequestService>();
 
 
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
+
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://127.0.0.1:5501") // your frontend URL
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 // ===============================
 // MIDDLEWARE

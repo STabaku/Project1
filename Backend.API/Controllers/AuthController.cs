@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using PharmacyEmergencySystem.DTOs;
-using PharmacyEmergencySystem.Models;
-using PharmacyEmergencySystem.Services;
+using Backend.API.Models;
+using Backend.API.Services; // ✅ correct
+using System;
+using System.Threading.Tasks;
 
-namespace PharmacyEmergencySystem.Controllers
+namespace Backend.API.Controllers
 {
     [ApiController]
     [Route("api/auth")]
@@ -19,40 +21,43 @@ namespace PharmacyEmergencySystem.Controllers
         }
 
         //  SIGNUP
-        [HttpPost("signup")]
-        public IActionResult Signup([FromBody] RegisterRequest request)
-        {
-            var existing = _userService.GetUserByEmailOrNumber(request.Email);
-            if (existing != null)
-                return BadRequest("User already exists.");
+       [HttpPost("signup")]
+public async Task<IActionResult> Signup([FromBody] RegisterRequest request)
+{
+    if (string.IsNullOrEmpty(request.Email) && string.IsNullOrEmpty(request.Number))
+        return BadRequest("Please provide an email or phone number.");
 
-            var otp = _otpService.GenerateOTP();
+    var existing = await _userService.GetUserByEmailOrNumberAsync(request.Email ?? request.Number);
+    if (existing != null)
+        return BadRequest("User already exists.");
 
-            var user = new User
-            {
-                Name = request.Name,
-                Location = request.Location,
-                Number = request.Number,
-                Gender = request.Gender,
-                Age = request.Age,
-                Email = request.Email,
-                Role = request.Role,
-                OTP = otp,
-                OtpExpiry = DateTime.UtcNow.AddMinutes(5),
-                IsVerified = false
-            };
+    var otp = _otpService.GenerateOTP();
 
-            _userService.AddUser(user);
+    var user = new User
+    {
+        Name = request.Name,
+        Location = request.Location,
+        Number = request.Number,
+        Gender = request.Gender,
+        Age = request.Age,
+        Email = request.Email,
+        Role = request.Role,
+        OTP = otp,
+        OtpExpiry = DateTime.UtcNow.AddMinutes(5),
+        IsVerified = false
+    };
 
-            Console.WriteLine($"SIGNUP OTP for {request.Email}: {otp}");
-            return Ok("Registered successfully. Verify OTP.");
-        }
+    await _userService.AddUserAsync(user);
 
-        // VERIFY SIGNUP OTP
+    Console.WriteLine($"SIGNUP OTP for {(request.Email ?? request.Number)}: {otp}");
+    return Ok("Registered successfully. Verify OTP.");
+}
+
+ // VERIFY SIGNUP OTP
         [HttpPost("verify-signup")]
-        public IActionResult VerifySignup([FromBody] VerifyOTPRequest request)
+        public async Task<IActionResult> VerifySignup([FromBody] VerifyOTPRequest request)
         {
-            var user = _userService.GetUserByEmailOrNumber(request.EmailOrNumber);
+            var user = await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
             if (user == null)
                 return BadRequest("User not found.");
 
@@ -65,59 +70,61 @@ namespace PharmacyEmergencySystem.Controllers
             if (user.OtpExpiry < DateTime.UtcNow)
                 return BadRequest("OTP expired.");
 
-            _userService.VerifyUser(request.EmailOrNumber);
+            await _userService.VerifyUserAsync(request.EmailOrNumber);
             return Ok("Account verified successfully.");
         }
 
-        //  LOGIN (REQUEST OTP)
-       [HttpPost("login")]
-public IActionResult Login([FromBody] LoginRequest request)
+// LOGIN (REQUEST OTP)
+[HttpPost("login")]
+public async Task<IActionResult> Login([FromBody] LoginRequest request)
 {
-    var user = _userService.GetUserByEmailOrNumber(request.EmailOrNumber);
+    var user = await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
     if (user == null)
         return BadRequest("User not found.");
 
     if (!user.IsVerified)
         return BadRequest("Account not verified.");
 
+    // Generate a new OTP and set expiry (5 minutes)
     var otp = _otpService.GenerateOTP();
-    _userService.UpdateOTP(request.EmailOrNumber, otp);
+    user.OTP = otp;
+    user.OtpExpiry = DateTime.UtcNow.AddMinutes(5);
+    await _userService.UpdateUserAsync(user); // make sure UpdateUserAsync saves changes
 
     Console.WriteLine($"LOGIN OTP for {request.EmailOrNumber}: {otp}");
 
     return Ok(new
     {
         message = "OTP sent for login",
-        otp = otp
+        otp = otp // optional, only for testing; remove in production
     });
 }
 
+// VERIFY LOGIN OTP
+[HttpPost("verify-login")]
+public async Task<IActionResult> VerifyLogin([FromBody] VerifyOTPRequest request)
+{
+    var user = await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
+    if (user == null)
+        return BadRequest("User not found.");
 
-        //  VERIFY LOGIN OTP
-        [HttpPost("verify-login")]
-        public IActionResult VerifyLogin([FromBody] VerifyOTPRequest request)
-        {
-            var user = _userService.GetUserByEmailOrNumber(request.EmailOrNumber);
-            if (user == null)
-                return BadRequest("User not found.");
+    if (user.OTP != request.OTP)
+        return BadRequest("Invalid OTP.");
 
-            if (user.OTP != request.OTP)
-                return BadRequest("Invalid OTP.");
+    if (user.OtpExpiry < DateTime.UtcNow)
+        return BadRequest("OTP expired.");
 
-            if (user.OtpExpiry < DateTime.UtcNow)
-                return BadRequest("OTP expired.");
+    // Successful login, clear OTP so it can't be reused accidentally
+    user.OTP = null;
+    user.OtpExpiry = null;
+    await _userService.UpdateUserAsync(user);
 
-            return Ok(new
-            {
-                message = "Login successful",
-                role = user.Role
-            });
-        }
-
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            return Ok("Logged out successfully.");
-        }
-    }
+    return Ok(new
+    {
+        message = "Login successful",
+        role = user.Role
+    });
+}}
 }
+
+

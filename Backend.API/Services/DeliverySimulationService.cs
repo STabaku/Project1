@@ -1,3 +1,4 @@
+using Backend.API.Models;
 public class DeliverySimulationService
 {
     public async Task SimulateDeliveryAsync(Pharmacy pharmacy)

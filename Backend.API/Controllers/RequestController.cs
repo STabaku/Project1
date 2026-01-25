@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using PharmacyEmergencySystem.Models;
-using PharmacyEmergencySystem.Services;
 
-namespace PharmacyEmergencySystem.Controllers
+using Backend.API.Services; // ✅ correct
+using Backend.API.Models;
+
+namespace Backend.API.Controllers
 {
     [ApiController]
     [Route("api/requests")]

@@ -10,23 +10,15 @@
 
 <header class="navbar-auth">
   <div class="wrap">
-
     <a href="index.html">
       <img src="assets/logo.png" class="logo-img" alt="24/7 Emergency Pharmacy">
     </a>
-
     <nav class="nav-links">
-      <a href="index.html">
-        <i class="fa fa-house"></i> Home
-      </a>
-      <a href="register.html">
-        <i class="fa fa-user-plus"></i> Register
-      </a>
+      <a href="index.html"><i class="fa fa-house"></i> Home</a>
+      <a href="register.html"><i class="fa fa-user-plus"></i> Register</a>
     </nav>
-
   </div>
 </header>
-
 
 <section class="auth-hero">
   <div class="wrap">
@@ -44,12 +36,9 @@
           <label>Email or Phone</label>
           <input id="identifier" placeholder="e.g. email@domain.com or +38344123456" autocomplete="username">
         </div>
-
         <button class="btn btn-primary" id="btnSendOtp">Send OTP</button>
-
         <div class="notice ok" id="ok1"></div>
         <div class="notice err" id="err1"></div>
-
         <div class="help">
           Don’t have an account? <a href="register.html">Register</a>
         </div>
@@ -84,181 +73,6 @@
   </div>
 </section>
 
-<script>
-/* ===============================
-   ELEMENT REFERENCES
-================================ */
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const identifierEl = document.getElementById("identifier");
-const maskTarget = document.getElementById("maskTarget");
-
-const ok1 = document.getElementById("ok1");
-const err1 = document.getElementById("err1");
-const ok2 = document.getElementById("ok2");
-const err2 = document.getElementById("err2");
-
-/* ===============================
-   HELPERS
-================================ */
-function show(el, msg){
-  el.textContent = msg;
-  el.style.display = "block";
-}
-function hide(el){
-  el.textContent = "";
-  el.style.display = "none";
-}
-
-function maskIdentifier(v){
-  v = v.trim();
-  if (v.includes("@")){
-    const [u, d] = v.split("@");
-    const uMasked = u.length <= 2 ? u[0] + "*" : u.slice(0,2) + "***";
-    return `${uMasked}@${d}`;
-  }
-  const last = v.slice(-3);
-  return v.slice(0, Math.max(0, v.length-3)).replace(/\d/g,"*") + last;
-}
-
-/* ===============================
-   SEND OTP (LOGIN)
-================================ */
-async function sendOtp(){
-  hide(ok1); hide(err1); hide(ok2); hide(err2);
-
-  const identifier = identifierEl.value.trim();
-  if (!identifier){
-    show(err1, "Please enter your email or phone number.");
-    return;
-  }
-
-  const payload = {
-    emailOrNumber: identifier
-  };
-
-  try {
-    const res = await fetch("http://localhost:5183/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      show(err1, data);
-      return;
-    }
-
-    show(ok1, "OTP sent successfully.");
-    maskTarget.textContent = maskIdentifier(identifier);
-
-    step1.style.display = "none";
-    step2.style.display = "block";
-
-    const inputs = [...document.querySelectorAll("#otpGrid input")];
-    inputs[0].focus();
-
-    /* ===============================
-       AUTO FILL OTP (DEMO MODE)
-    ================================ */
-    if (data.otp) {
-      const otpDigits = data.otp.split("");
-      inputs.forEach((inp, i) => {
-        inp.value = otpDigits[i] || "";
-      });
-    }
-
-  } catch (e) {
-    show(err1, "Cannot connect to server. Check backend URL.");
-  }
-}
-
-/* ===============================
-   OTP GRID UX
-================================ */
-function getOtpValue(){
-  const inputs = [...document.querySelectorAll("#otpGrid input")];
-  return inputs.map(i => i.value.replace(/\D/g,"")).join("");
-}
-
-document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
-    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
-  });
-
-  inp.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && !inp.value && idx > 0) {
-      arr[idx-1].focus();
-    }
-  });
-});
-
-/* ===============================
-   VERIFY OTP (LOGIN FINAL)
-================================ */
-async function verifyOtp(){
-  hide(ok2); hide(err2);
-
-  const otp = getOtpValue();
-  if (otp.length !== 6){
-    show(err2, "Please enter the 6-digit OTP code.");
-    return;
-  }
-
-  const identifier = identifierEl.value.trim();
-
-  const payload = {
-    emailOrNumber: identifier,
-    otp: otp
-  };
-
-  try {
-    const res = await fetch("http://localhost:5183/api/auth/verify-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      show(err2, data);
-      return;
-    }
-
-    /* ===============================
-       SAVE LOGIN SESSION
-    ================================ */
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userRole", data.role);
-    localStorage.setItem("userIdentifier", identifier);
-
-    show(ok2, "Login successful. Redirecting...");
-
-    setTimeout(() => {
-      if (data.role === "Admin") {
-        window.location.href = "admin-dashboard.html";
-      } else {
-        window.location.href = "index.html";
-      }
-    }, 900);
-
-  } catch (e) {
-    show(err2, "Server error. Try again later.");
-  }
-}
-
-/* ===============================
-   BUTTON EVENTS
-================================ */
-document.getElementById("btnSendOtp").addEventListener("click", sendOtp);
-document.getElementById("btnResendOtp").addEventListener("click", sendOtp);
-document.getElementById("btnVerifyOtp").addEventListener("click", verifyOtp);
-</script>
-
-
+<script src="script.js"></script>
 </body>
 </html>

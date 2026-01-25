@@ -1,3 +1,4 @@
+using Backend.API.Models;
 public class ExternalApiService
 {
     public bool ValidateMedication(string medication)

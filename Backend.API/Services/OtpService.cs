@@ -1,6 +1,8 @@
 using System;
+using Backend.API.Models;
 
-namespace PharmacyEmergencySystem.Services
+namespace Backend.API.Services
+
 {
     public class OtpService
     {

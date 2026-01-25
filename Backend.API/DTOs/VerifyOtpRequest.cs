@@ -1,4 +1,5 @@
 namespace PharmacyEmergencySystem.DTOs
+
 {
     public class VerifyOTPRequest
     {

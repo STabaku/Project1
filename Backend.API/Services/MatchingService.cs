@@ -1,13 +1,19 @@
-public class MatchingService
+using Backend.API.Models;
+
+
+namespace Backend.API.Services
 {
-    public Pharmacy MatchPharmacy(EmergencyRequest request)
+    public class MatchingService
     {
-        // Simplified matching logic (distance, availability, reliability)
-        return new Pharmacy
+        public Pharmacy MatchPharmacy(EmergencyRequest request)
         {
-            Name = "Nearby Pharmacy",
-            ReliabilityScore = 0.9,
-            HasMedication = true
-        };
+            // Simplified matching logic (distance, availability, reliability)
+            return new Pharmacy
+            {
+                Name = "Nearby Pharmacy",
+                ReliabilityScore = 0.9,
+                HasMedication = true
+            };
+        }
     }
 }
