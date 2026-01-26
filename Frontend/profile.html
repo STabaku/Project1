@@ -338,11 +338,16 @@
   </section>
 
 </div>
+
+
 <script>
+function loadOrders() {
+    const currentUser = localStorage.getItem("currentUser");
+    if (!currentUser) return;
 
+    const allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const orders = allOrders[currentUser] || [];
 
-  function loadOrders() {
-    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
     const tbody = document.getElementById("ordersBody");
     tbody.innerHTML = "";
 
@@ -361,88 +366,33 @@
         tbody.appendChild(tr);
     });
 
-  // Add cancel functionality
-document.querySelectorAll(".btn-cancel").forEach(btn => {
-    const rowStatus = btn.closest("tr").querySelector(".status").textContent;
-    
-    // Disable cancel button if status is On Delivery or Accepted
-    if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
-        btn.disabled = true;
-        btn.style.opacity = 0.5;
-        return;
-    }
-
-    btn.addEventListener("click", () => {
-        const id = parseInt(btn.getAttribute("data-id"));
-        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-        orders = orders.map(o => {
-            if (o.id === id) o.status = "Cancelled";
-            return o;
+    // Cancel buttons
+    tbody.querySelectorAll(".btn-cancel").forEach(btn => {
+        const rowStatus = btn.closest("tr").querySelector(".status").textContent;
+        if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            return;
+        }
+        btn.addEventListener("click", () => {
+            const id = parseInt(btn.getAttribute("data-id"));
+            const userOrders = orders.map(o => {
+                if(o.id === id) o.status = "Cancelled";
+                return o;
+            });
+            allOrders[currentUser] = userOrders;
+            localStorage.setItem("orders", JSON.stringify(allOrders));
+            loadOrders();
         });
-        localStorage.setItem("orders", JSON.stringify(orders));
-        loadOrders();
     });
-});
-
 }
 
-loadOrders();
 
-// Simulate status progression
-setInterval(() => {
-    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    let changed = false;
 
-    orders = orders.map(o => { 
-    if(o.status === "Request Sent") { 
-        o.status = "Stock Verification"; 
-        changed = true; 
-    }
-    else if(o.status === "Stock Verification") { 
-        o.status = "Preparing"; 
-        changed = true; 
-    }
-    else if(o.status === "Preparing") { 
-        o.status = "On Delivery"; 
-        changed = true; 
-    }
-    else if(o.status === "On Delivery") { 
-        o.status = "Accepted";  // new final status
-        changed = true; 
-    }
-    return o;
-});
-
-    if(changed) localStorage.setItem("orders", JSON.stringify(orders));
+// Call after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
     loadOrders();
-}, 5000); // every 5 seconds
-
-
-//ruaj te dhenat per profilin
-const editBtn = document.getElementById("editProfileBtn");
-const inputs = ["fullName", "email", "phone"].map(id => document.getElementById(id));
-
-editBtn.addEventListener("click", () => {
-    if(editBtn.textContent === "Edit Information") {
-        // Enable inputs
-        inputs.forEach(input => input.disabled = false);
-        editBtn.textContent = "Save Changes";
-    } else {
-        // Save to localStorage
-        const profile = {
-            fullName: document.getElementById("fullName").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value
-        };
-        localStorage.setItem("profile", JSON.stringify(profile));
-
-        // Disable inputs again
-        inputs.forEach(input => input.disabled = true);
-        editBtn.textContent = "Edit Information";
-        alert("Profile updated!");
-    }
 });
-
 // Load saved profile on page load
 document.addEventListener("DOMContentLoaded", () => {
     const savedProfile = JSON.parse(localStorage.getItem("profile"));
@@ -493,3 +443,4 @@ renderAddresses();
 <script src="script.js"></script>
 </body>
 </html>
+    
