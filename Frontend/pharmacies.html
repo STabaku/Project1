@@ -159,6 +159,8 @@
 </div>
 
 <script>
+const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+
 // ===== PHARMACIES DATA =====
 const pharmacies = [
   { key: "city", name: "City Pharmacy", address: "Main Street, Tirana", lat: 41.3275, lng: 19.8189, open: true, image: "assets/citypharmacy.jpg" },
@@ -206,7 +208,12 @@ function renderPharmacies(userLat=null, userLng=null, filter="") {
       <h3>${p.name}</h3>
       <small>${p.address}</small>
       ${userLat !== null ? `<div class="details"><p><i class="fa-solid fa-location-dot"></i>${p.distanceVal.toFixed(1)} km away</p></div>` : ""}
-      <button onclick="window.location.href='browse.html?pharmacy=${p.key}'">View Pharmacy</button>
+ ${isLoggedIn 
+  ? `<button onclick="window.location.href='browse.html?pharmacy=${p.key}'">View Pharmacy</button>` 
+  : `<button onclick="alert('Please log in to view this pharmacy.')" style="background:#ccc; cursor:not-allowed;">Login to view</button>`
+}
+
+
     `;
     grid.appendChild(card);
   });

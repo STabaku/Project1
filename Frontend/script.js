@@ -220,6 +220,7 @@ console.log("Sending verify-login payload:", payload);  // debug
     localStorage.setItem("isLoggedIn", "true");
     localStorage.setItem("userIdentifier", identifier);
     localStorage.setItem("userRole", data.role || "User");
+    localStorage.setItem("userId", data.id);
 
     show(ok2, "Login successful. Redirecting...");
 

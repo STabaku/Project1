@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="../Pharma Dashboard/dashboard.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+
+  <a href="#" class="active" onclick="showSection('users')">Users</a>
+  <a href="#" onclick="showSection('requests')">Requests</a>
+  <a href="#" onclick="logout()">Logout</a>
+</div>
+
+<div class="main">
+
+  <!-- USERS -->
+  <div id="users" class="section">
+    <h3 class="section-title">👤 All Users</h3>
+    <div id="addUser" class="section">
+  <h3 class="section-title">➕ Add New User</h3>
+
+  <div class="form-wrapper">
+    <input type="text" id="newUserName" placeholder="Name" required>
+    <input type="email" id="newUserEmail" placeholder="Email" required>
+    <select id="newUserGender">
+      <option value="">Gender (optional)</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>
+    <button onclick="addUser()">Add User</button>
+  </div>
+
+  <p id="addUserMsg"></p>
+</div>
+
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- REQUESTS -->
+  <div id="requests" class="section hidden">
+    <h3 class="section-title">🚑 All Emergency Requests</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>UserId</th>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Address</th>
+            <th>Status</th>
+          </tr>
+          <td>
+  
+        </thead>
+        <tbody id="requestsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
