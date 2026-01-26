@@ -5,79 +5,146 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Request Medicine - 24/7 Emergency Pharmacy</title>
 
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Font Awesome Icons -->
+<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<!-- CSS External -->
-<link rel="stylesheet" href="style.css">
+
 <style>
-
-.navbar{
-  background: linear-gradient(90deg, #f9f9f9, #ffffff);
-  color: #0a58ca;
-  padding: 18px 0;
+/* ================= NAVBAR ================= */
+.navbar {
+    background: #0f3d5e;   
+    padding: 6px 0;  
+    padding-bottom: 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.nav-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navbar-brand img {
+    width: 190px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+.nav-links {
+    display: flex;
+    gap: 28px;
+}
+.nav-link {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    font-size: 17px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+.nav-link i {
+    font-size: 15px;
+    opacity: 0.9;
+}
+.nav-link:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
 }
 
-/* FORMA E MADHE DHE E DUKSHME */
+/* ================= PAGE LAYOUT ================= */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #e0f7f4;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* CENTER FORM */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* CARD FORM */
 .card-auth {
-  width: 100%;
-  max-width: 520px;
-  margin-top: 200px;
-  padding: 35px 35px 40px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-  border-radius: 18px;
-  background: #fff;
+    width: 100%;
+    max-width: 520px;
+    padding: 35px 35px 40px;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
 }
-
-/* INPUT & SELECT */
+.card-auth h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 25px;
+    color: #0c4a84;
+}
+.field {
+    margin-bottom: 18px;
+}
+.field label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #0c4a84;
+}
 .field input,
 .field select {
-  font-size: 16px;
-  padding: 13px 14px;
-  border-radius: 12px;
-  border: 1px solid #d9e2ef;
-  width: 100%;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid #d9e2ef;
+    font-size: 15px;
+    outline: none;
+    transition: 0.3s;
+}
+.field input:focus,
+.field select:focus {
+    border-color: #0c4a84;
+    box-shadow: 0 0 5px rgba(12,74,132,0.3);
+}
+.row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
-/* SELECT */
-select {
-  background: #fff;
-}
-
-/* BUTONI */
+/* BUTTON */
 .btn-primary {
-  margin-top: 15px;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 12px;
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 17px;
+    border-radius: 12px;
+    background-color: #0c4a84;
+    border: none;
+    color: white;
+    width: 100%;
+    transition: 0.3s;
+}
+.btn-primary:hover {
+    background-color: #1980d3;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
 }
 
-/* LOADER */
-.loader {
-  width: 60px;
-  height: 60px;
-  border: 6px solid #e9ecef;
-  border-top: 6px solid #28a745;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 30px auto;
+/* NOTICE MESSAGES */
+.notice {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    display: none;
 }
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* RESULT CARD */
-.pharmacy-result {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 15px;
-}
+.notice.ok { background: #d4edda; color: #155724; }
+.notice.err { background: #f8d7da; color: #721c24; }
 
 </style>
 </head>
@@ -87,180 +154,94 @@ select {
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar">
   <div class="nav-container">
-
-    <!-- LOGO -->
-    <a class="navbar-brand" href="#">
-      <img src="assets/logo.png" alt="24/7 Emergency Pharmacy">
-    </a>
-
-    <!-- MENU -->
+    <a class="navbar-brand" href="#"><img src="assets/logo.png" alt="24/7 Emergency Pharmacy"></a>
     <div class="nav-links">
-      <a class="nav-link" href="index.html">
-        <i class="fa fa-house"></i> Home
-      </a>
-      <a class="nav-link" href="request.html">
-        <i class="fa fa-notes-medical"></i> Request Medicine
-      </a>
-      <a class="nav-link" href="pharmacies.html">
-        <i class="fa fa-location-dot"></i> Nearby Pharmacies
-      </a>
-       <a class="nav-link" href="profile.html"><i class="fa fa-user"></i> My profile</a>
-      
-    </div>
+      <a class="nav-link" href="index.html"><i class="fa fa-house"></i> Home</a>
+      <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
+      <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
 
+      <!-- Dynamic login/profile link -->
+      <span id="auth-link"></span>
+    </div>
   </div>
 </nav>
 
-    <!-- TITULLI LART -->
-    <div>
-      <h1>Emergency Medicine Request</h1>
-      <p>Send an urgent request and we will find the nearest available pharmacy.</p>
+<!-- ================= CENTER FORM ================= -->
+<div class="main-content">
+  <div class="card-auth">
+    <h2><i class="fa-solid fa-notes-medical me-2"></i> Request Details</h2>
+
+    <div class="field">
+      <label>Medicine Name</label>
+      <input id="medicine" placeholder="e.g. Insulin, Paracetamol">
     </div>
 
-    <!-- FORMA POSHTË -->
-    <div class="card-auth">
-
-      <!-- STEP 1 -->
-      <div id="step1">
-        <h2><i class="fa-solid fa-notes-medical me-2"></i> Request Details</h2>
-
-        <div class="field">
-          <label>Medicine Name</label>
-          <input id="medicine" placeholder="e.g. Insulin, Paracetamol">
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label>Quantity</label>
-            <input id="quantity" type="number" placeholder="e.g. 2">
-          </div>
-
-          <div class="field">
-            <label>Urgency</label>
-            <select id="urgency">
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Delivery Address</label>
-          <input id="address" placeholder="Street, City">
-        </div>
-
-        <button class="btn btn-primary" id="btnSendRequest">
-          <i class="fa-solid fa-paper-plane me-2"></i> Send Emergency Request
-        </button>
-
-        <div class="notice ok" id="ok1"></div>
-        <div class="notice err" id="err1"></div>
+    <div class="row">
+      <div class="field">
+        <label>Quantity</label>
+        <input id="quantity" type="number" placeholder="e.g. 2">
       </div>
-
-      <!-- STEP 2 -->
-      <div id="step2" style="display:none;">
-        <h2><i class="fa-solid fa-gear me-2"></i> Matching Pharmacy...</h2>
-        <p>We are searching for the best available pharmacy near you.</p>
-        <div class="loader"></div>
+      <div class="field">
+        <label>Urgency</label>
+        <select id="urgency">
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
       </div>
-
-      <!-- STEP 3 -->
-      <div id="step3" style="display:none;">
-        <h2><i class="fa-solid fa-check-circle me-2"></i> Pharmacy Found</h2>
-
-        <div class="pharmacy-result">
-          <p><strong>Pharmacy:</strong> <span id="pharmacyName"></span></p>
-          <p><strong>Distance:</strong> <span id="pharmacyDistance"></span></p>
-          <p><strong>Estimated Time:</strong> <span id="pharmacyTime"></span></p>
-          <p><strong>Status:</strong> Order Confirmed</p>
-
-          <button class="btn btn-secondary" onclick="window.location.href='index.html'">
-            Back to Home
-          </button>
-        </div>
-      </div>
-
     </div>
+
+    <div class="field">
+      <label>Delivery Address</label>
+      <input id="address" placeholder="Street, City">
+    </div>
+
+    <button class="btn btn-primary" id="btnSendRequest">
+      <i class="fa-solid fa-paper-plane me-2"></i> Send Emergency Request
+    </button>
+
+    <div class="notice ok" id="ok1"></div>
+    <div class="notice err" id="err1"></div>
   </div>
-</section>
+</div>
 
+<!-- ================= SCRIPTS ================= -->
 <script>
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const step3 = document.getElementById("step3");
+// ================= Dynamic Navbar Login/Profile =================
+const authLink = document.getElementById("auth-link");
+const token = localStorage.getItem("token"); // check login token
 
+if (token) {
+    authLink.innerHTML = '<a class="nav-link" href="profile.html"><i class="fa fa-user"></i> My Profile</a>';
+} else {
+    authLink.innerHTML = '<a class="nav-link" href="login.html"><i class="fa fa-right-to-bracket"></i> Login</a>';
+}
+
+// ================= Form Submission Simulation =================
 const ok1 = document.getElementById("ok1");
 const err1 = document.getElementById("err1");
 
-const pharmacies = [
-  { name: "Pharmacy Vita", distance: "1.2 km", time: "10 minutes" },
-  { name: "City Pharmacy", distance: "2.0 km", time: "15 minutes" },
-  { name: "Health Plus Pharmacy", distance: "2.5 km", time: "18 minutes" }
-];
+document.getElementById("btnSendRequest").addEventListener("click", () => {
+    const medicine = document.getElementById("medicine").value.trim();
+    const quantity = document.getElementById("quantity").value;
+    const address = document.getElementById("address").value.trim();
 
-document.getElementById("btnSendRequest").addEventListener("click", async () => {
-  const medicine = document.getElementById("medicine").value.trim();
-  const quantity = document.getElementById("quantity").value;
-  const address = document.getElementById("address").value.trim();
-
-  if (!medicine || !quantity || !address) {
-    err1.style.display = "block";
-    err1.textContent = "Please fill in all required fields.";
-    return;
-  }
-
-  // Remove the token check
-  // const token = localStorage.getItem("token");
-  // if (!token) { ... }
-
-  err1.style.display = "none";
-  ok1.style.display = "block";
-  ok1.textContent = "Sending request to server...";
-
-  try {
-    const response = await fetch("http://localhost:5183/api/requests/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-        // You can add Authorization later when using JWT
-      },
-      body: JSON.stringify({
-       // ← send logged in userId
-        MedicineName: medicine,
-        Quantity: parseInt(quantity),
-        Address: address
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error("Request failed");
+    if (!medicine || !quantity || !address) {
+        err1.style.display = "block";
+        err1.textContent = "Please fill in all required fields.";
+        ok1.style.display = "none";
+        return;
     }
 
-    const data = await response.json();
-
-    // Step animation
-    step1.style.display = "none";
-    step2.style.display = "block";
+    err1.style.display = "none";
+    ok1.style.display = "block";
+    ok1.textContent = "Sending request...";
 
     setTimeout(() => {
-      const selected = pharmacies[Math.floor(Math.random() * pharmacies.length)];
-      document.getElementById("pharmacyName").textContent = selected.name;
-      document.getElementById("pharmacyDistance").textContent = selected.distance;
-      document.getElementById("pharmacyTime").textContent = selected.time;
-
-      step2.style.display = "none";
-      step3.style.display = "block";
-    }, 2000);
-
-  } catch (err) {
-    err1.style.display = "block";
-    err1.textContent = err.message;
-  }
+        ok1.textContent = "Request sent successfully!";
+    }, 1500);
 });
-
 </script>
 
-<script src="script.js"></script>
 </body>
 </html>

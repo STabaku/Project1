@@ -6,21 +6,18 @@
 }
 
 body {
-    background: #eef3f8;
-    font-family: "Segoe UI", sans-serif;
+    background: #e0f7f4; /* Soft background for non-card sections */
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    color: #1f2937;
 }
 
 /* ================= NAVBAR ================= */
 
 .navbar {
-    background: transparent;
-    backdrop-filter: blur(6px);
-    padding: 10px 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+    background: #0f3d5e;   /* NEW color, explained below */
+    padding: 6px 0;  
+    padding-bottom: 0;      /* REDUCED */
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
 
 .nav-container {
@@ -32,31 +29,27 @@ body {
     justify-content: space-between;
 }
 
-/* LOGO */
 .navbar-brand img {
-    width: 200px;
-    height: auto;
+    width: 190px;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
 }
 
-/* LINKS */
 .nav-links {
     display: flex;
-    align-items: center;
     gap: 28px;
 }
 
 .nav-link {
-    color: 0c4a84;
+    color: #ffffff;
     font-weight: 600;
-    font-size: 16px;
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
+    padding: 6px 10px;     /* WAS 8px 12px */
+    font-size: 17px;
     border-radius: 6px;
-    transition: 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .nav-link i {
@@ -64,55 +57,114 @@ body {
     opacity: 0.9;
 }
 
-/* HOVER */
 .nav-link:hover {
-    color: #0c4a84;
-    background: rgba(255,255,255,0.12);
-    transform: translateY(-1px);
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
 }
 
 /* ================= HERO MEDICAL STYLE ================= */
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(234,250,247,0.95) 0%,
+        rgba(234,250,247,0.85) 40%,
+        rgba(234,250,247,0.4) 70%,
+        rgba(234,250,247,0) 100%
+    );
+}
 
 .hero {
     position: relative;
-    height: 680px;
-    color:  #0c4a84;
+    height: 400px; /* slim hero */
     display: flex;
-    align-items: center;
-    background-image: url("assets/hero.jpg");
-
+    align-items: center; /* vertically center text more */
+    background-image: url("assets/ekg1.jpg");
+    background-size: cover;
+    background-position: bottom center; /* focus on bottom of image */
 }
 
 /* HERO CONTAINER */
 .hero-container {
-    width: 800px;
+    width: 90%;
     max-width: 1200px;
     margin: auto;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding-top: 100px;
+    justify-content: flex-start;
+    padding-left: 90px;   /* ADD THIS */
+    position: relative;
+    z-index: 1;
 }
+
 
 /* HERO TEXT */
 .hero-text {
-    max-width: 520px;
-    margin-top: 120px;
+    max-width: 650px;
+    margin-top: 0;
 }
 
+/* HERO HEADLINE */
 .hero-text h1 {
-    font-size: 52px;
+    font-size: 46px; /* bigger text */
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     letter-spacing: 1px;
+    color: #0c4a84; /* dark blue */
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.2); /* subtle shadow for contrast */
 }
 
+/* HERO PARAGRAPH */
 .hero-text p {
-    font-size: 18px;
-    margin-bottom: 30px;
-    line-height: 1.6;
-    opacity: 0.95;
+    font-size: 20px; /* bigger text */
+    margin-bottom: 20px;
+    line-height: 1.5;
+    color: #0c4a84; /* dark blue */
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
+    white-space: nowrap;
 }
+
+.hero-text button {
+    background: linear-gradient(135deg, #20c997, #38efc3);
+    color: #A52A2A !important;
+    border: none;
+    padding: 12px 26px;
+    border-radius: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-text button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(32,201,151,0.5);
+}
+
+
+/* HERO ICON */
+.hero-icon-box {
+    position: relative;
+}
+
+.hero-icon-box i {
+    font-size: 150px;
+    opacity: 0.25;
+    color: white;
+    animation: float 6s ease-in-out infinite;
+}
+
+
+
+/* ================= ANIMATION ================= */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
 
 /* BUTTONS SI TEMPLATE */
 .hero-text button {
@@ -183,7 +235,7 @@ label {
 .btn-green {
     margin-top: 20px;
     width: 100%;
-    background: #0c4a84;
+    background: #0f3d5e;
     border: none;
     padding: 12px;
     color: white;
@@ -220,34 +272,71 @@ label {
 /* ================= STATUS ================= */
 
 .status-section {
-    margin-top: 50px;
+    margin-top: 60px;
+    text-align: center;
+}
+
+.status-section h4 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #0c4a84; /* dark blue heading */
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
 .status-box {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    margin-top: 15px;
+    background: #f0fcfb; /* very light teal for interest */
+    padding: 20px 15px;
+    border-radius: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    display: flex;
+    flex-wrap: wrap; /* wrap on smaller screens */
+    justify-content: center;
+    gap: 15px;
 }
 
+/* Status steps */
 .status-step {
-    display: inline-block;
-    padding: 10px 20px;
-    margin-right: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
     border-radius: 30px;
-    background: #e9ecef;
+    background: #e0f7f4; /* soft green background */
+    color: #0c4a84;      /* dark text for contrast */
+    font-weight: 500;
+    font-size: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+    cursor: default;
 }
 
+.status-step:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    background: #20c997;  /* brighter green on hover */
+    color: white;          /* text turns white for contrast */
+}
+
+/* Active step (optional) */
 .status-step.active {
     background: #0c4a84;
     color: white;
 }
+.tip-blue { background: #cce5ff; color: #0c4a84; }
+.tip-red { background: #ffd6d6; color: #b30000; }
+.tip-orange { background: #ffe5b4; color: #b35c00; }
+.tip-green { background: #d4f7dc; color: #0c4a84; }
+.tip-purple { background: #e6d4ff; color: #4b0082; }
+.tip-yellow { background: #fff9cc; color: #b38f00; }
+
 
 /* ================= FOOTER ================= */
 
 .footer {
-  background: linear-gradient(135deg, #0c4a84, #0c4a84);
+  background: linear-gradient(135deg, #0f3d5e);
   color: #ffffff;
   padding: 60px 0 30px;
   position: relative;
