@@ -35,5 +35,6 @@ public IActionResult Send([FromBody] EmergencyRequest request)
         {
             return Ok(_requestService.GetAll());
         }
+        
     } // end class
 } // end namespace
