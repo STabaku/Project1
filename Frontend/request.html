@@ -199,7 +199,7 @@ const pharmacies = [
   { name: "Health Plus Pharmacy", distance: "2.5 km", time: "18 minutes" }
 ];
 
-document.getElementById("btnSendRequest").addEventListener("click", () => {
+document.getElementById("btnSendRequest").addEventListener("click", async () => {
   const medicine = document.getElementById("medicine").value.trim();
   const quantity = document.getElementById("quantity").value;
   const address = document.getElementById("address").value.trim();
@@ -210,27 +210,57 @@ document.getElementById("btnSendRequest").addEventListener("click", () => {
     return;
   }
 
+  // Remove the token check
+  // const token = localStorage.getItem("token");
+  // if (!token) { ... }
+
   err1.style.display = "none";
   ok1.style.display = "block";
-  ok1.textContent = "Request sent successfully. Searching for pharmacy...";
+  ok1.textContent = "Sending request to server...";
 
-  setTimeout(() => {
+  try {
+    const response = await fetch("http://localhost:5183/api/requests/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+        // You can add Authorization later when using JWT
+      },
+      body: JSON.stringify({
+       // ← send logged in userId
+        MedicineName: medicine,
+        Quantity: parseInt(quantity),
+        Address: address
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("Request failed");
+    }
+
+    const data = await response.json();
+
+    // Step animation
     step1.style.display = "none";
     step2.style.display = "block";
-  }, 800);
 
-  setTimeout(() => {
-    const selected = pharmacies[Math.floor(Math.random() * pharmacies.length)];
+    setTimeout(() => {
+      const selected = pharmacies[Math.floor(Math.random() * pharmacies.length)];
+      document.getElementById("pharmacyName").textContent = selected.name;
+      document.getElementById("pharmacyDistance").textContent = selected.distance;
+      document.getElementById("pharmacyTime").textContent = selected.time;
 
-    document.getElementById("pharmacyName").textContent = selected.name;
-    document.getElementById("pharmacyDistance").textContent = selected.distance;
-    document.getElementById("pharmacyTime").textContent = selected.time;
+      step2.style.display = "none";
+      step3.style.display = "block";
+    }, 2000);
 
-    step2.style.display = "none";
-    step3.style.display = "block";
-  }, 2500);
+  } catch (err) {
+    err1.style.display = "block";
+    err1.textContent = err.message;
+  }
 });
+
 </script>
+
 <script src="script.js"></script>
 </body>
 </html>

@@ -292,22 +292,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-const btnSendRequest = document.getElementById("btnSendRequest");
-if (btnSendRequest) {
-  btnSendRequest.addEventListener("click", () => {
-    const medicine = document.getElementById("medicine").value.trim();
-    const quantity = document.getElementById("quantity").value;
-    const address = document.getElementById("address").value.trim();
-
-    if (!medicine || !quantity || !address) {
-      err1.style.display = "block";
-      err1.textContent = "Please fill in all required fields.";
-      return;
-    }
-
-    // You can continue your request handling here
-  });
-}
 
 
 

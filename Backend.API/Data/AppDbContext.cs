@@ -9,7 +9,9 @@ namespace Backend.API.Data
 
         // Tables in your database
         public DbSet<User> Users { get; set; }
-        public DbSet<EmergencyRequest> EmergencyRequests { get; set; }
+      public DbSet<Order> Orders { get; set; }
+public DbSet<EmergencyRequest> EmergencyRequests { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
