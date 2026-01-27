@@ -338,139 +338,109 @@
   </section>
 
 </div>
+
+
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+function loadOrders() {
+    const currentUser = localStorage.getItem("currentUser");
+    if (!currentUser) return;
 
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in to view your profile.");
-        window.location.href = "login.html";
-        return;
-    }
+    const allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const orders = allOrders[currentUser] || [];
 
-    function loadOrders() {
-        const orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
-        const tbody = document.getElementById("ordersBody");
-        tbody.innerHTML = "";
+    const tbody = document.getElementById("ordersBody");
+    tbody.innerHTML = "";
 
-        orders.forEach(order => {
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td>#${order.id}</td>
-                <td>${order.medicine}</td>
-                <td>${order.pharmacy}</td>
-                <td>${order.date}</td>
-                <td><span class="status ${order.status.toLowerCase().replace(/\s/g,'')}">${order.status}</span></td>
-                <td>
-                    <button class="btn btn-danger btn-cancel" data-id="${order.id}">Cancel</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        // Add cancel functionality
-        document.querySelectorAll(".btn-cancel").forEach(btn => {
-            const rowStatus = btn.closest("tr").querySelector(".status").textContent;
-            
-            if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
-                btn.disabled = true;
-                btn.style.opacity = 0.5;
-                return;
-            }
-
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.getAttribute("data-id"));
-                let orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
-                orders = orders.map(o => {
-                    if (o.id === id) o.status = "Cancelled";
-                    return o;
-                });
-                localStorage.setItem(`orders_${userId}`, JSON.stringify(orders));
-                loadOrders();
-            });
-        });
-    }
-
-    loadOrders();
-
-    // Simulate status progression
-    setInterval(() => {
-        let orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
-        let changed = false;
-
-        orders = orders.map(o => { 
-            if(o.status === "Request Sent") { o.status = "Stock Verification"; changed = true; }
-            else if(o.status === "Stock Verification") { o.status = "Preparing"; changed = true; }
-            else if(o.status === "Preparing") { o.status = "On Delivery"; changed = true; }
-            else if(o.status === "On Delivery") { o.status = "Accepted"; changed = true; }
-            return o;
-        });
-
-        if(changed) localStorage.setItem(`orders_${userId}`, JSON.stringify(orders));
-        loadOrders();
-    }, 5000);
-
-    // ===== Profile info =====
-    const editBtn = document.getElementById("editProfileBtn");
-    const inputs = ["fullName", "email", "phone"].map(id => document.getElementById(id));
-
-    editBtn.addEventListener("click", () => {
-        if(editBtn.textContent === "Edit Information") {
-            inputs.forEach(input => input.disabled = false);
-            editBtn.textContent = "Save Changes";
-        } else {
-            const profile = {
-                fullName: document.getElementById("fullName").value,
-                email: document.getElementById("email").value,
-                phone: document.getElementById("phone").value
-            };
-            localStorage.setItem("profile", JSON.stringify(profile));
-            inputs.forEach(input => input.disabled = true);
-            editBtn.textContent = "Edit Information";
-            alert("Profile updated!");
-        }
+    orders.forEach(order => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>#${order.id}</td>
+            <td>${order.medicine}</td>
+            <td>${order.pharmacy}</td>
+            <td>${order.date}</td>
+            <td><span class="status ${order.status.toLowerCase().replace(/\s/g,'')}">${order.status}</span></td>
+            <td>
+                <button class="btn btn-danger btn-cancel" data-id="${order.id}">Cancel</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
     });
 
+    // Cancel buttons
+    tbody.querySelectorAll(".btn-cancel").forEach(btn => {
+        const rowStatus = btn.closest("tr").querySelector(".status").textContent;
+        if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            return;
+        }
+        btn.addEventListener("click", () => {
+            const id = parseInt(btn.getAttribute("data-id"));
+            const userOrders = orders.map(o => {
+                if(o.id === id) o.status = "Cancelled";
+                return o;
+            });
+            allOrders[currentUser] = userOrders;
+            localStorage.setItem("orders", JSON.stringify(allOrders));
+            loadOrders();
+        });
+    });
+}
+
+
+
+// Call after DOM loads
+document.addEventListener("DOMContentLoaded", () => {
+    loadOrders();
+});
+// Load saved profile on page load
+document.addEventListener("DOMContentLoaded", () => {
     const savedProfile = JSON.parse(localStorage.getItem("profile"));
     if(savedProfile){
         document.getElementById("fullName").value = savedProfile.fullName;
         document.getElementById("email").value = savedProfile.email;
         document.getElementById("phone").value = savedProfile.phone;
     }
-
-    // ===== Addresses =====
-    const addressesContainer = document.getElementById("addressesContainer");
-    const addAddressBtn = document.getElementById("addAddressBtn");
-    let addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
-
-    function renderAddresses() {
-        addressesContainer.innerHTML = "";
-        addresses.forEach(addr => {
-            const div = document.createElement("div");
-            div.classList.add("address");
-            div.innerHTML = `<strong>${addr.label}</strong><br>${addr.street}<br>Phone: ${addr.phone}`;
-            addressesContainer.appendChild(div);
-        });
-    }
-
-    addAddressBtn.addEventListener("click", () => {
-        const label = document.getElementById("addressLabel").value;
-        const street = document.getElementById("addressStreet").value;
-        const phone = document.getElementById("addressPhone").value;
-
-        if(label && street && phone){
-            addresses.push({label, street, phone});
-            localStorage.setItem("addresses", JSON.stringify(addresses));
-            renderAddresses();
-            document.getElementById("addressLabel").value = "";
-            document.getElementById("addressStreet").value = "";
-            document.getElementById("addressPhone").value = "";
-        }
-    });
-
-    renderAddresses();
 });
+
+
+//vendos te dhenat per lokacionin
+
+
+const addressesContainer = document.getElementById("addressesContainer");
+const addAddressBtn = document.getElementById("addAddressBtn");
+
+let addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
+
+function renderAddresses() {
+  addressesContainer.innerHTML = "";
+  addresses.forEach((addr, i) => {
+    const div = document.createElement("div");
+    div.classList.add("address");
+    div.innerHTML = `<strong>${addr.label}</strong><br>${addr.street}<br>Phone: ${addr.phone}`;
+    addressesContainer.appendChild(div);
+  });
+}
+
+addAddressBtn.addEventListener("click", () => {
+  const label = document.getElementById("addressLabel").value;
+  const street = document.getElementById("addressStreet").value;
+  const phone = document.getElementById("addressPhone").value;
+  
+  if(label && street && phone){
+    addresses.push({label, street, phone});
+    localStorage.setItem("addresses", JSON.stringify(addresses));
+    renderAddresses();
+    document.getElementById("addressLabel").value = "";
+    document.getElementById("addressStreet").value = "";
+    document.getElementById("addressPhone").value = "";
+  }
+});
+
+renderAddresses();
+
 </script>
 <script src="script.js"></script>
 </body>
 </html>
+    

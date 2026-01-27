@@ -193,37 +193,27 @@ body { background: var(--bg); font-family: Arial, sans-serif; }
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
+document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("productGrid");
     const title = document.getElementById("pharmacyTitle");
     if (!grid) return;
 
-    // Get logged-in user
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in to view this pharmacy.");
-        window.location.href = "login.html";
-        return;
-    }
-
-    // Read pharmacy from URL
     const params = new URLSearchParams(window.location.search);
     const pharmacy = params.get("pharmacy");
 
     const pharmacyNames = {
-      city: "City Pharmacy",
-      healthplus: "Health Plus Pharmacy",
-      vita: "Pharmacy Vita",
-      greencross: "Green Cross Pharmacy",
-      medicare: "Medicare Pharmacy",
-      family: "Family Pharmacy",
-      careplus: "Care Plus Pharmacy",
-      rapid: "Rapid Pharmacy"
+        city: "City Pharmacy",
+        healthplus: "Health Plus Pharmacy",
+        vita: "Pharmacy Vita",
+        greencross: "Green Cross Pharmacy",
+        medicare: "Medicare Pharmacy",
+        family: "Family Pharmacy",
+        careplus: "Care Plus Pharmacy",
+        rapid: "Rapid Pharmacy"
     };
 
-    if(pharmacy && pharmacyNames[pharmacy]){
-      title.textContent = `Medications - ${pharmacyNames[pharmacy]}`;
+    if (pharmacy && pharmacyNames[pharmacy]) {
+        title.textContent = `Medications - ${pharmacyNames[pharmacy]}`;
     }
 
     const pharmacyData = {
@@ -262,22 +252,10 @@ document.addEventListener("DOMContentLoaded", function () {
             { name: "Insulin", info: "Injection", price: "$20.99", img: "assets/insulin.jpg" }
         ]
     };
-
-    const meds = pharmacyData[pharmacy] || [];
-
-    if(!meds.length){
-      grid.innerHTML = "<p style='font-weight:600;color:#a11d2d;'>No medications available for this pharmacy.</p>";
-      return;
-    }
-
-    // Optional: Search filter
-    window.filterProducts = function(){
-        const query = document.getElementById("medSearchInput").value.toLowerCase();
-        const cards = grid.querySelectorAll(".product");
-        cards.forEach(card=>{
-            const name = card.querySelector("h3").textContent.toLowerCase();
-            card.style.display = name.includes(query) ? "block" : "none";
-        });
+const meds = pharmacyData[pharmacy] || [];
+    if (!meds.length) {
+        grid.innerHTML = "<p style='font-weight:600;color:#a11d2d;'>No medications available for this pharmacy.</p>";
+        return;
     }
 
     // Render medicines
@@ -293,10 +271,15 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         grid.appendChild(card);
 
-        // Add click event for "Add to Cart"
         card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
+            const currentUser = localStorage.getItem("currentUser");
+            if (!currentUser) {
+                alert("Please log in first!");
+                return;
+            }
+
             const order = {
-                id: Date.now(), // unique order id
+                id: Date.now(),
                 medicine: med.name,
                 info: med.info,
                 price: med.price,
@@ -305,17 +288,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 status: "Request Sent"
             };
 
-            // Save order per user
-            let orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
-            orders.push(order);
-            localStorage.setItem(`orders_${userId}`, JSON.stringify(orders));
+            // Load orders object
+            let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+
+            // Create array for current user if it doesn't exist
+            if (!allOrders[currentUser]) allOrders[currentUser] = [];
+
+            // Add order
+            allOrders[currentUser].push(order);
+
+            // Save back to localStorage
+            localStorage.setItem("orders", JSON.stringify(allOrders));
 
             alert(`${med.name} added to cart!`);
-            window.location.href = "profile.html"; // redirect to profile
+            window.location.href = "profile.html";
         });
     });
-
 });
+</script>
+
 </script>
 <script src="script.js"></script>
 </body>
