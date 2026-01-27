@@ -342,15 +342,14 @@
 
 <script>
 function loadOrders() {
-    const currentUserId = localStorage.getItem("userId");
-    if (!currentUserId) {
+    const userId = localStorage.getItem("userId");
+    if(!userId){
         alert("Please log in to see your orders.");
-        window.location.href = "login.html";
         return;
     }
 
-    let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-    const orders = allOrders[currentUserId] || [];
+    const allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+    const orders = allOrders[userId] || [];
 
     const tbody = document.getElementById("ordersBody");
     tbody.innerHTML = "";
@@ -370,9 +369,10 @@ function loadOrders() {
         tbody.appendChild(tr);
     });
 
-    // Cancel button functionality
+    // Add cancel functionality
     document.querySelectorAll(".btn-cancel").forEach(btn => {
         const rowStatus = btn.closest("tr").querySelector(".status").textContent;
+
         if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
             btn.disabled = true;
             btn.style.opacity = 0.5;
@@ -381,12 +381,11 @@ function loadOrders() {
 
         btn.addEventListener("click", () => {
             const id = parseInt(btn.getAttribute("data-id"));
-            let userOrders = allOrders[currentUserId];
-            userOrders = userOrders.map(o => {
+            let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+            allOrders[userId] = allOrders[userId].map(o => {
                 if (o.id === id) o.status = "Cancelled";
                 return o;
             });
-            allOrders[currentUserId] = userOrders;
             localStorage.setItem("orders", JSON.stringify(allOrders));
             loadOrders();
         });
@@ -395,14 +394,17 @@ function loadOrders() {
 
 loadOrders();
 
-// Simulate status progression for current user only
+// Simulate status progression
 setInterval(() => {
-    const currentUserId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId");
+    if(!userId) return;
+
     let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-    let userOrders = allOrders[currentUserId] || [];
+    if(!allOrders[userId]) return;
+
     let changed = false;
 
-    userOrders = userOrders.map(o => {
+    allOrders[userId] = allOrders[userId].map(o => {
         if(o.status === "Request Sent") { o.status = "Stock Verification"; changed = true; }
         else if(o.status === "Stock Verification") { o.status = "Preparing"; changed = true; }
         else if(o.status === "Preparing") { o.status = "On Delivery"; changed = true; }
@@ -410,12 +412,74 @@ setInterval(() => {
         return o;
     });
 
-    allOrders[currentUserId] = userOrders;
     if(changed) localStorage.setItem("orders", JSON.stringify(allOrders));
     loadOrders();
 }, 5000);
-</script>
 
+// Profile info code unchanged
+const editBtn = document.getElementById("editProfileBtn");
+const inputs = ["fullName", "email", "phone"].map(id => document.getElementById(id));
+
+editBtn.addEventListener("click", () => {
+    if(editBtn.textContent === "Edit Information") {
+        inputs.forEach(input => input.disabled = false);
+        editBtn.textContent = "Save Changes";
+    } else {
+        const profile = {
+            fullName: document.getElementById("fullName").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value
+        };
+        localStorage.setItem("profile", JSON.stringify(profile));
+        inputs.forEach(input => input.disabled = true);
+        editBtn.textContent = "Edit Information";
+        alert("Profile updated!");
+    }
+});
+
+// Load saved profile on page load
+document.addEventListener("DOMContentLoaded", () => {
+    const savedProfile = JSON.parse(localStorage.getItem("profile"));
+    if(savedProfile){
+        document.getElementById("fullName").value = savedProfile.fullName;
+        document.getElementById("email").value = savedProfile.email;
+        document.getElementById("phone").value = savedProfile.phone;
+    }
+});
+
+// Address code unchanged
+const addressesContainer = document.getElementById("addressesContainer");
+const addAddressBtn = document.getElementById("addAddressBtn");
+
+let addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
+
+function renderAddresses() {
+  addressesContainer.innerHTML = "";
+  addresses.forEach((addr, i) => {
+    const div = document.createElement("div");
+    div.classList.add("address");
+    div.innerHTML = `<strong>${addr.label}</strong><br>${addr.street}<br>Phone: ${addr.phone}`;
+    addressesContainer.appendChild(div);
+  });
+}
+
+addAddressBtn.addEventListener("click", () => {
+  const label = document.getElementById("addressLabel").value;
+  const street = document.getElementById("addressStreet").value;
+  const phone = document.getElementById("addressPhone").value;
+
+  if(label && street && phone){
+    addresses.push({label, street, phone});
+    localStorage.setItem("addresses", JSON.stringify(addresses));
+    renderAddresses();
+    document.getElementById("addressLabel").value = "";
+    document.getElementById("addressStreet").value = "";
+    document.getElementById("addressPhone").value = "";
+  }
+});
+
+renderAddresses();
+</script>
 
 <script src="script.js"></script>
 </body>

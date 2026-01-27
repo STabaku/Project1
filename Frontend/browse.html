@@ -199,18 +199,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("pharmacyTitle");
     if (!grid) return;
 
-    // Get current logged-in user
-    const currentUserId = localStorage.getItem("userId");
-    if (!currentUserId) {
-        alert("Please log in to view and order products.");
-        window.location.href = "login.html";
-        return;
-    }
-
     // Read pharmacy from URL
     const params = new URLSearchParams(window.location.search);
     const pharmacy = params.get("pharmacy");
 
+    // Map pharmacy keys to display names
     const pharmacyNames = {
       city: "City Pharmacy",
       healthplus: "Health Plus Pharmacy",
@@ -280,7 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Render meds
+    // Render medicines
     meds.forEach(med => {
         const card = document.createElement('div');
         card.classList.add('card', 'product');
@@ -293,7 +286,14 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         grid.appendChild(card);
 
+        // Add click event for "Add to Cart"
         card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
+            const userId = localStorage.getItem("userId");
+            if(!userId){
+                alert("Please log in first!");
+                return;
+            }
+
             const order = {
                 id: Date.now(),
                 medicine: med.name,
@@ -304,19 +304,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 status: "Request Sent"
             };
 
-            // Save per user
-            let orders = JSON.parse(localStorage.getItem("orders") || "{}");
-            if(!orders[currentUserId]) orders[currentUserId] = [];
-            orders[currentUserId].push(order);
-            localStorage.setItem("orders", JSON.stringify(orders));
+            // Get orders for this user
+            let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
+            if(!allOrders[userId]) allOrders[userId] = [];
+
+            allOrders[userId].push(order);
+
+            localStorage.setItem("orders", JSON.stringify(allOrders));
 
             alert(`${med.name} added to cart!`);
-            window.location.href = "profile.html"; 
+            window.location.href = "profile.html";
         });
     });
 
 });
 </script>
+
 <script src="script.js"></script>
 </body>
 </html>
