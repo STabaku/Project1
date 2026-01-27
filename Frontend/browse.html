@@ -154,7 +154,6 @@ body { background: var(--bg); font-family: Arial, sans-serif; }
 </nav>
 
 
-<!-- MAIN GRID -->
 <div class="main">
 
   <!-- SIDEBAR -->
@@ -199,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("pharmacyTitle");
     if (!grid) return;
 
-    // Read pharmacy from URL
     const params = new URLSearchParams(window.location.search);
     const pharmacy = params.get("pharmacy");
 
@@ -296,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const order = {
         id: Date.now(),
-        user: currentUser,   // 👈 VERY IMPORTANT
+        user: currentUser,   
         medicine: med.name,
         info: med.info,
         price: med.price,
@@ -305,13 +303,10 @@ document.addEventListener("DOMContentLoaded", function () {
         status: "Request Sent"
     };
 
-    // Load ALL orders as array
     let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
-    // Add new order
     orders.push(order);
 
-    // Save back
     localStorage.setItem("orders", JSON.stringify(orders));
 
     alert(`${med.name} added to cart!`);

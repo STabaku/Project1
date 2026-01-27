@@ -27,7 +27,7 @@
 }
 *{ box-sizing:border-box; }
 
-/* ================= NAVBAR (MATCH INDEX.HTML STYLE) ================= */
+/* NAVBAR */
 .navbar {
     background: #0f3d5e;   
     padding: 6px 0;  
@@ -164,7 +164,6 @@
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
   <div class="nav-container">
     <a class="navbar-brand" href="#">
@@ -181,7 +180,6 @@
   </div>
 </nav>
 
-<!-- MAIN -->
 <div class="main">
 
   <!-- SEARCH BAR -->
@@ -195,7 +193,6 @@
   <h2>Available Pharmacies Near You</h2>
 
   <div class="grid" id="pharmacyGrid">
-    <!-- Pharmacy cards will be inserted here dynamically -->
   </div>
 
 </div>
@@ -203,7 +200,6 @@
 <script>
 const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
 
-// ===== DYNAMIC NAVBAR LOGIN/PROFILE =====
 const authLink = document.getElementById("auth-link");
 if (isLoggedIn) {
     authLink.innerHTML = '<a class="nav-link" href="profile.html"><i class="fa fa-user"></i> My Profile</a>';
@@ -230,7 +226,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
   const dLon = (lon2-lon1)*Math.PI/180;
   const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R*c; // distance in km
+  return R*c; 
 }
 
 // ===== RENDER PHARMACIES =====

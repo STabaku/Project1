@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (isLoggedIn === "true") {
 
-    // Remove Login link if exists
     const loginLink = [...document.querySelectorAll("a")].find(a =>
       a.getAttribute("href") && a.getAttribute("href").includes("login")
     );

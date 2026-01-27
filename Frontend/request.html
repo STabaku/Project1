@@ -160,7 +160,6 @@ body {
       <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
       <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
 
-      <!-- Dynamic login/profile link -->
       <span id="auth-link"></span>
     </div>
   </div>
@@ -209,7 +208,7 @@ body {
 <script>
 // ================= Dynamic Navbar Login/Profile =================
 const authLink = document.getElementById("auth-link");
-const token = localStorage.getItem("token"); // check login token
+const token = localStorage.getItem("token"); 
 
 if (token) {
     authLink.innerHTML = '<a class="nav-link" href="profile.html"><i class="fa fa-user"></i> My Profile</a>';
