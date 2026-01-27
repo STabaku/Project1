@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #e0f7f4; /* Soft background for non-card sections */
+    background: #e0f7f4;
     font-family: "Poppins", "Segoe UI", sans-serif;
     color: #1f2937;
 }
@@ -14,9 +14,9 @@ body {
 /* ================= NAVBAR ================= */
 
 .navbar {
-    background: #0f3d5e;   /* NEW color, explained below */
+    background: #0f3d5e;  
     padding: 6px 0;  
-    padding-bottom: 0;      /* REDUCED */
+    padding-bottom: 0;     
     box-shadow: 0 2px 12px rgba(0,0,0,0.15);
 }
 
@@ -46,7 +46,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 10px;     /* WAS 8px 12px */
+    padding: 6px 10px;    
     font-size: 17px;
     border-radius: 6px;
     transition: all 0.3s ease;
@@ -78,12 +78,12 @@ body {
 
 .hero {
     position: relative;
-    height: 400px; /* slim hero */
+    height: 400px;
     display: flex;
-    align-items: center; /* vertically center text more */
+    align-items: center; 
     background-image: url("assets/ekg1.jpg");
     background-size: cover;
-    background-position: bottom center; /* focus on bottom of image */
+    background-position: bottom center; 
 }
 
 /* HERO CONTAINER */
@@ -94,7 +94,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-left: 90px;   /* ADD THIS */
+    padding-left: 90px;   
     position: relative;
     z-index: 1;
 }
@@ -108,20 +108,20 @@ body {
 
 /* HERO HEADLINE */
 .hero-text h1 {
-    font-size: 46px; /* bigger text */
+    font-size: 46px; 
     font-weight: bold;
     margin-bottom: 12px;
     letter-spacing: 1px;
-    color: #0c4a84; /* dark blue */
-    text-shadow: 1px 1px 5px rgba(0,0,0,0.2); /* subtle shadow for contrast */
+    color: #0c4a84; 
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.2); 
 }
 
 /* HERO PARAGRAPH */
 .hero-text p {
-    font-size: 20px; /* bigger text */
+    font-size: 20px; 
     margin-bottom: 20px;
     line-height: 1.5;
-    color: #0c4a84; /* dark blue */
+    color: #0c4a84; 
     text-shadow: 1px 1px 4px rgba(0,0,0,0.15);
     white-space: nowrap;
 }
@@ -279,7 +279,7 @@ label {
 .status-section h4 {
     font-size: 28px;
     font-weight: 600;
-    color: #0c4a84; /* dark blue heading */
+    color: #0c4a84; 
     margin-bottom: 25px;
     display: flex;
     align-items: center;
@@ -288,12 +288,12 @@ label {
 }
 
 .status-box {
-    background: #f0fcfb; /* very light teal for interest */
+    background: #f0fcfb; 
     padding: 20px 15px;
     border-radius: 25px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     display: flex;
-    flex-wrap: wrap; /* wrap on smaller screens */
+    flex-wrap: wrap; 
     justify-content: center;
     gap: 15px;
 }
@@ -305,8 +305,8 @@ label {
     gap: 8px;
     padding: 10px 18px;
     border-radius: 30px;
-    background: #e0f7f4; /* soft green background */
-    color: #0c4a84;      /* dark text for contrast */
+    background: #e0f7f4;
+    color: #0c4a84;     
     font-weight: 500;
     font-size: 15px;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
@@ -316,8 +316,8 @@ label {
 .status-step:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    background: #20c997;  /* brighter green on hover */
-    color: white;          /* text turns white for contrast */
+    background: #20c997;  
+    color: white;         
 }
 
 /* Active step (optional) */
