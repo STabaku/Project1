@@ -349,50 +349,86 @@
 
 
 <script>
+/* ================= SESSION USER ================= */
 
-// Profile info code unchanged
+const user = JSON.parse(localStorage.getItem("loggedUser"));
+
+if(!user){
+  window.location.href = "login.html";
+}
+
+/* ================= PROFILE INFO ================= */
+
 const editBtn = document.getElementById("editProfileBtn");
-const inputs = ["fullName", "email", "phone"].map(id => document.getElementById(id));
+const fullNameInput = document.getElementById("fullName");
+const emailInput = document.getElementById("email");
+const phoneInput = document.getElementById("phone");
 
-editBtn.addEventListener("click", () => {
-    if(editBtn.textContent === "Edit Information") {
-        inputs.forEach(input => input.disabled = false);
-        editBtn.textContent = "Save Changes";
-    } else {
-        const profile = {
-            fullName: document.getElementById("fullName").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value
-        };
-        localStorage.setItem("profile", JSON.stringify(profile));
-        inputs.forEach(input => input.disabled = true);
-        editBtn.textContent = "Edit Information";
-        alert("Profile updated!");
-    }
-});
-
-// Load saved profile on page load
+// Ngarko të dhënat e user-it të loguar
 document.addEventListener("DOMContentLoaded", () => {
-    const savedProfile = JSON.parse(localStorage.getItem("profile"));
-    if(savedProfile){
-        document.getElementById("fullName").value = savedProfile.fullName;
-        document.getElementById("email").value = savedProfile.email;
-        document.getElementById("phone").value = savedProfile.phone;
-    }
+
+  fullNameInput.value = user.fullName;
+  emailInput.value = user.email;
+  phoneInput.value = user.phone;
+
+  loadAddresses();
+  loadOrders();
 });
 
-// Address code unchanged
+// Edit / Save profile
+editBtn.addEventListener("click", () => {
+  if(editBtn.textContent === "Edit Information") {
+    fullNameInput.disabled = false;
+    emailInput.disabled = false;
+    phoneInput.disabled = false;
+    editBtn.textContent = "Save Changes";
+  } else {
+
+    user.fullName = fullNameInput.value;
+    user.email = emailInput.value;
+    user.phone = phoneInput.value;
+
+    localStorage.setItem("loggedUser", JSON.stringify(user));
+
+    let users = JSON.parse(localStorage.getItem("users") || "[]");
+    users = users.map(u => u.id === user.id ? user : u);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    fullNameInput.disabled = true;
+    emailInput.disabled = true;
+    phoneInput.disabled = true;
+
+    editBtn.textContent = "Edit Information";
+    alert("Profile updated!");
+  }
+});
+
+
+/* ================= ADDRESSES (PER USER) ================= */
+
 const addressesContainer = document.getElementById("addressesContainer");
 const addAddressBtn = document.getElementById("addAddressBtn");
 
-let addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
+function loadAddresses(){
+  const allAddresses = JSON.parse(localStorage.getItem("addresses") || "[]");
 
-function renderAddresses() {
+  const userAddresses = allAddresses.filter(a => a.userId === user.id);
+
   addressesContainer.innerHTML = "";
-  addresses.forEach((addr, i) => {
+
+  if(userAddresses.length === 0){
+    addressesContainer.innerHTML = "<p style='color:#888;'>No addresses added yet</p>";
+    return;
+  }
+
+  userAddresses.forEach((addr, i) => {
     const div = document.createElement("div");
     div.classList.add("address");
-    div.innerHTML = `<strong>${addr.label}</strong><br>${addr.street}<br>Phone: ${addr.phone}`;
+    div.innerHTML = `
+      <strong>${addr.label}</strong><br>
+      ${addr.street}<br>
+      Phone: ${addr.phone}
+    `;
     addressesContainer.appendChild(div);
   });
 }
@@ -403,16 +439,72 @@ addAddressBtn.addEventListener("click", () => {
   const phone = document.getElementById("addressPhone").value;
 
   if(label && street && phone){
-    addresses.push({label, street, phone});
-    localStorage.setItem("addresses", JSON.stringify(addresses));
-    renderAddresses();
+
+    let allAddresses = JSON.parse(localStorage.getItem("addresses") || "[]");
+
+    allAddresses.push({
+      userId: user.id,
+      label,
+      street,
+      phone
+    });
+
+    localStorage.setItem("addresses", JSON.stringify(allAddresses));
+
     document.getElementById("addressLabel").value = "";
     document.getElementById("addressStreet").value = "";
     document.getElementById("addressPhone").value = "";
+
+    loadAddresses();
   }
 });
 
-renderAddresses();
+
+/* ================= ORDERS (PER USER) ================= */
+
+const ordersBody = document.getElementById("ordersBody");
+
+function loadOrders(){
+  const allOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+  const userOrders = allOrders.filter(o => o.userId === user.id);
+
+  ordersBody.innerHTML = "";
+
+  if(userOrders.length === 0){
+    ordersBody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align:center;color:#888;">
+          No orders yet
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  userOrders.forEach(order => {
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>#${order.id}</td>
+      <td>${order.medicine}</td>
+      <td>${order.pharmacy}</td>
+      <td>${order.date}</td>
+      <td><span class="status ${order.status}">${order.status}</span></td>
+      <td>-</td>
+    `;
+
+    ordersBody.appendChild(row);
+  });
+}
+
+
+/* ================= LOGOUT ================= */
+
+function logout(){
+  localStorage.removeItem("loggedUser");
+  window.location.href = "login.html";
+}
 </script>
 
 <script src="script.js"></script>

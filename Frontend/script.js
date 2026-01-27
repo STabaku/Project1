@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   } else {
     // Redirect from protected pages if not logged in
-    const protectedPages = ["request.html", "pharmacies.html", "profile.html"];
+    const protectedPages = ["request.html", "pharmacies.html", "profile.html","browse.html"];
     const currentPage = window.location.pathname.split("/").pop();
 
     if (protectedPages.includes(currentPage)) {
