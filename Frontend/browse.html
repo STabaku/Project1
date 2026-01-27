@@ -199,10 +199,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("pharmacyTitle");
     if (!grid) return;
 
-    // Get logged-in user
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
-        alert("Please log in to view this pharmacy.");
+    // Get current logged-in user
+    const currentUserId = localStorage.getItem("userId");
+    if (!currentUserId) {
+        alert("Please log in to view and order products.");
         window.location.href = "login.html";
         return;
     }
@@ -272,15 +272,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Optional: Search filter
     window.filterProducts = function(){
-        const query = document.getElementById("medSearchInput").value.toLowerCase();
-        const cards = grid.querySelectorAll(".product");
-        cards.forEach(card=>{
-            const name = card.querySelector("h3").textContent.toLowerCase();
-            card.style.display = name.includes(query) ? "block" : "none";
-        });
+     const query = document.getElementById("medSearchInput").value.toLowerCase();
+      const cards = grid.querySelectorAll(".product");
+      cards.forEach(card=>{
+        const name = card.querySelector("h3").textContent.toLowerCase();
+        card.style.display = name.includes(query) ? "block" : "none";
+      });
     }
 
-    // Render medicines
+    // Render meds
     meds.forEach(med => {
         const card = document.createElement('div');
         card.classList.add('card', 'product');
@@ -293,10 +293,9 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         grid.appendChild(card);
 
-        // Add click event for "Add to Cart"
         card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
             const order = {
-                id: Date.now(), // unique order id
+                id: Date.now(),
                 medicine: med.name,
                 info: med.info,
                 price: med.price,
@@ -305,13 +304,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 status: "Request Sent"
             };
 
-            // Save order per user
-            let orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
-            orders.push(order);
-            localStorage.setItem(`orders_${userId}`, JSON.stringify(orders));
+            // Save per user
+            let orders = JSON.parse(localStorage.getItem("orders") || "{}");
+            if(!orders[currentUserId]) orders[currentUserId] = [];
+            orders[currentUserId].push(order);
+            localStorage.setItem("orders", JSON.stringify(orders));
 
             alert(`${med.name} added to cart!`);
-            window.location.href = "profile.html"; // redirect to profile
+            window.location.href = "profile.html"; 
         });
     });
 
