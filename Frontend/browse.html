@@ -199,11 +199,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const title = document.getElementById("pharmacyTitle");
     if (!grid) return;
 
+    // Get logged-in user
+    const userId = localStorage.getItem("userId");
+    if (!userId) {
+        alert("Please log in to view this pharmacy.");
+        window.location.href = "login.html";
+        return;
+    }
+
     // Read pharmacy from URL
     const params = new URLSearchParams(window.location.search);
     const pharmacy = params.get("pharmacy");
 
-    // Map pharmacy keys to display names
     const pharmacyNames = {
       city: "City Pharmacy",
       healthplus: "Health Plus Pharmacy",
@@ -263,89 +270,50 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    
     // Optional: Search filter
     window.filterProducts = function(){
-     const query = document.getElementById("medSearchInput").value.toLowerCase();
-
-      const cards = grid.querySelectorAll(".product");
-      cards.forEach(card=>{
-        const name = card.querySelector("h3").textContent.toLowerCase();
-        card.style.display = name.includes(query) ? "block" : "none";
-      });
+        const query = document.getElementById("medSearchInput").value.toLowerCase();
+        const cards = grid.querySelectorAll(".product");
+        cards.forEach(card=>{
+            const name = card.querySelector("h3").textContent.toLowerCase();
+            card.style.display = name.includes(query) ? "block" : "none";
+        });
     }
 
+    // Render medicines
+    meds.forEach(med => {
+        const card = document.createElement('div');
+        card.classList.add('card', 'product');
+        card.innerHTML = `
+            <img src="${med.img}" alt="${med.name}">
+            <h3>${med.name}</h3>
+            <small>${med.info}</small>
+            <div class="price">${med.price}</div>
+            <button class="btn-add-to-cart">Add to Cart</button>
+        `;
+        grid.appendChild(card);
 
-// After rendering the medicines
-meds.forEach(med => {
-    const card = document.createElement('div');
-    card.classList.add('card', 'product');
-    card.innerHTML = `
-        <img src="${med.img}" alt="${med.name}">
-        <h3>${med.name}</h3>
-        <small>${med.info}</small>
-        <div class="price">${med.price}</div>
-        <button class="btn-add-to-cart">Add to Cart</button>
-    `;
-    grid.appendChild(card);
+        // Add click event for "Add to Cart"
+        card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
+            const order = {
+                id: Date.now(), // unique order id
+                medicine: med.name,
+                info: med.info,
+                price: med.price,
+                pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
+                date: new Date().toLocaleString(),
+                status: "Request Sent"
+            };
 
-    // Add click event for "Add to Cart"
-    card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
-        const order = {
-            id: Date.now(), // unique order id
-            medicine: med.name,
-            info: med.info,
-            price: med.price,
-            pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
-            date: new Date().toLocaleString(),
-            status: "Request Sent"
-        };
+            // Save order per user
+            let orders = JSON.parse(localStorage.getItem(`orders_${userId}`) || "[]");
+            orders.push(order);
+            localStorage.setItem(`orders_${userId}`, JSON.stringify(orders));
 
-        // Save in localStorage
-        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-        orders.push(order);
-        localStorage.setItem("orders", JSON.stringify(orders));
-
-        alert(`${med.name} added to cart!`);
-        window.location.href = "profile.html"; // redirect to profile
+            alert(`${med.name} added to cart!`);
+            window.location.href = "profile.html"; // redirect to profile
+        });
     });
-    grid.innerHTML = ""; // Clear previous content
-
-meds.forEach(med => {
-    const card = document.createElement('div');
-    card.classList.add('card', 'product');
-    card.innerHTML = `
-        <img src="${med.img}" alt="${med.name}">
-        <h3>${med.name}</h3>
-        <small>${med.info}</small>
-        <div class="price">${med.price}</div>
-        <button class="btn-add-to-cart">Add to Cart</button>
-    `;
-    grid.appendChild(card);
-
-    // Add click event for "Add to Cart"
-    card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
-        const order = {
-            id: Date.now(),
-            medicine: med.name,
-            info: med.info,
-            price: med.price,
-            pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
-            date: new Date().toLocaleString(),
-            status: "Request Sent"
-        };
-
-        let orders = JSON.parse(localStorage.getItem("orders") || "[]");
-        orders.push(order);
-        localStorage.setItem("orders", JSON.stringify(orders));
-
-        alert(`${med.name} added to cart!`);
-        window.location.href = "profile.html";
-    });
-});
-
-
-});
 
 });
 </script>
