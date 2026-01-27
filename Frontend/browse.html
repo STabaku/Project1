@@ -25,7 +25,7 @@
 }
 
 body { background: var(--bg); font-family: Arial, sans-serif; }
-.navbar{ background: linear-gradient(90deg, #f9f9f9, #ffffff); color: #0a58ca; padding: 18px 0; }
+
 
 .search-box{
   max-width:820px;
@@ -287,34 +287,37 @@ document.addEventListener("DOMContentLoaded", function () {
         grid.appendChild(card);
 
         // Add click event for "Add to Cart"
-        card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
-            const userId = localStorage.getItem("userId");
-            if(!userId){
-                alert("Please log in first!");
-                return;
-            }
+      card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (!currentUser) {
+        alert("Please log in first!");
+        return;
+    }
 
-            const order = {
-                id: Date.now(),
-                medicine: med.name,
-                info: med.info,
-                price: med.price,
-                pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
-                date: new Date().toLocaleString(),
-                status: "Request Sent"
-            };
+    const order = {
+        id: Date.now(),
+        user: currentUser,   // 👈 VERY IMPORTANT
+        medicine: med.name,
+        info: med.info,
+        price: med.price,
+        pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
+        date: new Date().toLocaleString(),
+        status: "Request Sent"
+    };
 
-            // Get orders for this user
-            let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-            if(!allOrders[userId]) allOrders[userId] = [];
+    // Load ALL orders as array
+    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
 
-            allOrders[userId].push(order);
+    // Add new order
+    orders.push(order);
 
-            localStorage.setItem("orders", JSON.stringify(allOrders));
+    // Save back
+    localStorage.setItem("orders", JSON.stringify(orders));
 
-            alert(`${med.name} added to cart!`);
-            window.location.href = "profile.html";
-        });
+    alert(`${med.name} added to cart!`);
+    window.location.href = "profile.html";
+});
+
     });
 
 });

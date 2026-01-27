@@ -19,7 +19,7 @@
   --blue1:#0a58ca;
   --blue2:#1e90ff;
   --blue3:#4facfe;
-  --bg:#eef3f8;
+  --bg:#8baac9;
   --card:#ffffff;
   --text:#0b1b2b;
   --muted:#6c7a89;
@@ -32,11 +32,19 @@
 
 *{ box-sizing:border-box; }
 .navbar{
-  background: linear-gradient(90deg, #f9f9f9, #ffffff);
-  color: #0a58ca;
+  background: #0f3d5e;
+  color: #71757c;
   padding: 18px 0;
 }
-
+.navbar {
+        background: #0f3d5e;
+        padding: 6px 0;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .navbar-brand img, .logo-img {
+        width: 190px;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    }
 /* MAIN */
 .main{
   width:min(1200px, 92%);
@@ -115,7 +123,7 @@
 }
 
 .section{
-  margin-bottom:40px;
+  margin-bottom:20px;
 }
 
 .section h2{
@@ -128,7 +136,7 @@
 .info-grid{
   display:grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap:20px;
+  gap:10px;
 }
 
 .info-box{
@@ -341,80 +349,6 @@
 
 
 <script>
-function loadOrders() {
-    const userId = localStorage.getItem("userId");
-    if(!userId){
-        alert("Please log in to see your orders.");
-        return;
-    }
-
-    const allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-    const orders = allOrders[userId] || [];
-
-    const tbody = document.getElementById("ordersBody");
-    tbody.innerHTML = "";
-
-    orders.forEach(order => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>#${order.id}</td>
-            <td>${order.medicine}</td>
-            <td>${order.pharmacy}</td>
-            <td>${order.date}</td>
-            <td><span class="status ${order.status.toLowerCase().replace(/\s/g,'')}">${order.status}</span></td>
-            <td>
-                <button class="btn btn-danger btn-cancel" data-id="${order.id}">Cancel</button>
-            </td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    // Add cancel functionality
-    document.querySelectorAll(".btn-cancel").forEach(btn => {
-        const rowStatus = btn.closest("tr").querySelector(".status").textContent;
-
-        if(rowStatus === "On Delivery" || rowStatus === "Accepted") {
-            btn.disabled = true;
-            btn.style.opacity = 0.5;
-            return;
-        }
-
-        btn.addEventListener("click", () => {
-            const id = parseInt(btn.getAttribute("data-id"));
-            let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-            allOrders[userId] = allOrders[userId].map(o => {
-                if (o.id === id) o.status = "Cancelled";
-                return o;
-            });
-            localStorage.setItem("orders", JSON.stringify(allOrders));
-            loadOrders();
-        });
-    });
-}
-
-loadOrders();
-
-// Simulate status progression
-setInterval(() => {
-    const userId = localStorage.getItem("userId");
-    if(!userId) return;
-
-    let allOrders = JSON.parse(localStorage.getItem("orders") || "{}");
-    if(!allOrders[userId]) return;
-
-    let changed = false;
-
-    allOrders[userId] = allOrders[userId].map(o => {
-        if(o.status === "Request Sent") { o.status = "Stock Verification"; changed = true; }
-        else if(o.status === "Stock Verification") { o.status = "Preparing"; changed = true; }
-        else if(o.status === "Preparing") { o.status = "On Delivery"; changed = true; }
-        else if(o.status === "On Delivery") { o.status = "Accepted"; changed = true; }
-        return o;
-    });
-
-    if(changed) localStorage.setItem("orders", JSON.stringify(allOrders));
-    loadOrders();
-}, 5000);
 
 // Profile info code unchanged
 const editBtn = document.getElementById("editProfileBtn");

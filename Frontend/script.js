@@ -217,10 +217,10 @@ console.log("Sending verify-login payload:", payload);  // debug
     }
 
     // Successful login
-    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("isLoggedIn", "true")
     localStorage.setItem("userIdentifier", identifier);
-      localStorage.setItem("userIdentifier", identifier); // email or phone
-    localStorage.setItem("currentUser", identifier);     // for local orders
+   
+
     localStorage.setItem("userRole", data.role || "User");
     localStorage.setItem("userId", data.id);
 
