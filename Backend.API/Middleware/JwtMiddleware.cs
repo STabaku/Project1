@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Backend.API.Data;
-using Backend.API.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Backend.API.Middleware   // ✅ THIS must match what you use in Program.cs
+namespace Backend.API.Middleware
 {
     public class JwtMiddleware
     {
@@ -21,10 +22,29 @@ namespace Backend.API.Middleware   // ✅ THIS must match what you use in Progra
 
         public async Task Invoke(HttpContext context, AppDbContext dbContext)
         {
-            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            //  Allow CORS preflight requests
+            if (context.Request.Method == HttpMethods.Options)
+            {
+                context.Response.StatusCode = StatusCodes.Status200OK;
+                return;
+            }
 
-            if (token != null)
+            // Skip JWT for auth endpoints (login/register)
+            if (context.Request.Path.StartsWithSegments("/api/auth"))
+            {
+                await _next(context);
+                return;
+            }
+
+            var token = context.Request.Headers["Authorization"]
+                .FirstOrDefault()?
+                .Split(" ")
+                .Last();
+
+            if (!string.IsNullOrEmpty(token))
+            {
                 AttachUserToContext(context, dbContext, token);
+            }
 
             await _next(context);
         }
@@ -35,6 +55,7 @@ namespace Backend.API.Middleware   // ✅ THIS must match what you use in Progra
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -47,12 +68,10 @@ namespace Backend.API.Middleware   // ✅ THIS must match what you use in Progra
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 
-                // attach user to context
                 context.Items["UserId"] = userId;
             }
             catch
             {
-                // do nothing if jwt validation fails
             }
         }
     }

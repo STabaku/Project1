@@ -30,7 +30,7 @@ namespace Backend.API.Controllers
             if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Email))
                 return BadRequest("Name and Email are required.");
 
-            user.Role = "User"; // default role
+            user.Role = "User"; 
             _context.Users.Add(user);
             _context.SaveChanges();
 

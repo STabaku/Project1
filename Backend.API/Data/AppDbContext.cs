@@ -5,18 +5,21 @@ namespace Backend.API.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
-        // Tables in your database
+        //  TABLES
         public DbSet<User> Users { get; set; }
-      public DbSet<Order> Orders { get; set; }
-public DbSet<EmergencyRequest> EmergencyRequests { get; set; }
-
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<EmergencyRequest> EmergencyRequests { get; set; }
+        public DbSet<Pharmacy> Pharmacies { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Pharmacy is keyless (not stored in DB)
-            modelBuilder.Entity<Pharmacy>().HasNoKey();
+            modelBuilder.Entity<Pharmacy>()
+                .HasQueryFilter(p => p.IsActive);
 
             base.OnModelCreating(modelBuilder);
         }

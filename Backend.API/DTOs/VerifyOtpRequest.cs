@@ -1,9 +1,13 @@
-namespace PharmacyEmergencySystem.DTOs
+using System.ComponentModel.DataAnnotations;
 
+namespace PharmacyEmergencySystem.DTOs
 {
     public class VerifyOTPRequest
     {
-        public string EmailOrNumber { get; set; }
-        public string OTP { get; set; }
+        [Required]
+        public string EmailOrNumber { get; set; } = null!;
+
+        [Required]
+        public string OTP { get; set; } = null!;
     }
 }

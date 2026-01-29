@@ -1,4 +1,10 @@
-public class LoginRequest
+using System.ComponentModel.DataAnnotations;
+
+namespace PharmacyEmergencySystem.DTOs
 {
-    public string EmailOrNumber { get; set; }
+    public class LoginRequest
+    {
+        [Required]
+        public string EmailOrNumber { get; set; } = null!;
+    }
 }

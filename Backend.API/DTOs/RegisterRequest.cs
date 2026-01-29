@@ -1,15 +1,22 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace PharmacyEmergencySystem.DTOs
 {
     public class RegisterRequest
     {
-        public string Name { get; set; }
-        public string Location { get; set; }
+        [Required]
+        public string Name { get; set; } = null!;
+
+        public string? Location { get; set; }
+
         public string? Number { get; set; }
-        public string Gender { get; set; }
+
+        [EmailAddress]
+        public string? Email { get; set; }
+
         public int Age { get; set; }
-       public string? Email { get; set; } 
 
-        public string Role { get; set; } = "User"; 
-
+        [Required]
+        public string Role { get; set; } = null!;
     }
 }
