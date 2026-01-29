@@ -1,19 +1,23 @@
+using Backend.API.Data;
 using Backend.API.Models;
-
+using System.Linq;
 
 namespace Backend.API.Services
 {
     public class MatchingService
     {
-        public Pharmacy MatchPharmacy(EmergencyRequest request)
+        private readonly AppDbContext _context;
+
+        public MatchingService(AppDbContext context)
         {
-            // Simplified matching logic (distance, availability, reliability)
-            return new Pharmacy
-            {
-                Name = "Nearby Pharmacy",
-                ReliabilityScore = 0.9,
-                HasMedication = true
-            };
+            _context = context;
+        }
+
+        public Pharmacy? MatchPharmacy(EmergencyRequest request)
+        {
+            return _context.Pharmacies
+                .Where(p => p.IsActive)
+                .FirstOrDefault();
         }
     }
 }

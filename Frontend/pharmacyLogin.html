@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pharmacy Login</title>
+<style>
+body {
+  font-family: Arial;
+  background: #f4f6f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 320px;
+}
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h3>Pharmacy Login</h3>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <input id="identifier" placeholder="Email or Phone">
+    <button onclick="requestOtp()">Request OTP</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" style="display:none;">
+    <input id="otp" placeholder="Enter OTP">
+    <button onclick="verifyOtp()">Login</button>
+  </div>
+</div>
+
+<script>
+const BASE_URL = "http://localhost:5183";
+
+/* =========================
+   STEP 1 – REQUEST OTP
+========================= */
+async function requestOtp() {
+  const value = document.getElementById("identifier").value;
+
+  if (!value) {
+    alert("Enter email or phone number");
+    return;
+  }
+
+  const res = await fetch(`${BASE_URL}/api/auth/login-request`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ emailOrNumber: value })
+  });
+
+  if (!res.ok) {
+    alert("User not found or not verified");
+    return;
+  }
+
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "block";
+}
+
+/* =========================
+   STEP 2 – VERIFY OTP + LOGIN
+========================= */
+async function verifyOtp() {
+  const value = document.getElementById("identifier").value;
+  const otp = document.getElementById("otp").value;
+
+  if (!otp) {
+    alert("Enter OTP");
+    return;
+  }
+
+  const res = await fetch(`${BASE_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      emailOrNumber: value,
+      otp: otp
+    })
+  });
+
+  if (!res.ok) {
+    alert("Invalid or expired OTP");
+    return;
+  }
+
+  const data = await res.json();
+
+  // 🔑 SAVE TOKEN
+  localStorage.setItem("token", data.token);
+
+  // 🔀 REDIRECT BASED ON ROLE
+  if (data.role === "PharmacyAdmin") {
+    window.location.href = "pharmacy-dashboard.html";
+  }
+  else if (data.role === "Client") {
+    window.location.href = "client-dashboard.html";
+  }
+  else if (data.role === "SuperAdmin") {
+    window.location.href = "admin-dashboard.html";
+  }
+  else {
+    alert("Unknown role");
+    localStorage.removeItem("token");
+  }
+}
+</script>
+
+
+</body>
+</html>

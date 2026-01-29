@@ -1,40 +1,82 @@
 using Microsoft.AspNetCore.Mvc;
-using Backend.API.Services;
-using Backend.API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Backend.API.Data;
 
 namespace Backend.API.Controllers
 {
+    [Authorize(Roles = "PharmacyAdmin")]
     [ApiController]
     [Route("api/requests")]
     public class RequestsController : ControllerBase
     {
-        private readonly RequestService _requestService;
+        private readonly AppDbContext _context;
 
-        public RequestsController(RequestService requestService)
+        public RequestsController(AppDbContext context)
         {
-            _requestService = requestService;
+            _context = context;
         }
 
-        // CLIENT SENDS REQUEST
-      [HttpPost("send")]
-public IActionResult Send([FromBody] EmergencyRequest request)
-{
-    // Set dummy user id
-    request.UserId = 1; 
-    request.CreatedAt = DateTime.Now;
-    request.Status = "Pending";
+        private int PharmacyId =>
+            int.Parse(User.FindFirst("pharmacyId")!.Value);
 
-    var saved = _requestService.Add(request);
-    return Ok(saved);
-}
-
-        // PHARMACY GETS ALL REQUESTS
-
+        // GET ALL REQUESTS (FOR DASHBOARD)
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_requestService.GetAll());
+            var data = await _context.EmergencyRequests
+                .Where(r => r.PharmacyId == PharmacyId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return Ok(data);
         }
+
+        // ACCEPT REQUEST
         
-    } // end class
-} // end namespace
+        [HttpPost("accept/{id}")]
+        public async Task<IActionResult> Accept(int id)
+        {
+            var req = await _context.EmergencyRequests
+                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == PharmacyId);
+
+            if (req == null) return NotFound();
+
+            req.Status = "Accepted";
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DELIVER REQUEST
+        [HttpPost("deliver/{id}")]
+        public async Task<IActionResult> Deliver(int id)
+        {
+            var req = await _context.EmergencyRequests
+                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == PharmacyId);
+
+            if (req == null) return NotFound();
+
+            req.Status = "Delivered";
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // DASHBOARD STATS (OPTIONAL)
+        [HttpGet("stats")]
+        public async Task<IActionResult> Stats()
+        {
+            var q = _context.EmergencyRequests
+                .Where(r => r.PharmacyId == PharmacyId);
+
+            return Ok(new
+            {
+                total = await q.CountAsync(),
+                pending = await q.CountAsync(r => r.Status == "Pending"),
+                active = await q.CountAsync(r => r.Status == "Accepted"),
+                delivered = await q.CountAsync(r => r.Status == "Delivered")
+            });
+        }
+    }
+}

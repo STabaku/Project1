@@ -18,5 +18,7 @@ namespace PharmacyEmergencySystem.DTOs
 
         [Required]
         public string Role { get; set; } = null!;
+        public int? PharmacyId { get; set; }
+
     }
 }

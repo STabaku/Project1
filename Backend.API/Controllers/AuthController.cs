@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
-using PharmacyEmergencySystem.DTOs;
+using Backend.API.Data;
 using Backend.API.Models;
 using Backend.API.Services;
-using System;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PharmacyEmergencySystem.DTOs;
 
 namespace Backend.API.Controllers
 {
@@ -11,141 +11,127 @@ namespace Backend.API.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly AppDbContext _context;
         private readonly OtpService _otpService;
+        private readonly JwtService _jwtService;
 
-        public AuthController(UserService userService, OtpService otpService)
+        public AuthController(
+            AppDbContext context,
+            OtpService otpService,
+            JwtService jwtService)
         {
-            _userService = userService;
+            _context = context;
             _otpService = otpService;
+            _jwtService = jwtService;
         }
 
-        // SIGNUP
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(RegisterRequest request)
         {
-            var identifier = ResolveIdentifier(request.Email, request.Number);
-            if (identifier == null)
-                return BadRequest("Email or phone number is required.");
+            var identifier = request.Email ?? request.Number;
+            if (string.IsNullOrWhiteSpace(identifier))
+                return BadRequest(new { message = "Email or phone required" });
 
-            var existing =
-                await _userService.GetUserByEmailOrNumberAsync(identifier);
-
-            if (existing != null)
-                return BadRequest("User already exists.");
-
-            var otp = _otpService.GenerateOTP();
+            if (await _context.Users.AnyAsync(u =>
+                u.Email == identifier || u.Number == identifier))
+                return BadRequest(new { message = "User already exists" });
 
             var user = new User
             {
                 Name = request.Name,
-                Location = request.Location,
-                Number = request.Number,
                 Email = request.Email,
-                Age = request.Age,
+                Number = request.Number,
                 Role = request.Role,
-
-                OTP = otp,
+                PharmacyId = request.PharmacyId,
+                OTP = _otpService.GenerateOTP(),
                 OtpExpiry = DateTime.UtcNow.AddMinutes(5),
                 IsVerified = false
             };
 
-            await _userService.AddUserAsync(user);
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
 
-            Console.WriteLine($"SIGNUP OTP for {identifier}: {otp}");
+            Console.WriteLine($"SIGNUP OTP: {user.OTP}");
 
-            return Ok("Registered successfully. Verify OTP.");
+            return Ok(new { message = "Registered successfully. Verify OTP." });
         }
 
-        // VERIFY SIGNUP
         [HttpPost("verify-signup")]
         public async Task<IActionResult> VerifySignup(VerifyOTPRequest request)
         {
-            var user =
-                await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == request.EmailOrNumber ||
+                u.Number == request.EmailOrNumber);
 
             if (user == null)
-                return BadRequest("User not found.");
-
-            if (user.IsVerified)
-                return BadRequest("User already verified.");
+                return BadRequest(new { message = "User not found" });
 
             if (user.OTP != request.OTP)
-                return BadRequest("Invalid OTP.");
+                return BadRequest(new { message = "Invalid OTP" });
 
             if (user.OtpExpiry == null || user.OtpExpiry < DateTime.UtcNow)
-                return BadRequest("OTP expired.");
+                return BadRequest(new { message = "OTP expired" });
 
-            await _userService.VerifyUserAsync(request.EmailOrNumber);
-
-            return Ok("Account verified successfully.");
-        }
-
-        // LOGIN (REQUEST OTP)
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
-        {
-            var user =
-                await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
-
-            if (user == null)
-                return BadRequest("User not found.");
-
-            if (!user.IsVerified)
-                return BadRequest("Account not verified.");
-
-            var otp = _otpService.GenerateOTP();
-
-            user.OTP = otp;
-            user.OtpExpiry = DateTime.UtcNow.AddMinutes(5);
-
-            await _userService.UpdateUserAsync(user);
-
-            Console.WriteLine($"LOGIN OTP for {request.EmailOrNumber}: {otp}");
-
-            return Ok("OTP sent for login.");
-        }
-
-        // VERIFY LOGIN
-        [HttpPost("verify-login")]
-        public async Task<IActionResult> VerifyLogin(VerifyOTPRequest request)
-        {
-            var user =
-                await _userService.GetUserByEmailOrNumberAsync(request.EmailOrNumber);
-
-            if (user == null)
-                return BadRequest("User not found.");
-
-            if (user.OTP != request.OTP)
-                return BadRequest("Invalid OTP.");
-
-            if (user.OtpExpiry == null || user.OtpExpiry < DateTime.UtcNow)
-                return BadRequest("OTP expired.");
-
+            user.IsVerified = true;
             user.OTP = null;
             user.OtpExpiry = null;
 
-            await _userService.UpdateUserAsync(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Account verified successfully" });
+        }
+
+        [HttpPost("login-request")]
+        public async Task<IActionResult> LoginRequest(LoginRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == request.EmailOrNumber ||
+                u.Number == request.EmailOrNumber);
+
+            if (user == null)
+                return BadRequest(new { message = "User not found" });
+
+            if (!user.IsVerified)
+                return BadRequest(new { message = "Account not verified" });
+
+            user.OTP = _otpService.GenerateOTP();
+            user.OtpExpiry = DateTime.UtcNow.AddMinutes(5);
+
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine($"LOGIN OTP: {user.OTP}");
+
+            return Ok(new { message = "OTP sent" });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginVerifyRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Email == request.EmailOrNumber ||
+                u.Number == request.EmailOrNumber);
+
+            if (user == null)
+                return BadRequest(new { message = "User not found" });
+
+            if (user.OTP != request.OTP)
+                return BadRequest(new { message = "Invalid OTP" });
+
+            if (user.OtpExpiry == null || user.OtpExpiry < DateTime.UtcNow)
+                return BadRequest(new { message = "OTP expired" });
+
+            user.OTP = null;
+            user.OtpExpiry = null;
+            await _context.SaveChangesAsync();
+
+            var token = _jwtService.GenerateToken(user);
 
             return Ok(new
             {
-                message = "Login successful",
-                role = user.Role
+                token,
+                role = user.Role,
+                pharmacyId = user.PharmacyId
             });
-        }
-
-        // =========================
-        // PRIVATE HELPER
-        // =========================
-        private static string? ResolveIdentifier(string? email, string? number)
-        {
-            if (!string.IsNullOrWhiteSpace(email))
-                return email;
-
-            if (!string.IsNullOrWhiteSpace(number))
-                return number;
-
-            return null;
         }
     }
 }

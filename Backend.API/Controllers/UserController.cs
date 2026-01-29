@@ -1,6 +1,7 @@
 using Backend.API.Models;
 using Backend.API.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.API.Controllers
 {
@@ -15,24 +16,39 @@ namespace Backend.API.Controllers
             _context = context;
         }
 
-        // GET: api/users
+        // ⚠️ OPTIONAL – vetëm për SuperAdmin (rekomandohet të mbyllet)
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _context.Users.ToList();
-            return Ok(users);
+            return Unauthorized("Access denied");
         }
 
-        // POST: api/users
-        [HttpPost]
-        public IActionResult Create([FromBody] User user)
+        // GET api/users/me
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMyDetails()
         {
-            if (string.IsNullOrWhiteSpace(user.Name) || string.IsNullOrWhiteSpace(user.Email))
-                return BadRequest("Name and Email are required.");
+            if (!HttpContext.Items.ContainsKey("UserId"))
+                return Unauthorized();
 
-            user.Role = "User"; 
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            int userId = (int)HttpContext.Items["UserId"]!;
+
+            var user = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new
+                {
+                    u.Id,
+                    u.Name,
+                    u.Email,
+                    u.Number,
+                    u.Age,
+                    u.Location,
+                    u.Role,
+                    u.PharmacyId
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return NotFound();
 
             return Ok(user);
         }

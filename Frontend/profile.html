@@ -384,70 +384,56 @@
 
 
 <script>
+const BASE_URL = "http://localhost:5183";
+const token = localStorage.getItem("token");
 
-const editBtn = document.getElementById("editProfileBtn");
-const inputs = ["fullName", "email", "phone"].map(id => document.getElementById(id));
-
-editBtn.addEventListener("click", () => {
-    if(editBtn.textContent === "Edit Information") {
-        inputs.forEach(input => input.disabled = false);
-        editBtn.textContent = "Save Changes";
-    } else {
-        const profile = {
-            fullName: document.getElementById("fullName").value,
-            email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value
-        };
-        localStorage.setItem("profile", JSON.stringify(profile));
-        inputs.forEach(input => input.disabled = true);
-        editBtn.textContent = "Edit Information";
-        alert("Profile updated!");
-    }
-});
-
-// Load saved profile on page load
-document.addEventListener("DOMContentLoaded", () => {
-    const savedProfile = JSON.parse(localStorage.getItem("profile"));
-    if(savedProfile){
-        document.getElementById("fullName").value = savedProfile.fullName;
-        document.getElementById("email").value = savedProfile.email;
-        document.getElementById("phone").value = savedProfile.phone;
-    }
-});
-
-// Address code unchanged
-const addressesContainer = document.getElementById("addressesContainer");
-const addAddressBtn = document.getElementById("addAddressBtn");
-
-let addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
-
-function renderAddresses() {
-  addressesContainer.innerHTML = "";
-  addresses.forEach((addr, i) => {
-    const div = document.createElement("div");
-    div.classList.add("address");
-    div.innerHTML = `<strong>${addr.label}</strong><br>${addr.street}<br>Phone: ${addr.phone}`;
-    addressesContainer.appendChild(div);
-  });
+if (!token) {
+  window.location.href = "login.html";
 }
 
-addAddressBtn.addEventListener("click", () => {
-  const label = document.getElementById("addressLabel").value;
-  const street = document.getElementById("addressStreet").value;
-  const phone = document.getElementById("addressPhone").value;
+const qs = id => document.getElementById(id);
 
-  if(label && street && phone){
-    addresses.push({label, street, phone});
-    localStorage.setItem("addresses", JSON.stringify(addresses));
-    renderAddresses();
-    document.getElementById("addressLabel").value = "";
-    document.getElementById("addressStreet").value = "";
-    document.getElementById("addressPhone").value = "";
+async function fetchProfile() {
+  const res = await fetch(`${BASE_URL}/api/users/me`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) {
+    localStorage.clear();
+    window.location.href = "login.html";
+    return;
   }
+
+  const u = await res.json();
+
+  document.querySelector(".profile-avatar h3").textContent = u.name || "User";
+  qs("fullName").value = u.name || "";
+  qs("email").value = u.email || "";
+  qs("phone").value = u.number || "";
+  if (qs("memberSince")) {
+    qs("memberSince").value = u.createdAt
+      ? new Date(u.createdAt).toLocaleDateString()
+      : "-";
+  }
+}
+
+fetchProfile();
+
+const editBtn = qs("editProfileBtn");
+const fields = [qs("fullName"), qs("email"), qs("phone")];
+
+editBtn.addEventListener("click", () => {
+  const editing = editBtn.textContent === "Edit Information";
+  fields.forEach(f => f.disabled = !editing);
+  editBtn.textContent = editing ? "Save Changes" : "Edit Information";
 });
 
-renderAddresses();
+function logoutUser() {
+  localStorage.clear();
+  window.location.href = "login.html";
+}
 </script>
+
 
 <script src="script.js"></script>
 </body>

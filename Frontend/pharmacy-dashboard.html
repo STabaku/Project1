@@ -203,23 +203,52 @@ table th, table td {
 </div>
 
 <script>
+   
 const BASE_URL = "http://localhost:5183";
+const token = localStorage.getItem("token");
 
-/* MENU */
-function showSection(id){
-  document.querySelectorAll(".section").forEach(s => s.style.display="none");
-  document.getElementById(id).style.display="block";
-}
-
-function logout(){
+if (!token) {
+  alert("Not authenticated");
   window.location.href = "index.html";
 }
 
-/* LOAD REQUESTS */
-async function loadRequests(){
-  const res = await fetch(`${BASE_URL}/api/requests`);
-  const data = await res.json();
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(s => {
+    s.style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+}
 
+function logout() {
+  localStorage.removeItem("token");
+  window.location.href = "index.html";
+}
+
+/* ================================
+   LOAD ALL REQUESTS (MAIN)
+================================ */
+async function loadRequests() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/requests`, {
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    });
+
+    if (!res.ok) throw new Error("Failed to load requests");
+
+    const data = await res.json();
+
+    renderRequests(data);
+    updateCounters(data);
+
+  } catch (err) {
+    console.error(err);
+    alert("Error loading requests");
+  }
+}
+
+function renderRequests(data) {
   const newT = document.getElementById("newRequests");
   const activeT = document.getElementById("activeOrders");
   const historyT = document.getElementById("historyOrders");
@@ -228,27 +257,27 @@ async function loadRequests(){
   activeT.innerHTML = "";
   historyT.innerHTML = "";
 
-  let pending=0, active=0, done=0;
-
   data.forEach(r => {
 
-    if (r.status === "Pending"){
-      pending++;
+    /* NEW / PENDING */
+    if (r.status === "Pending") {
       newT.innerHTML += `
         <tr>
           <td>${r.id}</td>
           <td>${r.medicineName}</td>
           <td>${r.quantity}</td>
           <td>${r.address}</td>
-          <td>${new Date(r.createdAt).toLocaleString()}</td>
+          <td>${formatDate(r.createdAt)}</td>
           <td>
-            <button class="btn btn-accept" onclick="accept(${r.id})">Accept</button>
+            <button class="btn btn-accept" onclick="acceptRequest(${r.id})">
+              Accept
+            </button>
           </td>
         </tr>`;
     }
 
-    if (r.status === "Accepted"){
-      active++;
+    /* ACTIVE / ACCEPTED */
+    if (r.status === "Accepted") {
       activeT.innerHTML += `
         <tr>
           <td>${r.id}</td>
@@ -257,13 +286,15 @@ async function loadRequests(){
           <td>${r.address}</td>
           <td class="status-accepted">Accepted</td>
           <td>
-            <button class="btn btn-done" onclick="deliver(${r.id})">Delivered</button>
+            <button class="btn btn-done" onclick="deliverRequest(${r.id})">
+              Delivered
+            </button>
           </td>
         </tr>`;
     }
 
-    if (r.status === "Delivered"){
-      done++;
+    /* HISTORY / DELIVERED */
+    if (r.status === "Delivered") {
       historyT.innerHTML += `
         <tr>
           <td>${r.id}</td>
@@ -271,35 +302,67 @@ async function loadRequests(){
           <td>${r.quantity}</td>
           <td>${r.address}</td>
           <td class="status-delivered">Delivered</td>
-          <td>${new Date(r.createdAt).toLocaleString()}</td>
+          <td>${formatDate(r.createdAt)}</td>
         </tr>`;
     }
-
   });
+}
 
-  document.getElementById("totalReq").innerText = data.length;
+/* DASHBOARD COUNTERS */
+function updateCounters(data) {
+  const total = data.length;
+  const pending = data.filter(r => r.status === "Pending").length;
+  const active = data.filter(r => r.status === "Accepted").length;
+  const delivered = data.filter(r => r.status === "Delivered").length;
+
+  document.getElementById("totalReq").innerText = total;
   document.getElementById("pendingReq").innerText = pending;
   document.getElementById("activeReq").innerText = active;
-  document.getElementById("doneReq").innerText = done;
+  document.getElementById("doneReq").innerText = delivered;
 }
 
-/* ACCEPT REQUEST */
-async function accept(id){
-  await fetch(`${BASE_URL}/api/requests/accept/${id}`, { method:"POST" });
+/*ACCEPT REQUEST */
+async function acceptRequest(id) {
+  if (!confirm("Accept this request?")) return;
+
+  await fetch(`${BASE_URL}/api/requests/accept/${id}`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
   loadRequests();
 }
 
-/* DELIVER REQUEST */
-async function deliver(id){
-  await fetch(`${BASE_URL}/api/requests/deliver/${id}`, { method:"POST" });
+/* ================================
+   DELIVER REQUEST
+================================ */
+async function deliverRequest(id) {
+  if (!confirm("Mark as delivered?")) return;
+
+  await fetch(`${BASE_URL}/api/requests/deliver/${id}`, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
   loadRequests();
 }
 
-/* AUTO REFRESH */
-setInterval(loadRequests, 3000);
+/* ================================
+   HELPERS
+================================ */
+function formatDate(date) {
+  return new Date(date).toLocaleString();
+}
+
+/* ================================
+   AUTO REFRESH
+================================ */
 loadRequests();
+setInterval(loadRequests, 5000);
 </script>
-
-
 </body>
 </html>

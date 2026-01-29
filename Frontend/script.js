@@ -1,328 +1,151 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
-  const nav = document.querySelector(".nav-links");
+const API_BASE = "http://localhost:5183/api";
+const AUTH_API = API_BASE + "/auth";
 
-  if (!nav) return; // For pages without main navbar (like login) do nothing
+const TOKEN_KEY = "token";
+const ROLE_KEY = "userRole";
 
-  if (isLoggedIn === "true") {
+const qs = id => document.getElementById(id);
+const qsa = sel => document.querySelectorAll(sel);
 
-    const loginLink = [...document.querySelectorAll("a")].find(a =>
-      a.getAttribute("href") && a.getAttribute("href").includes("login")
-    );
-    if (loginLink) loginLink.remove();
-
-    // Add Profile link if not already present
-    if (!document.querySelector('a[href="profile.html"]')) {
-      const profileLink = document.createElement("a");
-      profileLink.href = "profile.html";
-      profileLink.className = "nav-link";
-      profileLink.innerHTML = `<i class="fa-solid fa-user"></i> Profile`;
-      nav.appendChild(profileLink);
-    }
-
-    // Add Logout link if not already present
-    if (!document.getElementById("logoutBtn")) {
-      const logoutLink = document.createElement("a");
-      logoutLink.href = "#";
-      logoutLink.id = "logoutBtn";
-      logoutLink.className = "nav-link";
-      logoutLink.innerHTML = `<i class="fa-solid fa-right-from-bracket"></i> Logout`;
-      logoutLink.addEventListener("click", logoutUser);
-      nav.appendChild(logoutLink);
-    }
-
-  } else {
-    // Redirect from protected pages if not logged in
-    const protectedPages = ["request.html", "pharmacies.html", "profile.html"];
-    const currentPage = window.location.pathname.split("/").pop();
-
-    if (protectedPages.includes(currentPage)) {
-      window.location.href = "login.html";
-    }
-  }
-});
-
-
-const searchBtn = document.getElementById("searchBtn");
-const searchInput = document.getElementById("searchInput");
-const pharmacies = document.querySelectorAll(".pharmacy-card");
-const message = document.getElementById("noResultMsg");
-
-if (searchBtn && searchInput && pharmacies.length > 0) {
-  searchBtn.addEventListener("click", function () {
-    const input = searchInput.value.toLowerCase().trim();
-    let found = false;
-
-    pharmacies.forEach(card => {
-      const name = card.querySelector("h3").textContent.toLowerCase();
-      const location = card.querySelector("small").textContent.toLowerCase();
-
-      if (name.includes(input) || location.includes(input)) {
-        card.style.display = "";
-        found = true;
-      } else {
-        card.style.display = "none";
-      }
-    });
-
-    // Show or hide message
-    if (message) {
-      message.style.display = found ? "none" : "block";
-    }
-  });
-}
-
-
-
-
-
-
-
-
-// ===============================
-// CONFIG
-// ===============================
-const BACKEND_URL = "http://localhost:5183/api/auth";
-
-// ===============================
-// ELEMENT REFERENCES
-// ===============================
-const step1 = document.getElementById("step1");
-const step2 = document.getElementById("step2");
-const identifierEl = document.getElementById("identifier");
-const maskTarget = document.getElementById("maskTarget");
-
-const ok1 = document.getElementById("ok1");
-const err1 = document.getElementById("err1");
-const ok2 = document.getElementById("ok2");
-const err2 = document.getElementById("err2");
-
-
-
-
-
-// ===============================
-// HELPERS
-// ===============================
-function show(el, msg){
+const show = (el, msg) => {
+  if (!el) return;
   el.textContent = msg;
   el.style.display = "block";
-}
-function hide(el){
+};
+
+const hide = el => {
+  if (!el) return;
   el.textContent = "";
   el.style.display = "none";
-}
-function maskIdentifier(v){
-  v = v.trim();
-  if (v.includes("@")){
-    const [u, d] = v.split("@");
-    const uMasked = u.length <= 2 ? u[0] + "*" : u.slice(0,2) + "***";
-    return `${uMasked}@${d}`;
-  }
-  const last = v.slice(-3);
-  return v.slice(0, Math.max(0, v.length-3)).replace(/\d/g,"*") + last;
-}
-function getOtpValue(){
-  const inputs = [...document.querySelectorAll("#otpGrid input")];
-  return inputs.map(i => i.value.replace(/\D/g,"")).join("");
-}
-
-
-
-
-
-// ===============================
-// SEND OTP
-// ===============================
-async function sendOtp() {
-  hide(ok1); hide(err1); hide(ok2); hide(err2);
-
-  const identifier = identifierEl.value.trim();
-  if (!identifier) {
-    show(err1, "Please enter your email or phone number.");
-    return;
-  }
-
-  // <-- Add the log here
-  console.log("Sending login OTP for:", identifier);
-
-  try {
-    const res = await fetch(`${BACKEND_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ EmailOrNumber: identifier })
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      show(err1, data);
-      return;
-    }
-
-    show(ok1, "OTP sent successfully.");
-    maskTarget.textContent = maskIdentifier(identifier);
-
-    step1.style.display = "none";
-    step2.style.display = "block";
-
-    const inputs = [...document.querySelectorAll("#otpGrid input")];
-    inputs[0].focus();
-
-    // AUTO-FILL OTP in DEV MODE
-    if (data.otp) {
-      const otpDigits = data.otp.split("");
-      inputs.forEach((inp, i) => { inp.value = otpDigits[i] || ""; });
-    }
-
-  } catch(e) {
-    show(err1, "Cannot connect to server. Check backend URL.");
-  }
-}
-
-
-// ===============================
-// VERIFY OTP
-// ===============================
-async function verifyLoginOtp() {
-  hide(ok2); hide(err2);
-
-  const otp = getOtpValue(); // gets digits from grid
-  if (otp.length !== 6) {
-    show(err2, "Please enter the 6-digit OTP code.");
-    return;
-  }
-
-  const identifier = identifierEl.value.trim();
-
- const payload = {
-    EmailOrNumber: identifierEl.value.trim(),  // make sure this always has value
-    OTP: getOtpValue()                          // ensure 6-digit string
 };
-console.log("Sending verify-login payload:", payload);  // debug
 
+const mask = v =>
+  v.includes("@")
+    ? v.slice(0, 2) + "***@" + v.split("@")[1]
+    : "***" + v.slice(-3);
 
-  try {
-    const res = await fetch("http://localhost:5183/api/auth/verify-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+const otpValue = () =>
+  [...qsa("#otpGrid input")].map(i => i.value).join("");
 
-    const data = await res.json();
+/* ================= STEP 1 – REQUEST OTP ================= */
+async function sendOtp() {
+  hide(qs("err1"));
+  hide(qs("ok1"));
 
-    if (!res.ok) {
-      show(err2, data.message || JSON.stringify(data));
-      return;
-    }
-
-    // Successful login
-    localStorage.setItem("isLoggedIn", "true")
-    localStorage.setItem("userIdentifier", identifier);
-   
-
-    localStorage.setItem("userRole", data.role || "User");
-    localStorage.setItem("userId", data.id);
-
-    show(ok2, "Login successful. Redirecting...");
-
-    setTimeout(() => {
-      window.location.href = "profile.html";
-    }, 1000);
-
-  } catch(e) {
-    show(err2, "Server error. Try again later.");
+  const identifier = qs("identifier")?.value.trim();
+  if (!identifier) {
+    show(qs("err1"), "Email or phone is required");
+    return;
   }
+
+  const res = await fetch(AUTH_API + "/login-request", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ emailOrNumber: identifier })
+  });
+
+  if (!res.ok) {
+    show(qs("err1"), "User not found or not verified");
+    return;
+  }
+
+  show(qs("ok1"), "OTP sent");
+  qs("maskTarget").textContent = mask(identifier);
+
+  qs("step1").style.display = "none";
+  qs("step2").style.display = "block";
+
+  qsa("#otpGrid input")[0]?.focus();
 }
 
+/* ================= STEP 2 – VERIFY OTP & LOGIN ================= */
+async function verifyOtp() {
+  hide(qs("err2"));
+  hide(qs("ok2"));
 
-// ===============================
-// OTP GRID UX
-// ===============================
-document.querySelectorAll("#otpGrid input").forEach((inp, idx, arr) => {
-  inp.addEventListener("input", () => {
-    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
-    if (inp.value && idx < arr.length - 1) arr[idx+1].focus();
+  const otp = otpValue();
+  if (otp.length !== 6) {
+    show(qs("err2"), "Enter 6-digit OTP");
+    return;
+  }
+
+  const identifier = qs("identifier").value.trim();
+
+  const res = await fetch(AUTH_API + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      emailOrNumber: identifier,
+      otp: otp
+    })
   });
-  inp.addEventListener("keydown", (e) => {
-    if (e.key === "Backspace" && !inp.value && idx > 0) arr[idx-1].focus();
-  });
-});
 
-// ===============================
-// BUTTON EVENTS
-// ===============================
-const btnSendOtp = document.getElementById("btnSendOtp");
-if (btnSendOtp) btnSendOtp.addEventListener("click", sendOtp);
+  const data = await res.json();
 
-const btnResendOtp = document.getElementById("btnResendOtp");
-if (btnResendOtp) btnResendOtp.addEventListener("click", sendOtp);
+  if (!res.ok) {
+    show(qs("err2"), data || "Invalid or expired OTP");
+    return;
+  }
 
-const btnVerifyOtp = document.getElementById("btnVerifyOtp");
-if (btnVerifyOtp) btnVerifyOtp.addEventListener("click", verifyLoginOtp);
+  localStorage.setItem(TOKEN_KEY, data.token);
+  localStorage.setItem(ROLE_KEY, data.role);
 
+  show(qs("ok2"), "Login successful");
 
+  setTimeout(() => {
+    if (data.role === "PharmacyAdmin")
+      window.location.href = "pharmacy-dashboard.html";
+    else if (data.role === "SuperAdmin")
+      window.location.href = "dashboard.html";
+    else
+      window.location.href = "profile.html";
+  }, 600);
+}
 
-// ===============================
-// LOGOUT FUNCTION (used elsewhere in project)
-// ===============================
-function logoutUser() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userRole");
-  localStorage.removeItem("userIdentifier");
+/* ================= NAVBAR ================= */
+function updateNavbar() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const nav = document.querySelector(".nav-links");
+  if (!nav) return;
+
+  nav.innerHTML = `
+    <a href="index.html">Home</a>
+    ${
+      token
+        ? `
+          <a href="profile.html">My Profile</a>
+          <a href="#" onclick="logout()">Logout</a>
+        `
+        : `
+          <a href="login.html">Login</a>
+          <a href="register.html">Register</a>
+        `
+    }
+  `;
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(ROLE_KEY);
   window.location.href = "login.html";
 }
 
-
-
-
-
-
-   
-//request.html javascript
-
-document.addEventListener("DOMContentLoaded", function() {
-  // Only visible on request.html
-  const step1 = document.getElementById("step1");
-  const step2 = document.getElementById("step2");
-  const step3 = document.getElementById("step3");
-
-  const ok1 = document.getElementById("ok1");
-  const err1 = document.getElementById("err1");
-
-  // your existing request.html JS code here...
+/* ================= OTP INPUT UX ================= */
+qsa("#otpGrid input").forEach((i, idx, arr) => {
+  i.addEventListener("input", () => {
+    i.value = i.value.replace(/\D/g, "").slice(0, 1);
+    if (i.value && idx < arr.length - 1) arr[idx + 1].focus();
+  });
+  i.addEventListener("keydown", e => {
+    if (e.key === "Backspace" && !i.value && idx > 0)
+      arr[idx - 1].focus();
+  });
 });
 
+/* ================= EVENTS ================= */
+qs("btnSendOtp")?.addEventListener("click", sendOtp);
+qs("btnResendOtp")?.addEventListener("click", sendOtp);
+qs("btnVerifyOtp")?.addEventListener("click", verifyOtp);
 
-
-
-
-
-/* ================= FUNCTIONS ================= */
-
-function requireLogin(targetPage) {
-  const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-  if (isLoggedIn !== "true") {
-    window.location.href = "login.html";
-  } else {
-    window.location.href = targetPage;
-  }
-}
-
-function logoutUser() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("userRole");
-  localStorage.removeItem("userIdentifier");
- window.location.href = "login.html";
-}
-
-
-
-
-
-
-
-
-
-
-
+document.addEventListener("DOMContentLoaded", updateNavbar);

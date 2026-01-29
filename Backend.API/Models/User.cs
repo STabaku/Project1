@@ -3,13 +3,14 @@ namespace Backend.API.Models
 {
  public class User
 {
-    public int Id { get; set; }   // NOT nullable
+    public int Id { get; set; } 
 
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
-public string? Gender { get; set; }
-    // Optional fields → MUST be nullable
+
     public string? Number { get; set; }
+    public int? PharmacyId { get; set; } 
+
     public string? Location { get; set; }
    
   public string Role { get; set; } = "User";

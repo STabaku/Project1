@@ -26,9 +26,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<RequestService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<OtpService>();
-builder.Services.AddSingleton<MatchingService>();
+builder.Services.AddScoped<MatchingService>();
 builder.Services.AddSingleton<DeliverySimulationService>();
 builder.Services.AddSingleton<ExternalApiService>();
+builder.Services.AddScoped<JwtService>();
+
 
 // CORS — only one policy
 builder.Services.AddCors(options =>
