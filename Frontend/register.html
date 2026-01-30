@@ -24,10 +24,9 @@
 <section class="auth-hero">
   <div class="wrap">
     <div>
-      <h1>Register with OTP</h1>
-      <p>Create an account and verify your email or phone number using a one-time code.</p>
+      <h1>Register</h1>
     </div>
-
+<!-- 
     <div class="card-auth">
       <h2>Create Account</h2>
 
@@ -83,11 +82,44 @@
         <div class="notice err" id="err2"></div>
       </div>
 
-    </div>
+    </div> -->
+    <div class="card-auth">
+  <h2>Create Account</h2>
+
+  <div class="field">
+    <label>First Name</label>
+    <input id="firstName" placeholder="e.g. Anna">
+  </div>
+
+  <div class="field">
+    <label>Last Name</label>
+    <input id="lastName" placeholder="e.g. Smith">
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <input id="email" type="email" placeholder="email@domain.com">
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="********">
+  </div>
+
+  <button class="btn btn-primary" id="btnRegister">Register</button>
+
+  <div class="notice ok" id="ok"></div>
+  <div class="notice err" id="err"></div>
+
+  <div class="help">
+    Already have an account? <a href="login.html">Login</a>
+  </div>
+</div>
+
   </div>
 </section>
 
-<script>
+<!-- <script>
 const step1 = document.getElementById("step1");
 const step2 = document.getElementById("step2");
 
@@ -258,6 +290,65 @@ document.getElementById("btnSendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnResendOtp").addEventListener("click", sendOtp);
 document.getElementById("btnVerifyOtp").addEventListener("click", verifyOtp);
 
+</script> -->
+
+<script>
+const API = "http://localhost:5183/api/auth";
+
+const qs = id => document.getElementById(id);
+const show = (el, msg) => { el.textContent = msg; el.style.display = "block"; };
+const hide = el => { el.textContent = ""; el.style.display = "none"; };
+
+async function register() {
+  hide(qs("ok"));
+  hide(qs("err"));
+
+  const firstName = qs("firstName").value.trim();
+  const lastName = qs("lastName").value.trim();
+  const email = qs("email").value.trim();
+  const password = qs("password").value;
+
+  if (!firstName || !lastName || !email || !password) {
+    show(qs("err"), "All fields are required");
+    return;
+  }
+
+  const payload = {
+    name: firstName + " " + lastName,
+    email: email,
+    number: null,
+    password: password,
+    role: "User",
+    pharmacyId: null
+  };
+
+  try {
+    const res = await fetch(API + "/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      show(qs("err"), text);
+      return;
+    }
+
+    show(qs("ok"), "Account created successfully. Redirecting to login...");
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 1000);
+
+  } catch (e) {
+    show(qs("err"), "Cannot connect to server");
+  }
+}
+
+qs("btnRegister").addEventListener("click", register);
 </script>
+
 </body>
 </html>

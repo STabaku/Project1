@@ -14,6 +14,7 @@
 
 <body>
 
+<!-- ================= NAVBAR ================= -->
 <nav class="navbar">
   <div class="nav-container">
 
@@ -28,16 +29,17 @@
         <i class="fa fa-house"></i> Home
       </a>
 
-      <a class="nav-link" href="#" onclick="requireLogin('request.html')">
+      <a class="nav-link" href="request.html" onclick="requireLogin('request.html')">
         <i class="fa fa-notes-medical"></i> Request Medicine
       </a>
 
-      <a class="nav-link" href="#" onclick="requireLogin('pharmacies.html')">
+      <a class="nav-link" href="pharmacies.html" onclick="requireLogin('pharmacies.html')">
         <i class="fa fa-location-dot"></i> Nearby Pharmacies
       </a>
+       <a class="nav-link" href="profile.html"><i class="fa fa-user"></i>Profile</a>
 
      <a class="nav-link" href="login.html">
-  <i class="fa fa-user"></i> Login
+  <i class="fa fa-user"></i> Logout
 </a>
 
       
@@ -170,17 +172,6 @@
   </div>
 </footer>
 
-<script>
-  function requireLogin(targetPage) {
-    const isLoggedIn = localStorage.getItem("isLoggedIn");
-
-    if (!isLoggedIn) {
-      window.location.href = "login.html";
-    } else {
-      window.location.href = targetPage;
-    }
-  }
-</script>
 <script src="script.js"></script>
 
 </body>

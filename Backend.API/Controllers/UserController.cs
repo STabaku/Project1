@@ -2,11 +2,14 @@ using Backend.API.Models;
 using Backend.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Backend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -16,21 +19,29 @@ namespace Backend.API.Controllers
             _context = context;
         }
 
-        // ⚠️ OPTIONAL – vetëm për SuperAdmin (rekomandohet të mbyllet)
-        [HttpGet]
-        public IActionResult GetAll()
+        // ================= MY REQUESTS =================
+        [HttpGet("my-requests")]
+        public async Task<IActionResult> GetMyRequests()
         {
-            return Unauthorized("Access denied");
+            var userId = int.Parse(
+                User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value
+            );
+
+            var requests = await _context.EmergencyRequests
+                .Where(r => r.ClientId == userId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            return Ok(requests);
         }
 
-        // GET api/users/me
+        // ================= MY PROFILE =================
         [HttpGet("me")]
         public async Task<IActionResult> GetMyDetails()
         {
-            if (!HttpContext.Items.ContainsKey("UserId"))
-                return Unauthorized();
-
-            int userId = (int)HttpContext.Items["UserId"]!;
+            var userId = int.Parse(
+                User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value
+            );
 
             var user = await _context.Users
                 .Where(u => u.Id == userId)

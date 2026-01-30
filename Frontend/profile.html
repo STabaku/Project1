@@ -274,17 +274,17 @@
         <i class="fa fa-house"></i> Home
       </a>
 
-      <a class="nav-link" href="#" onclick="requireLogin('request.html')">
+      <a class="nav-link" href="request.html" onclick="requireLogin('request.html')">
         <i class="fa fa-notes-medical"></i> Request Medicine
       </a>
 
-      <a class="nav-link" href="#" onclick="requireLogin('pharmacies.html')">
+      <a class="nav-link" href="pharmacies.html" onclick="requireLogin('pharmacies.html')">
         <i class="fa fa-location-dot"></i> Nearby Pharmacies
       </a>
        <a class="nav-link" href="profile.html"><i class="fa fa-user"></i>Profile</a>
 
      <a class="nav-link" href="login.html">
-  <i class="fa fa-user"></i> Login
+  <i class="fa fa-user"></i> Logout
 </a>
 
       
@@ -383,7 +383,7 @@
 </div>
 
 
-<script>
+<!-- <script>
 const BASE_URL = "http://localhost:5183";
 const token = localStorage.getItem("token");
 
@@ -432,8 +432,79 @@ function logoutUser() {
   localStorage.clear();
   window.location.href = "login.html";
 }
-</script>
+</script> -->
 
+<script>
+const BASE_URL = "http://localhost:5183";
+const TOKEN_KEY = "token";
+
+/* ================= AUTH GUARD ================= */
+(function authGuard() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    window.location.replace("login.html");
+  }
+})();
+
+/* ================= HELPERS ================= */
+const qs = id => document.getElementById(id);
+
+/* ================= FETCH PROFILE ================= */
+async function fetchProfile() {
+  const token = localStorage.getItem(TOKEN_KEY);
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/users/me`, {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    });
+
+    if (!res.ok) {
+      localStorage.clear();
+      window.location.replace("login.html");
+      return;
+    }
+
+    const u = await res.json();
+
+    document.querySelector(".profile-avatar h3").textContent = u.name || "User";
+    qs("fullName").value = u.name || "";
+    qs("email").value = u.email || "";
+    qs("phone").value = u.number || "";
+    if (qs("memberSince")) {
+      qs("memberSince").value = u.createdAt
+        ? new Date(u.createdAt).toLocaleDateString()
+        : "-";
+    }
+
+  } catch (e) {
+    console.error("Failed to load profile", e);
+    localStorage.clear();
+    window.location.replace("login.html");
+  }
+}
+
+fetchProfile();
+
+/* ================= EDIT PROFILE (UI ONLY) ================= */
+const editBtn = qs("editProfileBtn");
+const fields = [qs("fullName"), qs("email"), qs("phone")];
+
+if (editBtn) {
+  editBtn.addEventListener("click", () => {
+    const editing = editBtn.textContent === "Edit Information";
+    fields.forEach(f => f && (f.disabled = !editing));
+    editBtn.textContent = editing ? "Save Changes" : "Edit Information";
+  });
+}
+
+/* ================= LOGOUT ================= */
+function logoutUser() {
+  localStorage.clear();
+  window.location.replace("login.html");
+}
+</script>
 
 <script src="script.js"></script>
 </body>

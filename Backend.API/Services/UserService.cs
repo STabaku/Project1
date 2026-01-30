@@ -1,5 +1,5 @@
 using Backend.API.Models;
-using Backend.API.Data; // your AppDbContext
+using Backend.API.Data; 
 using Microsoft.EntityFrameworkCore;
 using Backend.API.Services;
 using System;
@@ -24,11 +24,11 @@ namespace Backend.API.Services
         }
 
         // Get user by email or number
-        public async Task<User> GetUserByEmailOrNumberAsync(string emailOrNumber)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == emailOrNumber || u.Number == emailOrNumber);
-        }
+      public async Task<User?> GetUserByEmailOrNumberAsync(string emailOrNumber)
+{
+    return await _context.Users
+        .FirstOrDefaultAsync(u => u.Email == emailOrNumber || u.Number == emailOrNumber);
+}
 
         // Verify user
         public async Task VerifyUserAsync(string emailOrNumber)

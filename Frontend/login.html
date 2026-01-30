@@ -23,14 +23,14 @@
 <section class="auth-hero">
   <div class="wrap">
     <div>
-      <h1>Login with OTP</h1>
-      <p>Enter your email or phone number, receive a code and verify to log in.</p>
+      <h1>Login</h1>
+      <p>Enter your email or phone number to log in.</p>
     </div>
 
     <div class="card-auth">
       <h2>Login</h2>
 
-      <div id="step1">
+      <!-- <div id="step1">
         <div class="field">
           <label>Email or Phone</label>
           <input id="identifier" placeholder="e.g. email@domain.com or +38344123456" autocomplete="username">
@@ -41,11 +41,36 @@
         <div class="help">
           Don’t have an account? <a href="register.html">Register</a>
         </div>
-      </div>
+      </div> -->
+<div id="step1">
+  <div class="field">
+    <label>Email</label>
+    <input id="email" type="email" placeholder="email@domain.com" autocomplete="username">
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="********" autocomplete="current-password">
+  </div>
+
+  <button class="btn btn-primary" id="btnLogin">Login</button>
+
+  <div class="notice ok" id="ok1"></div>
+  <div class="notice err" id="err1"></div>
+
+  <div class="help">
+    Don’t have an account? <a href="register.html">Register</a>
+  </div>
+</div>
+
+
+      <!-- //////////////////////////////////////////// -->
 
       <div id="step2" style="display:none;">
         <div class="help">
-          OTP sent to: <strong id="maskTarget"></strong>
+          <!-- OTP sent to: <strong id="maskTarget"></strong> -->
+             OTP sent to your email
+
         </div>
 
         <div class="field">

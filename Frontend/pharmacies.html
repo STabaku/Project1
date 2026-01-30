@@ -198,7 +198,8 @@
 </div>
 
 <script>
-const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+const token = localStorage.getItem("token");
+const isLoggedIn = !!token;
 
 const authLink = document.getElementById("auth-link");
 if (isLoggedIn) {

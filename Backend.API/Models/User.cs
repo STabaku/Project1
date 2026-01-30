@@ -7,6 +7,7 @@ namespace Backend.API.Models
 
     public string Name { get; set; } = null!;
     public string Email { get; set; } = null!;
+    public string PasswordHash { get; set; }
 
     public string? Number { get; set; }
     public int? PharmacyId { get; set; } 

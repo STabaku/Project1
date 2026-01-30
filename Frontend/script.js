@@ -2,6 +2,7 @@ const API_BASE = "http://localhost:5183/api";
 const AUTH_API = API_BASE + "/auth";
 
 const TOKEN_KEY = "token";
+
 const ROLE_KEY = "userRole";
 
 const qs = id => document.getElementById(id);
@@ -59,6 +60,49 @@ async function sendOtp() {
 }
 
 /* ================= STEP 2 – VERIFY OTP & LOGIN ================= */
+// async function verifyOtp() {
+//   hide(qs("err2"));
+//   hide(qs("ok2"));
+
+//   const otp = otpValue();
+//   if (otp.length !== 6) {
+//     show(qs("err2"), "Enter 6-digit OTP");
+//     return;
+//   }
+
+//   const identifier = qs("identifier").value.trim();
+
+//   const res = await fetch(AUTH_API + "/login", {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({
+//       emailOrNumber: identifier,
+//       otp: otp
+//     })
+//   });
+
+//   const data = await res.json();
+
+//   if (!res.ok) {
+//     show(qs("err2"), data || "Invalid or expired OTP");
+//     return;
+//   }
+
+//   localStorage.setItem(TOKEN_KEY, data.token);
+//   localStorage.setItem(ROLE_KEY, data.role);
+
+//   show(qs("ok2"), "Login successful");
+
+//   setTimeout(() => {
+//     if (data.role === "PharmacyAdmin")
+//       window.location.href = "pharmacy-dashboard.html";
+//     else if (data.role === "SuperAdmin")
+//       window.location.href = "dashboard.html";
+//     else
+//       window.location.href = "profile.html";
+//   }, 600);
+// }
+
 async function verifyOtp() {
   hide(qs("err2"));
   hide(qs("ok2"));
@@ -69,15 +113,12 @@ async function verifyOtp() {
     return;
   }
 
-  const identifier = qs("identifier").value.trim();
+  const email = qs("email").value.trim();
 
-  const res = await fetch(AUTH_API + "/login", {
+  const res = await fetch(AUTH_API + "/login/verify-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      emailOrNumber: identifier,
-      otp: otp
-    })
+    body: JSON.stringify({ email, otp })
   });
 
   const data = await res.json();
@@ -101,6 +142,8 @@ async function verifyOtp() {
       window.location.href = "profile.html";
   }, 600);
 }
+
+
 
 /* ================= NAVBAR ================= */
 function updateNavbar() {
@@ -143,9 +186,54 @@ qsa("#otpGrid input").forEach((i, idx, arr) => {
   });
 });
 
+async function loginWithPassword() {
+  hide(qs("err1"));
+  hide(qs("ok1"));
+
+  const email = qs("email").value.trim();
+  const password = qs("password").value;
+
+  if (!email || !password) {
+    show(qs("err1"), "Email and password are required");
+    return;
+  }
+
+  const res = await fetch(AUTH_API + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (!res.ok) {
+    const msg = await res.text();
+    show(qs("err1"), msg || "Invalid credentials");
+    return;
+  }
+
+  show(qs("ok1"), "OTP sent to your email");
+
+  qs("step1").style.display = "none";
+  qs("step2").style.display = "block";
+
+  qsa("#otpGrid input")[0]?.focus();
+}
+
+
 /* ================= EVENTS ================= */
-qs("btnSendOtp")?.addEventListener("click", sendOtp);
-qs("btnResendOtp")?.addEventListener("click", sendOtp);
+// qs("btnSendOtp")?.addEventListener("click", sendOtp);
+// qs("btnResendOtp")?.addEventListener("click", sendOtp);
+qs("btnLogin")?.addEventListener("click", loginWithPassword);
+qs("btnVerifyOtp")?.addEventListener("click", verifyOtp);
 qs("btnVerifyOtp")?.addEventListener("click", verifyOtp);
 
 document.addEventListener("DOMContentLoaded", updateNavbar);
+
+(function () {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.replace("login.html");
+  }
+})();
+
+
+

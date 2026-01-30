@@ -286,11 +286,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Add click event for "Add to Cart"
       card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
-    const currentUser = localStorage.getItem("currentUser");
-    if (!currentUser) {
-        alert("Please log in first!");
-        return;
-    }
+   const token = localStorage.getItem("token");
+if (!token) {
+    alert("Please log in first!");
+    window.location.href = "login.html";
+    return;
+}
+
 
     const order = {
         id: Date.now(),

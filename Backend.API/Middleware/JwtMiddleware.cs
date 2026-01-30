@@ -66,7 +66,12 @@ namespace Backend.API.Middleware
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                // var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = int.Parse(
+    jwtToken.Claims.First(x =>
+        x.Type == JwtRegisteredClaimNames.Sub || x.Type == "sub"
+    ).Value
+);
 
                 context.Items["UserId"] = userId;
             }

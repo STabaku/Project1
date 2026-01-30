@@ -204,11 +204,9 @@ body {
   </div>
 </div>
 
-<!-- ================= SCRIPTS ================= -->
 <script>
-// ================= Dynamic Navbar Login/Profile =================
 const authLink = document.getElementById("auth-link");
-const token = localStorage.getItem("token"); 
+const token = localStorage.getItem("token");
 
 if (token) {
     authLink.innerHTML = '<a class="nav-link" href="profile.html"><i class="fa fa-user"></i> My Profile</a>';
@@ -216,31 +214,66 @@ if (token) {
     authLink.innerHTML = '<a class="nav-link" href="login.html"><i class="fa fa-right-to-bracket"></i> Login</a>';
 }
 
-// ================= Form Submission Simulation =================
+/* ================= SEND REQUEST REAL ================= */
 const ok1 = document.getElementById("ok1");
 const err1 = document.getElementById("err1");
 
-document.getElementById("btnSendRequest").addEventListener("click", () => {
-    const medicine = document.getElementById("medicine").value.trim();
-    const quantity = document.getElementById("quantity").value;
-    const address = document.getElementById("address").value.trim();
+document.getElementById("btnSendRequest").addEventListener("click", async () => {
 
-    if (!medicine || !quantity || !address) {
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    const medicineName = document.getElementById("medicine").value.trim();
+    const quantity = parseInt(document.getElementById("quantity").value);
+    const address = document.getElementById("address").value.trim();
+    const urgency = document.getElementById("urgency").value;
+
+    if (!medicineName || !quantity || !address) {
         err1.style.display = "block";
         err1.textContent = "Please fill in all required fields.";
         ok1.style.display = "none";
         return;
     }
 
-    err1.style.display = "none";
     ok1.style.display = "block";
     ok1.textContent = "Sending request...";
+    err1.style.display = "none";
 
-    setTimeout(() => {
+    try {
+        const res = await fetch("http://localhost:5183/api/emergencyrequest", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({
+                pharmacyId: 1,            // ⚠️ për tani statike (do e bëjmë dinamike)
+                medicineName,
+                quantity,
+                address,
+                urgency
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error("Failed to send request");
+        }
+
         ok1.textContent = "Request sent successfully!";
-    }, 1500);
+        setTimeout(() => {
+            window.location.href = "profile.html";
+        }, 1200);
+
+    } catch (err) {
+        err1.style.display = "block";
+        err1.textContent = "Error sending request. Try again.";
+        ok1.style.display = "none";
+    }
 });
 </script>
+
 
 </body>
 </html>
