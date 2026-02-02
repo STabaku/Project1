@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Backend.API.Data;
+using Backend.API.Models; 
 
 namespace Backend.API.Controllers
 {
-    [Authorize(Roles = "PharmacyAdmin")]
     [ApiController]
     [Route("api/requests")]
     public class RequestsController : ControllerBase
@@ -17,30 +17,63 @@ namespace Backend.API.Controllers
             _context = context;
         }
 
-        private int PharmacyId =>
-            int.Parse(User.FindFirst("pharmacyId")!.Value);
+        // =========================
+        // CREATE REQUEST (USER)
+        // =========================
+        [HttpPost]
+        [AllowAnonymous] 
+        public async Task<IActionResult> Create([FromBody] EmergencyRequest dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        // GET ALL REQUESTS (FOR DASHBOARD)
+            var request = new EmergencyRequest
+            {
+                MedicineName = dto.MedicineName,
+                Quantity = dto.Quantity,
+                Address = dto.Address,
+                PharmacyId = dto.PharmacyId,
+                Status = "Pending",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.EmergencyRequests.Add(request);
+            await _context.SaveChangesAsync();
+
+            return Ok(request);
+        }
+
+        // =========================
+        // GET ALL (PharmacyAdmin)
+        // =========================
+        [Authorize(Roles = "PharmacyAdmin")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            var pharmacyId = GetPharmacyId();
+
             var data = await _context.EmergencyRequests
-                .Where(r => r.PharmacyId == PharmacyId)
+                .Where(r => r.PharmacyId == pharmacyId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
 
             return Ok(data);
         }
 
-        // ACCEPT REQUEST
-        
+        // =========================
+        // ACCEPT
+        // =========================
+        [Authorize(Roles = "PharmacyAdmin")]
         [HttpPost("accept/{id}")]
         public async Task<IActionResult> Accept(int id)
         {
-            var req = await _context.EmergencyRequests
-                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == PharmacyId);
+            var pharmacyId = GetPharmacyId();
 
-            if (req == null) return NotFound();
+            var req = await _context.EmergencyRequests
+                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == pharmacyId);
+
+            if (req == null)
+                return NotFound();
 
             req.Status = "Accepted";
             await _context.SaveChangesAsync();
@@ -48,14 +81,20 @@ namespace Backend.API.Controllers
             return Ok();
         }
 
-        // DELIVER REQUEST
+        // =========================
+        // DELIVER
+        // =========================
+        [Authorize(Roles = "PharmacyAdmin")]
         [HttpPost("deliver/{id}")]
         public async Task<IActionResult> Deliver(int id)
         {
-            var req = await _context.EmergencyRequests
-                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == PharmacyId);
+            var pharmacyId = GetPharmacyId();
 
-            if (req == null) return NotFound();
+            var req = await _context.EmergencyRequests
+                .FirstOrDefaultAsync(r => r.Id == id && r.PharmacyId == pharmacyId);
+
+            if (req == null)
+                return NotFound();
 
             req.Status = "Delivered";
             await _context.SaveChangesAsync();
@@ -63,12 +102,17 @@ namespace Backend.API.Controllers
             return Ok();
         }
 
-        // DASHBOARD STATS (OPTIONAL)
+        // =========================
+        // STATS
+        // =========================
+        [Authorize(Roles = "PharmacyAdmin")]
         [HttpGet("stats")]
         public async Task<IActionResult> Stats()
         {
+            var pharmacyId = GetPharmacyId();
+
             var q = _context.EmergencyRequests
-                .Where(r => r.PharmacyId == PharmacyId);
+                .Where(r => r.PharmacyId == pharmacyId);
 
             return Ok(new
             {
@@ -77,6 +121,14 @@ namespace Backend.API.Controllers
                 active = await q.CountAsync(r => r.Status == "Accepted"),
                 delivered = await q.CountAsync(r => r.Status == "Delivered")
             });
+        }
+
+        // =========================
+        // Helper Method
+        // =========================
+        private int GetPharmacyId()
+        {
+            return int.Parse(User.FindFirst("pharmacyId")!.Value);
         }
     }
 }

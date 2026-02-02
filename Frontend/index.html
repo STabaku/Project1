@@ -17,34 +17,14 @@
 <!-- ================= NAVBAR ================= -->
 <nav class="navbar">
   <div class="nav-container">
-
-    <!-- LOGO -->
-    <a class="navbar-brand" href="#">
-      <img src="assets/logo.png" alt="24/7 Emergency Pharmacy">
-    </a>
-
-    <!-- MENU -->
+    <a class="navbar-brand" href="#"><img src="assets/logo.png" alt="24/7 Emergency Pharmacy"></a>
     <div class="nav-links">
-      <a class="nav-link" href="index.html">
-        <i class="fa fa-house"></i> Home
-      </a>
+      <a class="nav-link" href="index.html"><i class="fa fa-house"></i> Home</a>
+      <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
+      <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
 
-      <a class="nav-link" href="request.html" onclick="requireLogin('request.html')">
-        <i class="fa fa-notes-medical"></i> Request Medicine
-      </a>
-
-      <a class="nav-link" href="pharmacies.html" onclick="requireLogin('pharmacies.html')">
-        <i class="fa fa-location-dot"></i> Nearby Pharmacies
-      </a>
-       <a class="nav-link" href="profile.html"><i class="fa fa-user"></i>Profile</a>
-
-     <a class="nav-link" href="login.html">
-  <i class="fa fa-user"></i> Logout
-</a>
-
-      
+      <span id="auth-link"></span>
     </div>
-
   </div>
 </nav>
 
@@ -123,17 +103,19 @@
 
   </div>
 
-  <div class="status-section">
-    <h4><i class="fa-solid fa-truck-medical"></i> Order Status</h4>
+    <!-- REPLACEMENT SECTION -->
+<div class="status-section">
+    <h4><i class="fa-solid fa-heart-pulse"></i> Emergency Health Tips</h4>
 
     <div class="status-box">
-      <span class="status-step active">✔ Request Sent</span>
-      <span class="status-step">⏳ Stock Verification</span>
-      <span class="status-step">📦 Preparing</span>
-      <span class="status-step">🚚 On Delivery</span>
+        <span class="status-step tip-blue">💊 Always check medicine expiration dates</span>
+        <span class="status-step tip-red">🚑 Call emergency services for severe reactions</span>
+        <span class="status-step tip-orange">📄 Follow dosage instructions carefully</span>
+        <span class="status-step tip-green">🧊 Store medicines in a cool, dry place</span>
+        <span class="status-step tip-purple">🩹 Keep a first aid kit handy</span>
+        <span class="status-step tip-yellow">🧼 Wash hands before taking medicine</span>
     </div>
-  </div>
-
+</div>
 </div>
 
 <!-- ================= FOOTER ================= -->
@@ -165,13 +147,18 @@
       </div>
 
     </div>
-
     <hr>
     <p class="copyright">© 2026 24/7 Emergency Pharmacy – All Rights Reserved</p>
 
   </div>
 </footer>
 
+<script src="auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    authGuard(); 
+  });
+</script>
 <script src="script.js"></script>
 
 </body>

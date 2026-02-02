@@ -279,6 +279,13 @@ if(navigator.geolocation){
 } else { renderPharmacies(); }
 </script>
 
+<script src="auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    authGuard(); 
+  });
+</script>
 <script src="script.js"></script>
+
 </body>
 </html>

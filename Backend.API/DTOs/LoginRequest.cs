@@ -3,11 +3,10 @@ using Org.BouncyCastle.Ocsp;
 
 namespace PharmacyEmergencySystem.DTOs
 {
-    public class LoginRequest
-    {
-        // [Required]
-        // public string EmailOrNumber { get; set; } = null!;
-         public required string Email { get; set; } // email ose number
+   public class LoginRequest
+{
+    public required string EmailOrNumber { get; set; }
     public required string Password { get; set; }
-    }
+}
+
 }

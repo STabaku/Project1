@@ -2,7 +2,6 @@ if (localStorage.getItem("pharmacyAuth") !== "true") {
   window.location.href = "login.html";
 }
 
-
 const BASE_URL = "http://localhost:5183";
 
 /* NAVIGATION */
@@ -24,10 +23,9 @@ function showSection(sectionId) {
   event.target.classList.add('active');
 }
 
-
 function logout() {
   localStorage.removeItem("pharmacyAuth");
-  window.location.href = "../index.html";
+  window.location.href = "./login.html";
 }
 
 /* LOAD REQUESTS */
@@ -104,3 +102,5 @@ async function deliver(id) {
 
 setInterval(loadRequests, 3000);
 loadRequests();
+
+

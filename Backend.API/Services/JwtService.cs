@@ -19,11 +19,10 @@ namespace Backend.API.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            // Vetëm PharmacyAdmin ka PharmacyId
             if (user.PharmacyId.HasValue)
             {
                 claims.Add(new Claim("pharmacyId", user.PharmacyId.Value.ToString()));

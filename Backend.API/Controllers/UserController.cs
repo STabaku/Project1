@@ -3,7 +3,7 @@ using Backend.API.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Backend.API.Controllers
 {
@@ -19,49 +19,38 @@ namespace Backend.API.Controllers
             _context = context;
         }
 
-        // ================= MY REQUESTS =================
-        [HttpGet("my-requests")]
-        public async Task<IActionResult> GetMyRequests()
+       [Authorize]
+[HttpGet("me")]
+public async Task<IActionResult> Me()
+{
+    try
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim == null)
+            return BadRequest("UserId claim missing");
+
+        if (!int.TryParse(userIdClaim.Value, out int userId))
+            return BadRequest("Invalid userId format");
+
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+            return NotFound("User not found in database");
+
+        return Ok(new
         {
-            var userId = int.Parse(
-                User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value
-            );
+            name = user.Name,
+            email = user.Email,
+            number = user.Number
+        });
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, ex.Message);
+    }
+}
 
-            var requests = await _context.EmergencyRequests
-                .Where(r => r.ClientId == userId)
-                .OrderByDescending(r => r.CreatedAt)
-                .ToListAsync();
-
-            return Ok(requests);
-        }
-
-        // ================= MY PROFILE =================
-        [HttpGet("me")]
-        public async Task<IActionResult> GetMyDetails()
-        {
-            var userId = int.Parse(
-                User.FindFirst(JwtRegisteredClaimNames.Sub)!.Value
-            );
-
-            var user = await _context.Users
-                .Where(u => u.Id == userId)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.Name,
-                    u.Email,
-                    u.Number,
-                    u.Age,
-                    u.Location,
-                    u.Role,
-                    u.PharmacyId
-                })
-                .FirstOrDefaultAsync();
-
-            if (user == null)
-                return NotFound();
-
-            return Ok(user);
-        }
     }
 }

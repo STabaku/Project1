@@ -16,8 +16,7 @@ namespace Backend.API.Controllers
             _context = context;
         }
 
-        // ✅ GET: api/pharmacies
-        // Merr vetëm farmacitë aktive
+        //  GET: api/pharmacies
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

@@ -139,16 +139,22 @@ body { background: var(--bg); font-family: Arial, sans-serif; }
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="nav-container">
-    <a class="navbar-brand" href="#"><img src="assets/logo.png" alt="24/7 Emergency Pharmacy"></a>
+    <a class="navbar-brand" href="#">
+      <img src="assets/logo.png">
+    </a>
+
     <div class="nav-links">
       <a class="nav-link" href="index.html"><i class="fa fa-house"></i> Home</a>
       <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
       <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
-       <a class="nav-link" href="profile.html"><i class="fa fa-user"></i>Profile</a>
-      <a class="nav-link" href="login.html"><i class="fa fa-user"></i> Login</a>
+      <a class="nav-link" href="cart.html">
+        <i class="fa fa-shopping-cart"></i> Cart
+      </a>
+
+      <span id="auth-link"></span>
     </div>
   </div>
 </nav>
@@ -160,15 +166,16 @@ body { background: var(--bg); font-family: Arial, sans-serif; }
   <aside class="sidebar">
     <h4><i class="fa-solid fa-pills"></i> Categories</h4>
     <div class="cat">
-      <a class="active" href="#"><i class="fa-solid fa-layer-group"></i> All Medications</a>
-      <a href="#"><i class="fa-solid fa-tablets"></i> Pain Relief</a>
-      <a href="#"><i class="fa-solid fa-droplet"></i> Diabetes</a>
-      <a href="#"><i class="fa-solid fa-bacteria"></i> Antibiotics</a>
-      <a href="#"><i class="fa-solid fa-virus"></i> Cold & Flu</a>
-      <a href="#"><i class="fa-solid fa-heart-pulse"></i> Cardiovascular</a>
-      <a href="#"><i class="fa-solid fa-lungs"></i> Respiratory</a>
-      <a href="#"><i class="fa-solid fa-brain"></i> Neurology</a>
-      <a href="#"><i class="fa-solid fa-syringe"></i> Injections</a>
+    <a class="active" href="#" data-category="all">All Medications</a>
+<a href="#" data-category="pain-relief">Pain Relief</a>
+<a href="#" data-category="diabetes">Diabetes</a>
+<a href="#" data-category="antibiotics">Antibiotics</a>
+<a href="#" data-category="cold-flu">Cold & Flu</a>
+<a href="#" data-category="cardiovascular">Cardiovascular</a>
+<a href="#" data-category="respiratory">Respiratory</a>
+<a href="#" data-category="neurology">Neurology</a>
+<a href="#" data-category="injections">Injections</a>
+
     </div>
   </aside>
 
@@ -190,18 +197,18 @@ body { background: var(--bg); font-family: Arial, sans-serif; }
 
   </section>
 </div>
+<!-- DATA FILE -->
+<script src="data.js"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
     const grid = document.getElementById("productGrid");
     const title = document.getElementById("pharmacyTitle");
-    if (!grid) return;
 
     const params = new URLSearchParams(window.location.search);
     const pharmacy = params.get("pharmacy");
 
-    // Map pharmacy keys to display names
     const pharmacyNames = {
       city: "City Pharmacy",
       healthplus: "Health Plus Pharmacy",
@@ -213,113 +220,160 @@ document.addEventListener("DOMContentLoaded", function () {
       rapid: "Rapid Pharmacy"
     };
 
-    if(pharmacy && pharmacyNames[pharmacy]){
-      title.textContent = `Medications - ${pharmacyNames[pharmacy]}`;
+    if (pharmacy && pharmacyNames[pharmacy]) {
+        title.textContent = `Medications - ${pharmacyNames[pharmacy]}`;
     }
-
-    const pharmacyData = {
-        city: [
-            { name: "Paracetamol", info: "500mg Tablets", price: "$4.99", img: "assets/paracetamol.jpg" },
-            { name: "Ibuprofen", info: "200mg Capsules", price: "$5.99", img: "assets/ibuprofen.jpg" },
-            { name: "Tachipirina", info: "Syrup", price: "$11.99", img: "assets/tachipirina.jpg" }
-        ],
-        healthplus: [
-            { name: "Insulin", info: "Injection", price: "$19.99", img: "assets/insulin.jpg" },
-            { name: "Amoxicillin", info: "500mg Capsules", price: "$8.99", img: "assets/amoxicillin.jpg" },
-            { name: "Rapidol S", info: "500mg Capsules", price: "$6.99", img: "assets/rapidolS.jpg" }
-        ],
-        vita: [
-            { name: "Paracetamol", info: "500mg Tablets", price: "$5.49", img: "assets/paracetamol.jpg" },
-            { name: "Cough Syrup", info: "Cold & Flu", price: "$7.99", img: "assets/tachipirina.jpg" }
-        ],
-        greencross: [
-            { name: "Ibuprofen", info: "400mg Tablets", price: "$6.49", img: "assets/ibuprofen.jpg" },
-            { name: "Amoxicillin", info: "250mg Capsules", price: "$7.99", img: "assets/amoxicillin.jpg" }
-        ],
-        medicare: [
-            { name: "Insulin", info: "Injection", price: "$18.99", img: "assets/insulin.jpg" },
-            { name: "Vitamin C", info: "1000mg Tablets", price: "$4.50", img: "assets/paracetamol.jpg" }
-        ],
-        family: [
-            { name: "Rapidol S", info: "500mg Capsules", price: "$6.99", img: "assets/rapidolS.jpg" },
-            { name: "Tachipirina", info: "Syrup", price: "$12.99", img: "assets/tachipirina.jpg" }
-        ],
-        careplus: [
-            { name: "Amoxicillin", info: "500mg Capsules", price: "$9.49", img: "assets/amoxicillin.jpg" },
-            { name: "Paracetamol", info: "500mg Tablets", price: "$4.99", img: "assets/paracetamol.jpg" }
-        ],
-        rapid: [
-            { name: "Ibuprofen", info: "200mg Capsules", price: "$5.99", img: "assets/ibuprofen.jpg" },
-            { name: "Insulin", info: "Injection", price: "$20.99", img: "assets/insulin.jpg" }
-        ]
-    };
 
     const meds = pharmacyData[pharmacy] || [];
 
-    if(!meds.length){
-      grid.innerHTML = "<p style='font-weight:600;color:#a11d2d;'>No medications available for this pharmacy.</p>";
-      return;
+    if (!meds.length) {
+        grid.innerHTML = "<p style='font-weight:600;color:#a11d2d;'>No medications available for this pharmacy.</p>";
+        return;
     }
 
-    // Optional: Search filter
-    window.filterProducts = function(){
-     const query = document.getElementById("medSearchInput").value.toLowerCase();
-      const cards = grid.querySelectorAll(".product");
-      cards.forEach(card=>{
-        const name = card.querySelector("h3").textContent.toLowerCase();
-        card.style.display = name.includes(query) ? "block" : "none";
-      });
+    let currentCategory = "all";
+
+    // =============================
+    // RENDER FUNCTION
+    // =============================
+    function renderProducts() {
+
+        const searchQuery = document.getElementById("medSearchInput")?.value.toLowerCase() || "";
+
+        grid.innerHTML = "";
+
+        let filtered = meds.filter(med => {
+
+            const matchesCategory =
+                currentCategory === "all" ||
+                med.category === currentCategory;
+
+            const matchesSearch =
+                med.name.toLowerCase().includes(searchQuery);
+
+            return matchesCategory && matchesSearch;
+        });
+
+        if (!filtered.length) {
+            grid.innerHTML = "<p style='font-weight:600;color:#a11d2d;'>No medications found.</p>";
+            return;
+        }
+
+        filtered.forEach(med => {
+
+            const card = document.createElement("div");
+            card.classList.add("card", "product");
+
+            card.innerHTML = `
+                <img src="${med.img}" alt="${med.name}">
+                <h3>${med.name}</h3>
+                <small>${med.info}</small>
+                <p style="font-size:14px; color:#6c7a89; margin-top:6px;">
+                  ${med.description}
+                </p>
+                <div class="price">${med.price}</div>
+                <button class="btn-add-to-cart">Add to Cart</button>
+            `;
+
+            grid.appendChild(card);
+
+            card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
+
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    alert("Please log in first!");
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+                const existing = cart.find(i => i.medicine === med.name);
+
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cart.push({
+                        medicine: med.name,
+                        info: med.info,
+                        price: parseFloat(String(med.price).replace(/[^\d.]/g,"")) || 0,
+                        pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
+                        quantity: 1
+                    });
+                }
+
+                localStorage.setItem("cart", JSON.stringify(cart));
+                alert(`${med.name} added to cart!`);
+            });
+
+        });
     }
 
-    // Render medicines
-    meds.forEach(med => {
-        const card = document.createElement('div');
-        card.classList.add('card', 'product');
-        card.innerHTML = `
-            <img src="${med.img}" alt="${med.name}">
-            <h3>${med.name}</h3>
-            <small>${med.info}</small>
-            <div class="price">${med.price}</div>
-            <button class="btn-add-to-cart">Add to Cart</button>
-        `;
-        grid.appendChild(card);
+    // =============================
+    // INITIAL RENDER
+    // =============================
+    renderProducts();
 
-        // Add click event for "Add to Cart"
-      card.querySelector(".btn-add-to-cart").addEventListener("click", () => {
-   const token = localStorage.getItem("token");
-if (!token) {
-    alert("Please log in first!");
-    window.location.href = "login.html";
-    return;
-}
+    // =============================
+    // CATEGORY FILTER
+    // =============================
+    const categoryLinks = document.querySelectorAll(".cat a");
 
+    categoryLinks.forEach(link => {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
 
-    const order = {
-        id: Date.now(),
-        user: currentUser,   
-        medicine: med.name,
-        info: med.info,
-        price: med.price,
-        pharmacy: pharmacyNames[pharmacy] || "Unknown Pharmacy",
-        date: new Date().toLocaleString(),
-        status: "Request Sent"
-    };
+            categoryLinks.forEach(l => l.classList.remove("active"));
+            this.classList.add("active");
 
-    let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+            currentCategory = this.dataset.category || "all";
 
-    orders.push(order);
-
-    localStorage.setItem("orders", JSON.stringify(orders));
-
-    alert(`${med.name} added to cart!`);
-    window.location.href = "profile.html";
-});
-
+            renderProducts();
+        });
     });
 
+    // =============================
+    // SEARCH FUNCTION
+    // =============================
+    window.filterProducts = function () {
+        renderProducts();
+    };
+
 });
+
+
+// =============================
+// AUTH LINK
+// =============================
+const authLink = document.getElementById("auth-link");
+const token = localStorage.getItem("token");
+
+if (authLink) {
+    if (token) {
+        authLink.innerHTML = `
+            <a class="nav-link" href="profile.html">
+                <i class="fa fa-user"></i> My Profile
+            </a>
+            <a class="nav-link" href="#" id="logoutBtn">
+                <i class="fa fa-right-from-bracket"></i> Logout
+            </a>
+        `;
+    } else {
+        authLink.innerHTML = `
+            <a class="nav-link" href="login.html">
+                <i class="fa fa-right-to-bracket"></i> Login
+            </a>
+        `;
+    }
+}
 </script>
 
-<script src="script.js"></script>
+
+<script src="auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    authGuard(); 
+  });
+</script>
 </body>
 </html>

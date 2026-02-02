@@ -1,12 +1,7 @@
 const API_BASE = "http://localhost:5183/api";
 const AUTH_API = API_BASE + "/auth";
 
-const TOKEN_KEY = "token";
-
-const ROLE_KEY = "userRole";
-
 const qs = id => document.getElementById(id);
-const qsa = sel => document.querySelectorAll(sel);
 
 const show = (el, msg) => {
   if (!el) return;
@@ -20,220 +15,98 @@ const hide = el => {
   el.style.display = "none";
 };
 
-const mask = v =>
-  v.includes("@")
-    ? v.slice(0, 2) + "***@" + v.split("@")[1]
-    : "***" + v.slice(-3);
-
-const otpValue = () =>
-  [...qsa("#otpGrid input")].map(i => i.value).join("");
-
-/* ================= STEP 1 – REQUEST OTP ================= */
-async function sendOtp() {
+// ================= LOGIN =================
+async function login() {
   hide(qs("err1"));
   hide(qs("ok1"));
 
-  const identifier = qs("identifier")?.value.trim();
-  if (!identifier) {
-    show(qs("err1"), "Email or phone is required");
-    return;
-  }
-
-  const res = await fetch(AUTH_API + "/login-request", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ emailOrNumber: identifier })
-  });
-
-  if (!res.ok) {
-    show(qs("err1"), "User not found or not verified");
-    return;
-  }
-
-  show(qs("ok1"), "OTP sent");
-  qs("maskTarget").textContent = mask(identifier);
-
-  qs("step1").style.display = "none";
-  qs("step2").style.display = "block";
-
-  qsa("#otpGrid input")[0]?.focus();
-}
-
-/* ================= STEP 2 – VERIFY OTP & LOGIN ================= */
-// async function verifyOtp() {
-//   hide(qs("err2"));
-//   hide(qs("ok2"));
-
-//   const otp = otpValue();
-//   if (otp.length !== 6) {
-//     show(qs("err2"), "Enter 6-digit OTP");
-//     return;
-//   }
-
-//   const identifier = qs("identifier").value.trim();
-
-//   const res = await fetch(AUTH_API + "/login", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       emailOrNumber: identifier,
-//       otp: otp
-//     })
-//   });
-
-//   const data = await res.json();
-
-//   if (!res.ok) {
-//     show(qs("err2"), data || "Invalid or expired OTP");
-//     return;
-//   }
-
-//   localStorage.setItem(TOKEN_KEY, data.token);
-//   localStorage.setItem(ROLE_KEY, data.role);
-
-//   show(qs("ok2"), "Login successful");
-
-//   setTimeout(() => {
-//     if (data.role === "PharmacyAdmin")
-//       window.location.href = "pharmacy-dashboard.html";
-//     else if (data.role === "SuperAdmin")
-//       window.location.href = "dashboard.html";
-//     else
-//       window.location.href = "profile.html";
-//   }, 600);
-// }
-
-async function verifyOtp() {
-  hide(qs("err2"));
-  hide(qs("ok2"));
-
-  const otp = otpValue();
-  if (otp.length !== 6) {
-    show(qs("err2"), "Enter 6-digit OTP");
-    return;
-  }
-
-  const email = qs("email").value.trim();
-
-  const res = await fetch(AUTH_API + "/login/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, otp })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    show(qs("err2"), data || "Invalid or expired OTP");
-    return;
-  }
-
-  localStorage.setItem(TOKEN_KEY, data.token);
-  localStorage.setItem(ROLE_KEY, data.role);
-
-  show(qs("ok2"), "Login successful");
-
-  setTimeout(() => {
-    if (data.role === "PharmacyAdmin")
-      window.location.href = "pharmacy-dashboard.html";
-    else if (data.role === "SuperAdmin")
-      window.location.href = "dashboard.html";
-    else
-      window.location.href = "profile.html";
-  }, 600);
-}
-
-
-
-/* ================= NAVBAR ================= */
-function updateNavbar() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const nav = document.querySelector(".nav-links");
-  if (!nav) return;
-
-  nav.innerHTML = `
-    <a href="index.html">Home</a>
-    ${
-      token
-        ? `
-          <a href="profile.html">My Profile</a>
-          <a href="#" onclick="logout()">Logout</a>
-        `
-        : `
-          <a href="login.html">Login</a>
-          <a href="register.html">Register</a>
-        `
-    }
-  `;
-}
-
-/* ================= LOGOUT ================= */
-function logout() {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(ROLE_KEY);
-  window.location.href = "login.html";
-}
-
-/* ================= OTP INPUT UX ================= */
-qsa("#otpGrid input").forEach((i, idx, arr) => {
-  i.addEventListener("input", () => {
-    i.value = i.value.replace(/\D/g, "").slice(0, 1);
-    if (i.value && idx < arr.length - 1) arr[idx + 1].focus();
-  });
-  i.addEventListener("keydown", e => {
-    if (e.key === "Backspace" && !i.value && idx > 0)
-      arr[idx - 1].focus();
-  });
-});
-
-async function loginWithPassword() {
-  hide(qs("err1"));
-  hide(qs("ok1"));
-
-  const email = qs("email").value.trim();
-  const password = qs("password").value;
+  const email = qs("email")?.value.trim();
+  const password = qs("password")?.value;
 
   if (!email || !password) {
     show(qs("err1"), "Email and password are required");
     return;
   }
 
-  const res = await fetch(AUTH_API + "/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+  try {
+    const res = await fetch(AUTH_API + "/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        emailOrNumber: email,
+        password: password
+      })
+    });
 
-  if (!res.ok) {
-    const msg = await res.text();
-    show(qs("err1"), msg || "Invalid credentials");
-    return;
+    const data = await res.json();
+
+    if (!res.ok) {
+      show(qs("err1"), data || "Invalid credentials");
+      return;
+    }
+
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("userRole", data.role);
+
+const payload = JSON.parse(atob(data.token.split('.')[1]));
+console.log("JWT payload:", payload);
+
+const userId =
+  payload.nameid ||
+  payload.sub ||
+  payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
+localStorage.setItem("userId", userId);
+
+
+    show(qs("ok1"), "Login successful");
+
+    setTimeout(() => {
+      if (data.role === "PharmacyAdmin")
+        window.location.href = "pharmacy-dashboard.html";
+      else if (data.role === "SuperAdmin")
+        window.location.href = "dashboard.html";
+      else
+        window.location.href = "index.html";
+    }, 500);
+
+  } catch {
+    show(qs("err1"), "Server error. Try again.");
   }
-
-  show(qs("ok1"), "OTP sent to your email");
-
-  qs("step1").style.display = "none";
-  qs("step2").style.display = "block";
-
-  qsa("#otpGrid input")[0]?.focus();
 }
 
-
-/* ================= EVENTS ================= */
-// qs("btnSendOtp")?.addEventListener("click", sendOtp);
-// qs("btnResendOtp")?.addEventListener("click", sendOtp);
-qs("btnLogin")?.addEventListener("click", loginWithPassword);
-qs("btnVerifyOtp")?.addEventListener("click", verifyOtp);
-qs("btnVerifyOtp")?.addEventListener("click", verifyOtp);
-
-document.addEventListener("DOMContentLoaded", updateNavbar);
-
-(function () {
+// ================= NAVBAR =================
+function updateNavbar() {
   const token = localStorage.getItem("token");
-  if (!token) {
-    window.location.replace("login.html");
+  const authLink = document.getElementById("auth-link");
+  if (!authLink) return;
+
+  if (token) {
+    authLink.innerHTML = `
+      <a class="nav-link" href="profile.html">
+        <i class="fa fa-user"></i> My Profile
+      </a>
+      <a class="nav-link" href="#" id="logoutBtn">
+        <i class="fa fa-right-from-bracket"></i> Logout
+      </a>
+    `;
+
+    document
+      .getElementById("logoutBtn")
+      ?.addEventListener("click", logout);
+
+  } else {
+    authLink.innerHTML = `
+      <a class="nav-link" href="login.html">
+        <i class="fa fa-right-to-bracket"></i> Login
+      </a>
+      <a class="nav-link" href="register.html">
+        <i class="fa fa-user-plus"></i> Register
+      </a>
+    `;
   }
-})();
+}
 
-
-
+// ================= EVENTS =================
+qs("btnLogin")?.addEventListener("click", login);
+document.addEventListener("DOMContentLoaded", updateNavbar);

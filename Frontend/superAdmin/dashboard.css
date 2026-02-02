@@ -1,29 +1,36 @@
 :root {
-  --primary: #16a34a;        
-  --primary-dark: #15803d;
-  --primary-light: #4ade80;
-  --accent: #22c55e;
-  --bg: #f0fdf4;             
-  --card-bg: #ffffff;
-  --text-dark: #064e3b;
-  --text-muted: #6b7280;
-}
+  --primary: #1d4ed8;        /* Blu kryesore */
+  --primary-dark: #1e3a8a;
+  --primary-light: #3b82f6;
 
+  --accent: #16a34a;         /* Jeshile accent */
+  --accent-dark: #15803d;
+  --accent-light: #dcfce7;
+
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+}
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f6f9;
+  background: var(--bg);
   display: flex;
 }
 
-/* SIDEBAR */
+/* =========================
+   SIDEBAR
+========================= */
 .sidebar {
   width: 250px;
-  background: linear-gradient(180deg, #16a34a, #15803d);
+  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
   color: white;
   height: 100vh;
   padding: 25px 20px;
+  box-shadow: 5px 0 20px rgba(0,0,0,0.05);
 }
 
 .sidebar h2::before {
@@ -44,18 +51,20 @@ body {
   padding: 12px 14px;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 10px;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
 
 .sidebar a:hover,
 .sidebar a.active {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.18);
+  transform: translateX(5px);
 }
 
-
-/* MAIN */
+/* =========================
+   MAIN
+========================= */
 .main {
   flex: 1;
   padding: 30px;
@@ -65,14 +74,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: white;
+  background: var(--card-bg);
   padding: 15px 25px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border-radius: 14px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
   margin-bottom: 30px;
 }
 
-
+/* =========================
+   CARDS
+========================= */
 .card-box {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -81,13 +92,17 @@ body {
 }
 
 .card {
-  background: linear-gradient(135deg, #ecfdf5, #ffffff);
+  background: linear-gradient(135deg, #eff6ff, #ffffff);
   padding: 25px;
   border-radius: 18px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-  border-left: 6px solid var(--primary);
+  border-left: 6px solid var(--accent);
+  transition: transform 0.2s ease;
 }
 
+.card:hover {
+  transform: translateY(-5px);
+}
 
 .card h3 {
   color: var(--text-muted);
@@ -100,14 +115,18 @@ body {
   color: var(--primary);
 }
 
+/* =========================
+   SECTIONS
+========================= */
 .section {
-  background: white;
+  background: var(--card-bg);
   padding: 25px;
   border-radius: 16px;
   margin-bottom: 30px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.05);
   animation: fadeIn 0.3s ease;
 }
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
@@ -121,20 +140,21 @@ body {
   padding-left: 14px;
 }
 
+/* =========================
+   PROFILE
+========================= */
 .profile-box {
   display: grid;
   grid-template-columns: 120px 1fr;
   gap: 20px;
   align-items: center;
-  position: relative;
 }
 
 .profile-box img {
   width: 110px;
   height: 110px;
   border-radius: 50%;
-  border: 4px solid var(--primary);
-  position: static;
+  border: 4px solid var(--accent);
 }
 
 .profile-box p {
@@ -142,18 +162,20 @@ body {
   color: var(--text-muted);
 }
 
-
 .hidden {
   display: none !important;
 }
 
+/* =========================
+   TABLE
+========================= */
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
 th {
-  background: #f1f5f9;
+  background: #eff6ff;
   color: var(--text-dark);
   font-weight: 600;
 }
@@ -165,32 +187,38 @@ th, td {
 }
 
 tr:hover {
-  background: #f8fafc;
+  background: #f1f5f9;
 }
 
+/* =========================
+   STATUS BADGES
+========================= */
 .status-accepted {
-  color: #15803d;
-  background: #dcfce7;
-  padding: 4px 10px;
+  color: var(--accent-dark);
+  background: var(--accent-light);
+  padding: 4px 12px;
   border-radius: 20px;
   font-weight: bold;
 }
 
 .status-delivered {
-  color: #1d4ed8;
+  color: var(--primary-dark);
   background: #dbeafe;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
   font-weight: bold;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 .btn {
   padding: 8px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
-  transition: transform 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn:hover {
@@ -198,25 +226,25 @@ tr:hover {
 }
 
 .btn-accept {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: white;
 }
 
 .btn-done {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
   color: white;
 }
-/* =========================
-   LOGIN PAGE STYLES
-========================= */
 
+/* =========================
+   LOGIN PAGE
+========================= */
 .login-container {
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #16a34a, #15803d);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
 }
 
 .login-card {
@@ -251,12 +279,13 @@ tr:hover {
 .login-card input:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(29,78,216,0.15);
 }
 
 .login-card button {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   border: none;
   border-radius: 12px;
   color: white;
@@ -275,4 +304,3 @@ tr:hover {
   color: #dc2626;
   font-weight: bold;
 }
-

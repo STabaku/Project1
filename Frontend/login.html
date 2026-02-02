@@ -24,72 +24,39 @@
   <div class="wrap">
     <div>
       <h1>Login</h1>
-      <p>Enter your email or phone number to log in.</p>
+      <p>Enter your email or phone number and password to log in.</p>
     </div>
 
     <div class="card-auth">
       <h2>Login</h2>
 
-      <!-- <div id="step1">
+      <div id="step1">
         <div class="field">
           <label>Email or Phone</label>
-          <input id="identifier" placeholder="e.g. email@domain.com or +38344123456" autocomplete="username">
-        </div>
-        <button class="btn btn-primary" id="btnSendOtp">Send OTP</button>
-        <div class="notice ok" id="ok1"></div>
-        <div class="notice err" id="err1"></div>
-        <div class="help">
-          Don’t have an account? <a href="register.html">Register</a>
-        </div>
-      </div> -->
-<div id="step1">
-  <div class="field">
-    <label>Email</label>
-    <input id="email" type="email" placeholder="email@domain.com" autocomplete="username">
-  </div>
-
-  <div class="field">
-    <label>Password</label>
-    <input id="password" type="password" placeholder="********" autocomplete="current-password">
-  </div>
-
-  <button class="btn btn-primary" id="btnLogin">Login</button>
-
-  <div class="notice ok" id="ok1"></div>
-  <div class="notice err" id="err1"></div>
-
-  <div class="help">
-    Don’t have an account? <a href="register.html">Register</a>
-  </div>
-</div>
-
-
-      <!-- //////////////////////////////////////////// -->
-
-      <div id="step2" style="display:none;">
-        <div class="help">
-          <!-- OTP sent to: <strong id="maskTarget"></strong> -->
-             OTP sent to your email
-
+          <input id="email" type="text"
+                 placeholder="email@domain.com or +38344123456"
+                 autocomplete="username">
         </div>
 
         <div class="field">
-          <label>OTP Code (6 digits)</label>
-          <div class="otp-grid" id="otpGrid">
-            <input inputmode="numeric" maxlength="1">
-            <input inputmode="numeric" maxlength="1">
-            <input inputmode="numeric" maxlength="1">
-            <input inputmode="numeric" maxlength="1">
-            <input inputmode="numeric" maxlength="1">
-            <input inputmode="numeric" maxlength="1">
-          </div>
+          <label>Password</label>
+          <input id="password"
+                 type="password"
+                 placeholder="********"
+                 autocomplete="current-password">
         </div>
 
-        <button class="btn btn-primary" id="btnVerifyOtp">Verify & Login</button>
-        <button class="btn btn-secondary" id="btnResendOtp">Resend OTP</button>
+        <button class="btn btn-primary" id="btnLogin">
+          Login
+        </button>
 
-        <div class="notice ok" id="ok2"></div>
-        <div class="notice err" id="err2"></div>
+        <div class="notice ok" id="ok1"></div>
+        <div class="notice err" id="err1"></div>
+
+        <div class="help">
+          Don’t have an account?
+          <a href="register.html">Register</a>
+        </div>
       </div>
 
     </div>

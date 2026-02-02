@@ -11,7 +11,7 @@ public class EmergencyRequest
     public string Address { get; set; } = null!;
 
     public string Status { get; set; } = "Pending"; 
-    public int ClientId { get; set; } 
+    public int UserId { get; set; } 
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

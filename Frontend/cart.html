@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Your Cart</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+body{background:#eef3f8;font-family:Arial}
+.container{margin-top:60px}
+.card{padding:15px;border-radius:12px;margin-bottom:15px}
+</style>
+</head>
+<body>
+    <!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a class="navbar-brand" href="#"><img src="assets/logo.png" alt="24/7 Emergency Pharmacy"></a>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html"><i class="fa fa-house"></i> Home</a>
+      <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
+      <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
+
+      <span id="auth-link"></span>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">
+    <h2>Your Cart</h2>
+    <div id="cartContainer"></div>
+    <div class="text-end mt-4">
+        <h4>Total: <span id="total">0</span></h4>
+        <button class="btn btn-success" onclick="checkout()">Checkout</button>
+    </div>
+    <!-- ================= ORDER SUCCESS MODAL ================= -->
+<div class="modal fade" id="orderSuccessModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center p-4 rounded-4">
+
+      <div class="modal-body">
+        <div class="mb-4">
+          <i class="fa-solid fa-circle-check text-success" style="font-size:70px;"></i>
+        </div>
+
+        <h4 class="fw-bold text-success">Order Sent Successfully!</h4>
+
+        <p class="text-muted mt-3">
+          Your request has been sent to the pharmacy.<br>
+          You will be contacted shortly.
+        </p>
+
+        <button class="btn btn-success mt-3 px-4" onclick="goHome()">
+          Go to Home
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+const API_URL = "http://localhost:5183/api/order";
+
+// ================= GET CART =================
+function getCart(){
+    return JSON.parse(localStorage.getItem("cart") || "[]");
+}
+
+// ================= RENDER CART =================
+function renderCart(){
+    const container = document.getElementById("cartContainer");
+    const totalEl = document.getElementById("total");
+
+    const cart = getCart();
+
+    if(!cart.length){
+        container.innerHTML = "<p>Cart is empty</p>";
+        totalEl.innerText = "0";
+        return;
+    }
+
+    let total = 0;
+
+    container.innerHTML = cart.map((item,index)=>{
+        const lineTotal = item.price * item.quantity;
+        total += lineTotal;
+
+        return `
+        <div class="card border">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <strong>${item.medicine}</strong><br>
+                    ${item.pharmacy}
+                </div>
+                <div>
+                    <button onclick="changeQty(${index},-1)">-</button>
+                    ${item.quantity}
+                    <button onclick="changeQty(${index},1)">+</button>
+                    <br>${lineTotal.toFixed(2)}
+                </div>
+            </div>
+        </div>
+        `;
+    }).join("");
+
+    totalEl.innerText = total.toFixed(2);
+}
+
+// ================= CHANGE QTY =================
+function changeQty(index,delta){
+    const cart = getCart();
+
+    cart[index].quantity += delta;
+
+    if(cart[index].quantity <= 0){
+        cart.splice(index,1);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
+}
+
+// ================= CHECKOUT =================
+async function checkout(){
+
+    const cart = getCart();
+
+    if(!cart.length){
+        alert("Cart empty");
+        return;
+    }
+
+ const userId = Number(localStorage.getItem("userId"));
+
+if(!userId || isNaN(userId)){
+    alert("Invalid user");
+    return;
+}
+
+    const order = {
+        userId: parseInt(userId),
+        items: cart.map(item => ({
+            medicineName: item.medicine,
+            pharmacyName: item.pharmacy,
+            quantity: item.quantity,
+            price: item.price
+        }))
+    };
+
+    console.log("Sending order:", order);
+
+    try{
+        const response = await fetch(API_URL,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(order)
+        });
+
+        if(!response.ok){
+            const err = await response.text();
+            console.log(err);
+            alert("Server error");
+            return;
+        }
+
+const modal = new bootstrap.Modal(document.getElementById("orderSuccessModal"));
+modal.show();
+
+        localStorage.removeItem("cart");
+        renderCart();
+
+    }catch(err){
+        console.error(err);
+        alert("Cannot connect to server");
+    }
+}
+function goHome(){
+    window.location.href = "index.html";
+}
+
+
+document.addEventListener("DOMContentLoaded", renderCart);
+</script>
+
+
+
+
+<script src="auth.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    authGuard(); 
+  });
+</script>
+</body>
+</html>

@@ -1,512 +1,228 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Profile - Emergency Pharmacy</title>
-  <link rel="stylesheet" href="style.css">
-  <!-- Bootstrap -->
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<!-- CSS External -->
 <link rel="stylesheet" href="style.css">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
-:root{
-  --blue1:#0a58ca;
-  --blue2:#1e90ff;
-  --blue3:#4facfe;
-  --bg:#8baac9;
-  --card:#ffffff;
-  --text:#0b1b2b;
-  --muted:#6c7a89;
-  --success:#28a745;
-  --warning:#f5b301;
-  --danger:#dc3545;
-  --shadow: 0 10px 30px rgba(0,0,0,0.12);
-  --radius: 16px;
+body { background:#f5f8fc; }
+.navbar { background:#0f3d5e; padding:10px 0; }
+.navbar-brand img { width:180px; }
+
+.main {
+  width:min(1100px,92%);
+  margin:60px auto;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:30px;
 }
 
-*{ box-sizing:border-box; }
-.navbar{
-  background: #0f3d5e;
-  color: #71757c;
-  padding: 18px 0;
-}
-.navbar {
-        background: #0f3d5e;
-        padding: 6px 0;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-    }
-    .navbar-brand img, .logo-img {
-        width: 190px;
-        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-    }
-/* DASHBOARD LAYOUT */
-.main{
-  width: min(1200px, 92%);
-  margin: 60px auto;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 30px;
+.profile-sidebar,
+.content {
+  background:white;
+  border-radius:14px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.08);
+  padding:30px;
 }
 
-/* SIDEBAR */
-.profile-sidebar{
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
-  padding: 28px 22px;
-  height: fit-content;
+.avatar-icon {
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#1e90ff,#4facfe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 15px;
 }
 
-.avatar-icon{
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1e90ff, #4facfe);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+.avatar-icon i { font-size:42px; color:white; }
+.profile-avatar h3 { text-align:center; font-weight:700; }
+
+.menu a {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:8px;
+  text-decoration:none;
+  color:#0b1b2b;
+  margin-bottom:8px;
+  font-weight:600;
 }
 
-.avatar-icon i{
-  font-size: 42px;
-  color: white;
+.menu a:hover { background:#eef4ff; }
+
+.section h2 {
+  font-size:20px;
+  font-weight:800;
+  margin-bottom:20px;
 }
 
-.profile-avatar h3{
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  color: #0b1b2b;
-  margin-left: 72px;
+.info-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;
 }
 
-
-/* MENU */
-.menu a{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #0b1b2b;
-  margin-bottom: 10px;
-  font-weight: 600;
-  transition: 0.25s;
+.info-box {
+  background:#f8f9fb;
+  padding:14px;
+  border-radius:10px;
+  border:1px solid #e6ebf2;
 }
 
-.menu a i{
-  color: #1e90ff;
-  width: 18px;
-  text-align: center;
+.info-box label {
+  font-size:13px;
+  color:#6c7a89;
 }
 
-.menu a:hover{
-  background: #f1f5fb;
+.info-box input {
+  width:100%;
+  border:none;
+  background:transparent;
+  font-weight:600;
 }
-
-.menu a.active{
-  background: linear-gradient(135deg, #1e90ff, #4facfe);
-  color: white;
-}
-
-.menu a.active i{
-  color: white;
-}
-
-/* CONTENT AREA */
-.content{
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
-  padding: 35px;
-}
-
-/* SECTIONS */
-.section{
-  margin-bottom: 35px;
-}
-
-.section h2{
-  font-size: 22px;
-  font-weight: 800;
-  color: #0b1b2b;
-  margin-bottom: 22px;
-}
-
-/* INFO GRID */
-.info-grid{
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.info-box{
-  background: #f8f9fb;
-  padding: 16px 18px;
-  border-radius: 10px;
-  border: 1px solid #e6ebf2;
-}
-
-.info-box label{
-  font-size: 13px;
-  color: #6c7a89;
-  margin-bottom: 6px;
-  display: block;
-}
-
-.info-box input{
-  width: 100%;
-  border: none;
-  background: transparent;
-  font-size: 16px;
-  font-weight: 600;
-  color: #0b1b2b;
-}
-
-.info-box input:disabled{
-  color: #0b1b2b;
-}
-
-/* TABLE - ORDERS */
-.orders{
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.orders th{
-  background: #f3f6fb;
-  padding: 14px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #0b1b2b;
-}
-
-.orders td{
-  padding: 14px;
-  border-bottom: 1px solid #edf1f6;
-  font-size: 14px;
-}
-
-.orders tr:hover{
-  background: #fafcff;
-}
-
-/* STATUS BADGES */
-.status{
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.pending{ background: rgba(255,193,7,0.15); color:#856404; }
-.delivered{ background: rgba(40,167,69,0.15); color:#1f7a35; }
-.cancelled{ background: rgba(220,53,69,0.15); color:#a11d2d; }
-.accepted{ background: rgba(40,167,69,0.25); color:#1f7a35; }
-
-/* ADDRESSES */
-.address{
-  background: #f8f9fb;
-  padding: 16px;
-  border-radius: 10px;
-  border: 1px solid #e6ebf2;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-/* FORMS */
-#addAddressForm input{
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #dfe5ec;
-  margin-right: 8px;
-  margin-bottom: 10px;
-}
-
-/* BUTTONS */
-.btn{
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.btn-primary{
-  background: #28a745;
-  border: none;
-  color: white;
-}
-
-.btn-danger{
-  background: #dc3545;
-  border: none;
-  color: white;
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 <nav class="navbar">
-  <div class="nav-container">
-
-    <!-- LOGO -->
-    <a class="navbar-brand" href="#">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="index.html">
       <img src="assets/logo.png" alt="24/7 Emergency Pharmacy">
     </a>
 
-    <!-- MENU -->
-    <div class="nav-links">
-      <a class="nav-link" href="index.html">
+    <div class="nav-links d-flex gap-4 align-items-center">
+      <a class="nav-link text-white" href="index.html">
         <i class="fa fa-house"></i> Home
       </a>
-
-      <a class="nav-link" href="request.html" onclick="requireLogin('request.html')">
+      <a class="nav-link text-white" href="request.html">
         <i class="fa fa-notes-medical"></i> Request Medicine
       </a>
-
-      <a class="nav-link" href="pharmacies.html" onclick="requireLogin('pharmacies.html')">
+      <a class="nav-link text-white" href="pharmacies.html">
         <i class="fa fa-location-dot"></i> Nearby Pharmacies
       </a>
-       <a class="nav-link" href="profile.html"><i class="fa fa-user"></i>Profile</a>
 
-     <a class="nav-link" href="login.html">
-  <i class="fa fa-user"></i> Logout
-</a>
-
-      
+      <span id="auth-link"></span>
     </div>
-
   </div>
 </nav>
+
 <!-- MAIN -->
 <div class="main">
 
   <aside class="profile-sidebar">
-<div class="profile-avatar">
-  <div class="avatar-icon">
-    <i class="fa-solid fa-user"></i>
-  </div>
-  <h3>John Doe</h3>
-</div>
-
+    <div class="profile-avatar">
+      <div class="avatar-icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h3 id="profileName">User</h3>
+    </div>
 
     <div class="menu">
       <a class="active" href="#"><i class="fa-solid fa-user"></i> My Profile</a>
       <a href="#"><i class="fa-solid fa-bag-shopping"></i> My Orders</a>
       <a href="#"><i class="fa-solid fa-location-dot"></i> Addresses</a>
       <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
-      <a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
     </div>
-
   </aside>
 
   <section class="content">
-
-    <!-- PERSONAL INFO -->
-<div class="section">
-  <h2>Personal Information</h2>
-  <div class="info-grid">
-    <div class="info-box">
-      <label>Full Name</label>
-      <input type="text" id="fullName" value="John Doe" disabled>
-    </div>
-
-    <div class="info-box">
-      <label>Email</label>
-      <input type="email" id="email" value="john.doe@email.com" disabled>
-    </div>
-
-    <div class="info-box">
-      <label>Phone</label>
-      <input type="text" id="phone" value="+355 69 123 4567" disabled>
-    </div>
-
-    <div class="info-box">
-      <label>Member Since</label>
-      <input type="text" id="memberSince" value="January 2026" disabled>
-    </div>
-  </div>
-
-  <button id="editProfileBtn" class="btn btn-primary" style="margin-top: 15px;">Edit Information</button>
-</div>
-
-
-    <!-- ORDERS -->
     <div class="section">
-      <table class="orders">
-  <thead>
-    <tr>
-      <th>#Order</th>
-      <th>Medicine</th>
-      <th>Pharmacy</th>
-      <th>Date</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="ordersBody">
-  </tbody>
-</table>
+      <h2>Personal Information</h2>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <label>Full Name</label>
+          <input type="text" id="fullName" disabled>
+        </div>
+
+        <div class="info-box">
+          <label>Email</label>
+          <input type="email" id="email" disabled>
+        </div>
+
+        <div class="info-box">
+          <label>Phone</label>
+          <input type="text" id="phone" disabled>
+        </div>
+
+        <div class="info-box">
+          <label>Member Since</label>
+          <input type="text" id="memberSince" disabled>
+        </div>
+      </div>
     </div>
-
-    <!-- ADDRESSES -->
-    <div class="section">
-      <h2>Delivery Addresses</h2>
-
-      <div id="addressesContainer"></div>
-
-<div id="addAddressForm" style="margin-top:15px;">
-  <input type="text" id="addressLabel" placeholder="Label (Home, Office)">
-  <input type="text" id="addressStreet" placeholder="Street">
-  <input type="text" id="addressPhone" placeholder="Phone">
-  <button class="btn btn-primary" id="addAddressBtn">Add Address</button>
-</div>
-
-    </div>
-
   </section>
 
 </div>
 
+<!-- SCRIPTS -->
 
-<!-- <script>
+<script src="auth.js"></script>
+<script src="script.js"></script>
+
+<script>
 const BASE_URL = "http://localhost:5183";
-const token = localStorage.getItem("token");
 
-if (!token) {
-  window.location.href = "login.html";
-}
+async function fetchProfile(){
 
-const qs = id => document.getElementById(id);
+  const token = localStorage.getItem("token");
 
-async function fetchProfile() {
-  const res = await fetch(`${BASE_URL}/api/users/me`, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-
-  if (!res.ok) {
-    localStorage.clear();
+  if(!token){
     window.location.href = "login.html";
     return;
   }
 
-  const u = await res.json();
-
-  document.querySelector(".profile-avatar h3").textContent = u.name || "User";
-  qs("fullName").value = u.name || "";
-  qs("email").value = u.email || "";
-  qs("phone").value = u.number || "";
-  if (qs("memberSince")) {
-    qs("memberSince").value = u.createdAt
-      ? new Date(u.createdAt).toLocaleDateString()
-      : "-";
-  }
-}
-
-fetchProfile();
-
-const editBtn = qs("editProfileBtn");
-const fields = [qs("fullName"), qs("email"), qs("phone")];
-
-editBtn.addEventListener("click", () => {
-  const editing = editBtn.textContent === "Edit Information";
-  fields.forEach(f => f.disabled = !editing);
-  editBtn.textContent = editing ? "Save Changes" : "Edit Information";
-});
-
-function logoutUser() {
-  localStorage.clear();
-  window.location.href = "login.html";
-}
-</script> -->
-
-<script>
-const BASE_URL = "http://localhost:5183";
-const TOKEN_KEY = "token";
-
-/* ================= AUTH GUARD ================= */
-(function authGuard() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  if (!token) {
-    window.location.replace("login.html");
-  }
-})();
-
-/* ================= HELPERS ================= */
-const qs = id => document.getElementById(id);
-
-/* ================= FETCH PROFILE ================= */
-async function fetchProfile() {
-  const token = localStorage.getItem(TOKEN_KEY);
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/users/me`, {
-      headers: {
-        Authorization: "Bearer " + token
+  try{
+    const res = await fetch(`${BASE_URL}/api/users/me`,{
+      headers:{
+        "Authorization": `Bearer ${token}`
       }
     });
 
-    if (!res.ok) {
-      localStorage.clear();
-      window.location.replace("login.html");
+    console.log("Status:", res.status);
+
+    if(res.status === 401){
+      localStorage.removeItem("token");
+      window.location.href = "login.html";
+      return;
+    }
+
+    if(!res.ok){
+      console.error("Server error");
       return;
     }
 
     const u = await res.json();
+    console.log("User data:", u);
 
-    document.querySelector(".profile-avatar h3").textContent = u.name || "User";
-    qs("fullName").value = u.name || "";
-    qs("email").value = u.email || "";
-    qs("phone").value = u.number || "";
-    if (qs("memberSince")) {
-      qs("memberSince").value = u.createdAt
-        ? new Date(u.createdAt).toLocaleDateString()
-        : "-";
-    }
+    document.getElementById("profileName").textContent = u.name ?? "User";
+    document.getElementById("fullName").value = u.name ?? "";
+    document.getElementById("email").value = u.email ?? "";
+    document.getElementById("phone").value = u.number ?? "";
+    document.getElementById("memberSince").value =
+      u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "-";
 
-  } catch (e) {
-    console.error("Failed to load profile", e);
-    localStorage.clear();
-    window.location.replace("login.html");
+  }catch(err){
+    console.error("Fetch error:", err);
   }
 }
 
-fetchProfile();
-
-/* ================= EDIT PROFILE (UI ONLY) ================= */
-const editBtn = qs("editProfileBtn");
-const fields = [qs("fullName"), qs("email"), qs("phone")];
-
-if (editBtn) {
-  editBtn.addEventListener("click", () => {
-    const editing = editBtn.textContent === "Edit Information";
-    fields.forEach(f => f && (f.disabled = !editing));
-    editBtn.textContent = editing ? "Save Changes" : "Edit Information";
-  });
-}
-
-/* ================= LOGOUT ================= */
-function logoutUser() {
-  localStorage.clear();
-  window.location.replace("login.html");
-}
+document.addEventListener("DOMContentLoaded", () => {
+  fetchProfile();
+});
 </script>
 
-<script src="script.js"></script>
+
 </body>
 </html>
-     

@@ -4,14 +4,12 @@ namespace Backend.API.Models
     {
         public int Id { get; set; }
 
-        // Relations
         public int UserId { get; set; }
 
-        // Order info
-        public string MedicineName { get; set; } = null!;
-        public string PharmacyName { get; set; } = null!;
-        public int Quantity { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         public string Status { get; set; } = "Request Sent";
+
+        public List<OrderItem> Items { get; set; } = new();
     }
 }

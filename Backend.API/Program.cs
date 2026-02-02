@@ -1,58 +1,90 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Backend.API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using Backend.API.Services;
 using Backend.API.Data;
-using Backend.API.Middleware;
-
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Services
+// ================== SERVICES ==================
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// DB & Services
+// ================== DATABASE ==================
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
+        ServerVersion.AutoDetect(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+        )
+    )
+);
+
+// ================== CUSTOM SERVICES ==================
 
 builder.Services.AddScoped<RequestService>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<OtpService>();
 builder.Services.AddScoped<MatchingService>();
 builder.Services.AddSingleton<DeliverySimulationService>();
 builder.Services.AddSingleton<ExternalApiService>();
 builder.Services.AddScoped<JwtService>();
 
+// ================== JWT AUTHENTICATION ==================
 
-// CORS — only one policy
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            ),
+
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// ================== CORS ==================
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy => policy
-            .WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+            .WithOrigins(
+                "http://127.0.0.1:5500",
+                "http://localhost:5500"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-// Middleware
+// ================== MIDDLEWARE ==================
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-// Use the single CORS policy
+
 app.UseCors("AllowFrontend");
-app.UseMiddleware<JwtMiddleware>();
+
+app.UseAuthentication();   
 app.UseAuthorization();
 
 app.MapControllers();

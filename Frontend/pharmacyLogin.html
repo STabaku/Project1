@@ -3,129 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <title>Pharmacy Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-body {
-  font-family: Arial;
-  background: #f4f6f9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+*{
+  box-sizing:border-box;
 }
-.box {
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  width: 320px;
+
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#c7d2fe,#e0f2fe);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
+
+/* GLASS CARD */
+.card{
+  width:380px;
+  padding:45px 40px;
+  border-radius:25px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(25px);
+  box-shadow:0 25px 60px rgba(0,0,0,0.12);
+  animation:fadeIn .5s ease;
 }
-button {
-  background: #2563eb;
-  color: white;
-  border: none;
-  cursor: pointer;
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(15px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.card h2{
+  text-align:center;
+  margin-bottom:35px;
+  font-weight:600;
+  color:#0f172a;
+}
+
+/* INPUT GROUP */
+.input-group{
+  position:relative;
+  margin-bottom:20px;
+}
+
+.input-group i{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#64748b;
+  font-size:14px;
+}
+
+input{
+  width:100%;
+  padding:14px 14px 14px 38px;
+  border-radius:12px;
+  border:1px solid #e2e8f0;
+  background:#f8fafc;
+  font-size:14px;
+  transition:.3s;
+}
+
+input:focus{
+  outline:none;
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+  background:white;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:14px;
+  margin-top:15px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#3b82f6);
+  color:white;
+  font-weight:600;
+  font-size:15px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 30px rgba(37,99,235,0.3);
+}
+
+/* ERROR */
+.error{
+  color:#ef4444;
+  margin-top:12px;
+  font-size:13px;
+  text-align:center;
+}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  margin-top:25px;
+  font-size:12px;
+  color:#64748b;
 }
 </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h3>Pharmacy Login</h3>
+<div class="card">
+  <h2><i class="fas fa-clinic-medical"></i> Pharmacy Login</h2>
 
-  <!-- STEP 1 -->
-  <div id="step1">
-    <input id="identifier" placeholder="Email or Phone">
-    <button onclick="requestOtp()">Request OTP</button>
+  <div class="input-group">
+    <i class="fas fa-envelope"></i>
+    <input id="email" placeholder="Email">
   </div>
 
-  <!-- STEP 2 -->
-  <div id="step2" style="display:none;">
-    <input id="otp" placeholder="Enter OTP">
-    <button onclick="verifyOtp()">Login</button>
+  <div class="input-group">
+    <i class="fas fa-lock"></i>
+    <input id="password" type="password" placeholder="Password">
   </div>
+
+  <button onclick="login()">Login</button>
+  <div class="error" id="errorMsg"></div>
+
+  <div class="footer">
+24/7 Emergency Pharmacy  </div>
 </div>
 
 <script>
-const BASE_URL = "http://localhost:5183";
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const error = document.getElementById("errorMsg");
 
-/* =========================
-   STEP 1 – REQUEST OTP
-========================= */
-async function requestOtp() {
-  const value = document.getElementById("identifier").value;
+  error.innerText = "";
 
-  if (!value) {
-    alert("Enter email or phone number");
-    return;
-  }
+  const testEmail = "city@pharmacy.com";
+  const testPassword = "123456";
 
-  const res = await fetch(`${BASE_URL}/api/auth/login-request`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ emailOrNumber: value })
-  });
-
-  if (!res.ok) {
-    alert("User not found or not verified");
-    return;
-  }
-
-  document.getElementById("step1").style.display = "none";
-  document.getElementById("step2").style.display = "block";
-}
-
-/* =========================
-   STEP 2 – VERIFY OTP + LOGIN
-========================= */
-async function verifyOtp() {
-  const value = document.getElementById("identifier").value;
-  const otp = document.getElementById("otp").value;
-
-  if (!otp) {
-    alert("Enter OTP");
-    return;
-  }
-
-  const res = await fetch(`${BASE_URL}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      emailOrNumber: value,
-      otp: otp
-    })
-  });
-
-  if (!res.ok) {
-    alert("Invalid or expired OTP");
-    return;
-  }
-
-  const data = await res.json();
-
-  // 🔑 SAVE TOKEN
-  localStorage.setItem("token", data.token);
-
-  // 🔀 REDIRECT BASED ON ROLE
-  if (data.role === "PharmacyAdmin") {
+  if (email === testEmail && password === testPassword) {
+    localStorage.setItem("pharmacyLoggedIn", "true");
     window.location.href = "pharmacy-dashboard.html";
-  }
-  else if (data.role === "Client") {
-    window.location.href = "client-dashboard.html";
-  }
-  else if (data.role === "SuperAdmin") {
-    window.location.href = "admin-dashboard.html";
-  }
-  else {
-    alert("Unknown role");
-    localStorage.removeItem("token");
+  } else {
+    error.innerText = "Invalid credentials";
   }
 }
 </script>
-
 
 </body>
 </html>
