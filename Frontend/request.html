@@ -275,6 +275,63 @@ if (token) {
         </a>
     `;
 }
+// =========================
+// SEND EMERGENCY REQUEST
+// =========================
+document.getElementById("btnSendRequest").addEventListener("click", async () => {
+
+    const medicine = document.getElementById("medicine").value;
+    const quantity = document.getElementById("quantity").value;
+    const address = document.getElementById("address").value;
+
+    const okBox = document.getElementById("ok1");
+    const errBox = document.getElementById("err1");
+
+    okBox.style.display = "none";
+    errBox.style.display = "none";
+
+    if (!medicine || !quantity || !address) {
+        errBox.innerText = "Please fill all fields.";
+        errBox.style.display = "block";
+        return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const response = await fetch("http://localhost:5183/api/requests", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                medicineName: medicine,
+                quantity: parseInt(quantity),
+                address: address,
+                pharmacyId: 1 
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Request failed");
+        }
+
+        okBox.innerText = "Emergency request sent successfully!";
+        okBox.style.display = "block";
+
+        document.getElementById("medicine").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("address").value = "";
+
+    } catch (error) {
+        errBox.innerText = "Error sending request.";
+        errBox.style.display = "block";
+    }
+
+});
+
 
 </script>
 

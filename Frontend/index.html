@@ -22,7 +22,6 @@
       <a class="nav-link" href="index.html"><i class="fa fa-house"></i> Home</a>
       <a class="nav-link" href="request.html"><i class="fa fa-notes-medical"></i> Request Medicine</a>
       <a class="nav-link" href="pharmacies.html"><i class="fa fa-location-dot"></i> Nearby Pharmacies</a>
-
       <span id="auth-link"></span>
     </div>
   </div>
@@ -77,13 +76,13 @@
         <h4><i class="fa-solid fa-location-dot"></i> Suggested Pharmacies</h4>
 
         <div class="pharmacy-item">
-          <strong>Pharmacy Vita</strong><br>
-          Distance: 1.2 km | Time: 10 min | ⭐⭐⭐⭐☆
+          <strong>City Pharmacy</strong><br>
+          Distance: 800m km | Time: 10 min | ⭐⭐⭐⭐⭐
         </div>
 
         <div class="pharmacy-item">
-          <strong>City Pharmacy</strong><br>
-          Distance: 2.0 km | Time: 15 min | ⭐⭐⭐⭐⭐
+          <strong>Family Pharmacy</strong><br>
+          Distance: 2.0 km | Time: 15 min | ⭐⭐⭐⭐☆
         </div>
 
       <div class="map-box">
@@ -154,12 +153,18 @@
 </footer>
 
 <script src="auth.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    authGuard(); 
-  });
-</script>
 <script src="script.js"></script>
+<script>
+function requireLogin(page) {
+  const token = localStorage.getItem("token");
 
+  if (!token) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  window.location.href = page;
+}
+</script>
 </body>
 </html>

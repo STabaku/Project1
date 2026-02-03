@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pharmacy Dashboard</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="pharmacy.css">
+</head>
+
+<body>
+<div class="sidebar">
+<div class="top-header">
+  <h1><i class="fas fa-clinic-medical"></i> City Pharmacy Dashboard</h1>
+</div>
+
+  <a onclick="showSection('overview')"><i class="fas fa-chart-line"></i> Dashboard</a>
+  <a onclick="showSection('new')"><i class="fas fa-bell"></i> New</a>
+  <a onclick="showSection('active')"><i class="fas fa-truck"></i> Active</a>
+  <a onclick="showSection('history')"><i class="fas fa-clock"></i> History</a>
+  <a onclick="showSection('add')"><i class="fas fa-plus-circle"></i> Add Medicine</a>
+
+  <!-- LINK te faqja e katalogut -->
+  <a href="medicines.html"><i class="fas fa-pills"></i> Medicines</a>
+  <br>
+  <br>
+  <a onclick="logout()" class="logout-btn">
+  <i class="fas fa-sign-out-alt"></i> Logout
+</a>
+
+</div>
+
+<div class="main">
+
+  <!-- OVERVIEW -->
+  <div id="overview" class="section active">
+   <div class="card-box">
+  <div class="card">
+    <i class="fas fa-layer-group" style="color:#6366f1"></i>
+    <h3 id="totalReq">0</h3>
+    <p>Total</p>
+  </div>
+
+  <div class="card">
+    <i class="fas fa-hourglass-half" style="color:#f59e0b"></i>
+    <h3 id="pendingReq">0</h3>
+    <p>Pending</p>
+  </div>
+
+  <div class="card">
+    <i class="fas fa-truck" style="color:#3b82f6"></i>
+    <h3 id="activeReq">0</h3>
+    <p>Active</p>
+  </div>
+
+  <div class="card">
+    <i class="fas fa-check-circle" style="color:#22c55e"></i>
+    <h3 id="doneReq">0</h3>
+    <p>Delivered</p>
+  </div>
+</div>
+
+
+    <h3>Weekly Requests</h3>
+    <canvas id="chart"></canvas>
+  </div>
+
+  <!-- NEW -->
+  <div id="new" class="section">
+    <h3>New Requests</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Medicine</th><th>Action</th></tr></thead>
+      <tbody id="newTable"></tbody>
+    </table>
+  </div>
+
+  <!-- ACTIVE -->
+  <div id="active" class="section">
+    <h3>Active Orders</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Medicine</th><th>Status</th><th>Finish</th></tr></thead>
+      <tbody id="activeTable"></tbody>
+    </table>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history" class="section">
+    <h3>History</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Medicine</th><th>Status</th></tr></thead>
+      <tbody id="historyTable"></tbody>
+    </table>
+  </div>
+
+  <!-- ADD MEDICINE -->
+  <div id="add" class="section">
+    <div class="add-card">
+      <h3><i class="fas fa-plus-circle"></i> Add New Medicine</h3>
+
+      <div class="form-group">
+        <label>Medicine Name</label>
+        <input type="text" id="medicineName" placeholder="Enter medicine name">
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <input type="text" id="medicineCategory" placeholder="Ex: Shurup, Tablet, Cream">
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="medicineDescription" placeholder="Short description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Price (ALL)</label>
+        <input type="number" id="medicinePrice" placeholder="Enter price">
+      </div>
+
+      <div class="form-group">
+        <label>Image</label>
+        <input type="file" id="medicineImage" accept="image/*">
+      </div>
+
+      <button class="btn btn-accept add-btn" onclick="addMedicine()">
+        <i class="fas fa-plus"></i> Add Medicine
+      </button>
+    </div>
+  </div>
+
+</div>
+<script src="pharmacy.js"></script>
+
+</body>
+</html>

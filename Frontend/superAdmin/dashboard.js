@@ -1,106 +1,150 @@
+/* ================= AUTH CHECK ================= */
+
 if (localStorage.getItem("pharmacyAuth") !== "true") {
   window.location.href = "login.html";
 }
 
 const BASE_URL = "http://localhost:5183";
 
-/* NAVIGATION */
-function showSection(sectionId) {
+
+/* ================= NAVIGATION ================= */
+
+function showSection(sectionId, el) {
+
   // hide all sections
   document.querySelectorAll('.section').forEach(section => {
     section.classList.add('hidden');
+    section.classList.remove('active-section');
   });
 
-  // show selected section
-  document.getElementById(sectionId).classList.remove('hidden');
+  // show selected
+  const selected = document.getElementById(sectionId);
+  if (selected) {
+    selected.classList.remove('hidden');
+    selected.classList.add('active-section');
+  }
 
-  // remove active from all sidebar links
+  // remove active from sidebar
   document.querySelectorAll('.sidebar a').forEach(link => {
     link.classList.remove('active');
   });
 
-  // add active to clicked link
-  event.target.classList.add('active');
+  // activate clicked link
+  if (el) el.classList.add('active');
 }
+
+
+/* ================= LOGOUT ================= */
 
 function logout() {
   localStorage.removeItem("pharmacyAuth");
-  window.location.href = "./login.html";
+  window.location.href = "login.html";
 }
 
-/* LOAD REQUESTS */
-async function loadRequests() {
-  const res = await fetch(`${BASE_URL}/api/requests`);
-  const data = await res.json();
 
-  const newT = document.getElementById("newRequests");
-  const activeT = document.getElementById("activeOrders");
-  const historyT = document.getElementById("historyOrders");
+/* ================= DASHBOARD DATA ================= */
 
-  newT.innerHTML = "";
-  activeT.innerHTML = "";
-  historyT.innerHTML = "";
+/* ---- USERS ---- */
 
-  let pending = 0, active = 0, done = 0;
+function loadUsers() {
 
-  data.forEach(r => {
-    if (r.status === "Pending") {
-      pending++;
-      newT.innerHTML += `
-        <tr>
-          <td>${r.id}</td>
-          <td>${r.medicineName}</td>
-          <td>${r.quantity}</td>
-          <td>${r.address}</td>
-          <td>${new Date(r.createdAt).toLocaleString()}</td>
-          <td><button class="btn btn-accept" onclick="accept(${r.id})">Accept</button></td>
-        </tr>`;
-    }
+  const users = [
+    { id:1, name:"Eliada Eliada", email:"eliada12@gmail.com" },
+    { id:2, name:"Silva Tabaku", email:"silvatabaku@gmail.com" },
+    { id:3, name:"Nadja Brari", email:"nadiaB@gmail.com" }
+  ];
 
-    if (r.status === "Accepted") {
-      active++;
-      activeT.innerHTML += `
-        <tr>
-          <td>${r.id}</td>
-          <td>${r.medicineName}</td>
-          <td>${r.quantity}</td>
-          <td>${r.address}</td>
-          <td class="status-accepted">Accepted</td>
-          <td><button class="btn btn-done" onclick="deliver(${r.id})">Delivered</button></td>
-        </tr>`;
-    }
+  const table = document.getElementById("usersTable");
+  if (!table) return;
 
-    if (r.status === "Delivered") {
-      done++;
-      historyT.innerHTML += `
-        <tr>
-          <td>${r.id}</td>
-          <td>${r.medicineName}</td>
-          <td>${r.quantity}</td>
-          <td>${r.address}</td>
-          <td class="status-delivered">Delivered</td>
-          <td>${new Date(r.createdAt).toLocaleString()}</td>
-        </tr>`;
-    }
-  });
+  table.innerHTML = users.map(u => `
+    <tr>
+      <td>${u.id}</td>
+      <td>${u.name}</td>
+      <td>${u.email}</td>
+    </tr>
+  `).join("");
 
-  document.getElementById("totalReq").innerText = data.length;
-  document.getElementById("pendingReq").innerText = pending;
-  document.getElementById("activeReq").innerText = active;
-  document.getElementById("doneReq").innerText = done;
+  document.getElementById("totalUsers").innerText = users.length;
 }
 
-async function accept(id) {
-  await fetch(`${BASE_URL}/api/requests/accept/${id}`, { method: "POST" });
+
+/* ---- PHARMACIES ---- */
+
+function loadPharmacies() {
+
+  const pharmacies = [
+    { id:1, name:"City Pharmacy", city:"Tirana" },
+    { id:2, name:" Green Cross Pharmacy", city:"Durres" }
+  ];
+
+  const table = document.getElementById("pharmaciesTable");
+  if (!table) return;
+
+  table.innerHTML = pharmacies.map(p => `
+    <tr>
+      <td>${p.id}</td>
+      <td>${p.name}</td>
+      <td>${p.city}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("totalPharmacies").innerText = pharmacies.length;
+}
+
+
+/* ---- REQUESTS ---- */
+
+function loadRequests() {
+
+  const requests = [
+    { id:1, medicine:"Insulin", status:"Pending" },
+    { id:2, medicine:"Paracetamol", status:"Accepted" },
+    { id:3, medicine:"Amoxicillin", status:"Delivered" }
+  ];
+
+  const table = document.getElementById("requestsTable");
+  if (!table) return;
+
+  table.innerHTML = requests.map(r => `
+    <tr>
+      <td>${r.id}</td>
+      <td>${r.medicine}</td>
+      <td>${r.status}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("totalRequests").innerText = requests.length;
+}
+
+
+/* ---- HISTORY ---- */
+
+function loadHistory() {
+
+  const history = [
+    { id:1, action:"User registered", date:"2024-01-12" },
+    { id:2, action:"Pharmacy approved", date:"2024-01-15" }
+  ];
+
+  const table = document.getElementById("historyTable");
+  if (!table) return;
+
+  table.innerHTML = history.map(h => `
+    <tr>
+      <td>${h.id}</td>
+      <td>${h.action}</td>
+      <td>${h.date}</td>
+    </tr>
+  `).join("");
+}
+
+
+/* ================= INIT ================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadUsers();
+  loadPharmacies();
   loadRequests();
-}
-
-async function deliver(id) {
-  await fetch(`${BASE_URL}/api/requests/deliver/${id}`, { method: "POST" });
-  loadRequests();
-}
-
-setInterval(loadRequests, 3000);
-loadRequests();
-
-
+  loadHistory();
+});

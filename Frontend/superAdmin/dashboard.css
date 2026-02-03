@@ -1,9 +1,9 @@
 :root {
-  --primary: #1d4ed8;        /* Blu kryesore */
-  --primary-dark: #1e3a8a;
-  --primary-light: #3b82f6;
+  --primary: #071d59;        
+  --primary-dark: #1a2c5e;
+  --primary-light: #b1c8ed;
 
-  --accent: #16a34a;         /* Jeshile accent */
+  --accent: #16a34a;       
   --accent-dark: #15803d;
   --accent-light: #dcfce7;
 
@@ -17,7 +17,7 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--bg);
+  background:linear-gradient(135deg,#c7d2fe,#e0f2fe);
   display: flex;
 }
 
@@ -26,7 +26,7 @@ body {
 ========================= */
 .sidebar {
   width: 250px;
-  background: linear-gradient(180deg, var(--primary), var(--primary-dark));
+  background:rgba(15,23,42,0.9);
   color: white;
   height: 100vh;
   padding: 25px 20px;
@@ -60,6 +60,15 @@ body {
 .sidebar a.active {
   background: rgba(255,255,255,0.18);
   transform: translateX(5px);
+}
+.sidebar a {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.sidebar a i {
+  width:18px;
 }
 
 /* =========================
@@ -245,6 +254,7 @@ tr:hover {
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, var(--primary), var(--accent));
+  
 }
 
 .login-card {
@@ -255,6 +265,7 @@ tr:hover {
   text-align: center;
   box-shadow: 0 25px 50px rgba(0,0,0,0.25);
   animation: fadeIn 0.4s ease;
+  margin-right: 120px;
 }
 
 .login-card h2 {

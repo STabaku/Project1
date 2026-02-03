@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders - Emergency Pharmacy</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+body { background:#f5f8fc; }
+.navbar { background:#0f3d5e; padding:10px 0; }
+.navbar-brand img { width:180px; }
+
+.main {
+  width:min(1100px,92%);
+  margin:60px auto;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:30px;
+}
+
+.profile-sidebar,
+.content {
+  background:white;
+  border-radius:14px;
+  box-shadow:0 6px 24px rgba(0,0,0,0.08);
+  padding:30px;
+}
+
+.avatar-icon {
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#1e90ff,#4facfe);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 15px;
+}
+
+.avatar-icon i { font-size:42px; color:white; }
+.profile-avatar h3 { text-align:center; font-weight:700; }
+
+.menu a {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:8px;
+  text-decoration:none;
+  color:#0b1b2b;
+  margin-bottom:8px;
+  font-weight:600;
+}
+
+.menu a.active,
+.menu a:hover { background:#eef4ff; }
+
+.order-card {
+  background:#f8f9fb;
+  padding:18px;
+  border-radius:12px;
+  border:1px solid #e6ebf2;
+  margin-bottom:15px;
+}
+
+.status {
+  font-weight:700;
+}
+
+.pending { color:orange; }
+.approved { color:green; }
+.rejected { color:red; }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="index.html">
+      <img src="assets/logo.png">
+    </a>
+
+    <div class="nav-links d-flex gap-4 align-items-center">
+      <a class="nav-link text-white" href="index.html">
+        <i class="fa fa-house"></i> Home
+      </a>
+      <a class="nav-link text-white" href="request.html">
+        <i class="fa fa-notes-medical"></i> Request Medicine
+      </a>
+      <a class="nav-link text-white" href="pharmacies.html">
+        <i class="fa fa-location-dot"></i> Nearby Pharmacies
+      </a>
+      <span id="auth-link"></span>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <aside class="profile-sidebar">
+    <div class="profile-avatar">
+      <div class="avatar-icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <h3 id="profileName">User</h3>
+    </div>
+
+    <div class="menu">
+      <a href="profile.html">
+        <i class="fa-solid fa-user"></i> My Profile
+      </a>
+
+      <a class="active" href="my-orders.html">
+        <i class="fa-solid fa-bag-shopping"></i> My Orders
+      </a>
+
+      <a href="addresses.html">
+        <i class="fa-solid fa-location-dot"></i> Addresses
+      </a>
+
+      <a href="settings.html">
+        <i class="fa-solid fa-gear"></i> Settings
+      </a>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <section class="content">
+    <h2 class="mb-4 fw-bold">My Orders</h2>
+    <div id="ordersContainer"></div>
+  </section>
+
+</div>
+
+<script src="auth.js"></script>
+
+<script>
+authGuard();
+updateNavbar();
+
+const fakeOrders = [
+  { id:1, medicine:"Paracetamol", pharmacy:"City Pharmacy", status:"Pending" },
+  { id:2, medicine:"Insulin", pharmacy:"Health Plus", status:"Approved" },
+  { id:3, medicine:"Amoxicillin", pharmacy:"Green Cross", status:"Rejected" }
+];
+
+const container = document.getElementById("ordersContainer");
+
+fakeOrders.forEach(order=>{
+  const div=document.createElement("div");
+  div.classList.add("order-card");
+
+  const statusClass=order.status.toLowerCase();
+
+  div.innerHTML=`
+    <h5>Order #${order.id}</h5>
+    <p><strong>Medicine:</strong> ${order.medicine}</p>
+    <p><strong>Pharmacy:</strong> ${order.pharmacy}</p>
+    <p class="status ${statusClass}">${order.status}</p>
+  `;
+
+  container.appendChild(div);
+});
+</script>
+
+</body>
+</html>
